@@ -21,5 +21,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<PaymentMethod>()
+            .HasDiscriminator<string>("PaymentMethodType")
+            .HasValue<CreditCard>("CreditCard")
+            .HasValue<Paypal>("Paypal")
+            .HasValue<Bizum>("Bizum");
     }
 }
