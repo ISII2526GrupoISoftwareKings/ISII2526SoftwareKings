@@ -2,7 +2,7 @@
 
 namespace AppForSEII2526.API.Models
 {
-    public class CreditCard
+    public class CreditCard : PaymentMethod
     {
         [Key]
         [StringLength(16, MinimumLength = 13)]

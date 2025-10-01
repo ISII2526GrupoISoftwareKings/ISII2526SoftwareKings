@@ -1,6 +1,6 @@
 ﻿namespace AppForSEII2526.API.Models
 {
-    public class Paypal
+    public class Paypal : PaymentMethod
     {
         [Key]
         public string Email { get; set; }
