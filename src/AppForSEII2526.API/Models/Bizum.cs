@@ -2,7 +2,6 @@
 {
     public class Bizum : PaymentMethod
     {
-        [Key]
         [Display (Name = "Telephone Number")]
         public string telephoneNumber { get; set; }
     }
