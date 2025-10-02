@@ -31,6 +31,7 @@
         public string? HealthIssues { get; set; }
 
 
+        public PaymentMethod PaymentMethod { get; set; }
         public List<PlanItem> PlanItems { get; set; }
     }
 }
