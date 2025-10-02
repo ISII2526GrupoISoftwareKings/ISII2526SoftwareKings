@@ -32,5 +32,6 @@
 
 
         public PaymentMethod PaymentMethod { get; set; }
+        public List<PlanItem> PlanItems { get; set; }
     }
 }
