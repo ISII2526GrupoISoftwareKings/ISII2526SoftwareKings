@@ -1,4 +1,7 @@
-﻿namespace AppForSEII2526.API.Models
+﻿using Microsoft.CodeAnalysis.Elfie.Model.Tree;
+using System.Drawing.Drawing2D;
+
+namespace AppForSEII2526.API.Models
 {
     public class Item
     {
@@ -17,6 +20,9 @@
         public int QuantityForRestock { get; set; }
 
         public decimal? RestockPrice { get; set; }
+        public List<PurchaseItem> PurchaseItems { get; set; }
+        public TypeItem TypeItem { get; set; }
+        public Brand Brand { get; set; }
     }
 
 }
