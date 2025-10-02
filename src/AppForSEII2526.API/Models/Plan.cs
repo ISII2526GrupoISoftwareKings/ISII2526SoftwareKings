@@ -29,5 +29,8 @@
         [Display(Name = "Health Issues")]
         [StringLength(100, ErrorMessage = "Health Issues cannot be longer than 100 characters.")]
         public string? HealthIssues { get; set; }
+
+
+        public PaymentMethod PaymentMethod { get; set; }
     }
 }
