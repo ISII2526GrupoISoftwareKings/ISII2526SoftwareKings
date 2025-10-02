@@ -22,5 +22,6 @@ namespace AppForSEII2526.API.Models
         public DateTime Date { get; set; }
 
         public List<TypeItem> TypeItems { get; set; }
+        public List<PlanItem> PlanItems { get; set; }
     }
 }

@@ -15,5 +15,9 @@ namespace AppForSEII2526.API.Models
         [DataType(DataType.Currency)]
         [Precision(5,2)]
         public decimal Price { get; set; }
+
+        public Class Class { get; set; }
+
+        public Plan Plan { get; set; }
     }
 }
