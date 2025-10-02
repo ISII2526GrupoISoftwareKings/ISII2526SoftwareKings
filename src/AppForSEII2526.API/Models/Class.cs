@@ -21,6 +21,7 @@ namespace AppForSEII2526.API.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
+        public List<TypeItem> TypeItems { get; set; }
         public List<PlanItem> PlanItems { get; set; }
     }
 }
