@@ -5,6 +5,7 @@
         public int Id { get; set; }
 
         public ApplicationUser User { get; set; }
-        public List<PaymentMethod> PaymentMethods { get; set; }
+
+        public List<Plan> Plans { get; set; }
     }
 }
