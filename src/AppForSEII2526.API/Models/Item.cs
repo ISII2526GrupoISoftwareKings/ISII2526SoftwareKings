@@ -11,5 +11,6 @@
         public int QuantityAvailableForPurchase { get; set; }
         public Brand Brand { get; set; }
         public TypeItem TypeItem { get; set; }
+        public IList<RestockItem> RestockItems { get; set; }
     }
 }
