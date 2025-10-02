@@ -9,4 +9,6 @@ public class ApplicationUser : IdentityUser {
 
     [StringLength(30, ErrorMessage = "Surname cannot be longer than 30 characters.")]
     public string Surname { get; set; }
+
+    public List<PaymentMethod> PaymentMethods { get; set; }
 }
