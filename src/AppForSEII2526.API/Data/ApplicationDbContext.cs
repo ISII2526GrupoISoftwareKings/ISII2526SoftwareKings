@@ -20,6 +20,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Purchase> Purchases { get; set; }
     public DbSet<PurchaseItem> PurchaseItems { get; set; }
     public DbSet<Brand> Brands { get; set; }
+    public DbSet<Restock> Restocks { get; set; }
+    public DbSet<RestockItem> RestockItems { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)

@@ -11,4 +11,5 @@ public class ApplicationUser : IdentityUser {
     public string Surname { get; set; }
 
     public List<PaymentMethod> PaymentMethods { get; set; }
+    public IList<Restock> Restocks { get; set; }
 }

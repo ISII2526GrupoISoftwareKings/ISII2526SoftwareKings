@@ -12,7 +12,7 @@ namespace AppForSEII2526.API.Models
         public string Name { get; set; }
 
         [StringLength(500, ErrorMessage = "Description cannot be longer than 500 characters.")]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [DataType(DataType.Currency)]
         [Precision(10, 2)]
@@ -32,6 +32,7 @@ namespace AppForSEII2526.API.Models
         public List<PurchaseItem> PurchaseItems { get; set; }
         public TypeItem TypeItem { get; set; }
         public Brand Brand { get; set; }
+        public IList<RestockItem> RestockItems { get; set; }
     }
 
 }
