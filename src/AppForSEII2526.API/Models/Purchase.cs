@@ -31,6 +31,7 @@ namespace AppForSEII2526.API.Models
         [DataType(DataType.Currency)]
         [Precision(10, 2)]
         public decimal TotalPrice { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
         public List<PurchaseItem> PurchaseItems { get; set; }
     }
