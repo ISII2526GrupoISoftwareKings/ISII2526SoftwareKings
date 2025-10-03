@@ -1,7 +1,4 @@
 
-﻿namespace AppForSEII2526.API.Models
-{
-﻿using System.Numerics;
 
     namespace AppForSEII2526.API.Models
     {
@@ -20,4 +17,3 @@
 
         }
     }
-}
