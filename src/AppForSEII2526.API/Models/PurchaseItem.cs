@@ -2,10 +2,9 @@
 
 namespace AppForSEII2526.API.Models
 {
+    [PrimaryKey(nameof(ItemId), nameof(PurchaseId))]
     public class PurchaseItem
     {
-        public int Id { get; set; }
-
         [Display(Name = "Amount Bought")]
         [Range(1, int.MaxValue, ErrorMessage = "Minimum amount bought is 1")]
         public int AmountBought { get; set; }
