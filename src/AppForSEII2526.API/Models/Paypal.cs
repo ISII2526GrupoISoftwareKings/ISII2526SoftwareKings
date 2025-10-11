@@ -2,6 +2,7 @@
 {
     public class Paypal : PaymentMethod
     {
+        [EmailAddress]
         public string Email { get; set; }
     }
 }
