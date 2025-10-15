@@ -1,8 +1,14 @@
-﻿SET IDENTITY_INSERT [dbo].[Classes] ON
-INSERT INTO [dbo].[Classes] ([Id], [Name], [Price], [Capacity], [Date]) VALUES (6, N'Yoga', CAST(11.00 AS Decimal(5, 2)), 20, N'2025-10-10 18:00:00')
-INSERT INTO [dbo].[Classes] ([Id], [Name], [Price], [Capacity], [Date]) VALUES (10, N'Spinning', CAST(11.00 AS Decimal(5, 2)), 20, N'2025-10-11 18:00:00')
-INSERT INTO [dbo].[Classes] ([Id], [Name], [Price], [Capacity], [Date]) VALUES (12, N'CrossFit', CAST(10.00 AS Decimal(5, 2)), 20, N'2025-10-12 18:00:00')
-INSERT INTO [dbo].[Classes] ([Id], [Name], [Price], [Capacity], [Date]) VALUES (13, N'Strech & Relax', CAST(10.00 AS Decimal(5, 2)), 25, N'2025-10-13 18:00:00')
-INSERT INTO [dbo].[Classes] ([Id], [Name], [Price], [Capacity], [Date]) VALUES (14, N'Zumba', CAST(8.00 AS Decimal(5, 2)), 20, N'2025-10-14 18:00:00')
-INSERT INTO [dbo].[Classes] ([Id], [Name], [Price], [Capacity], [Date]) VALUES (15, N'Pilates', CAST(10.00 AS Decimal(5, 2)), 25, N'2025-10-15 18:00:00')
-SET IDENTITY_INSERT [dbo].[Classes] OFF
+﻿SET IDENTITY_INSERT [dbo].[TypeItems] ON
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (1, N'Yoga mat', 6)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (2, N'Yoga block', 6)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (3, N'Towel', 10)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (4, N'Water bottle', 10)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (5, N'Dumbbells', 12)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (6, N'Kettlebell', 12)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (7, N'Foam Roller', 13)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (8, N'Stretching band', 13)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (9, N'Resistance band', 14)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (10, N'Floor mat', 14)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (11, N'Medicine Ball', 15)
+INSERT INTO [dbo].[TypeItems] ([Id], [Name], [ClassId]) VALUES (12, N'Magic Ring', 15)
+SET IDENTITY_INSERT [dbo].[TypeItems] OFF

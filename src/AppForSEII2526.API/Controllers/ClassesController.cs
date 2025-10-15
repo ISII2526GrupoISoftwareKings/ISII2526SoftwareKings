@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AppForSEII2526.API.DTOs.ClassDTOs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppForSEII2526.API.Controllers
@@ -31,5 +32,19 @@ namespace AppForSEII2526.API.Controllers
         //    decimal result = op1 / op2;
         //    return Ok(result);
         //}
+
+
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(IList<ClassForPlanDTO>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> GetClassesForPlan(string? className)
+        {
+            IList<ClassForPlanDTO> classesDTO = await _context.Classes
+                .Where(c => c.Name.Contains(className) || (className == null))
+                .OrderBy(c => c.Name)
+                .Select(c => new ClassForPlanDTO(c.Id, c.Name, c.TypeItems, c.Date, c.Price))
+                .ToListAsync();
+            return Ok(classesDTO);
+        }
     }
 }
