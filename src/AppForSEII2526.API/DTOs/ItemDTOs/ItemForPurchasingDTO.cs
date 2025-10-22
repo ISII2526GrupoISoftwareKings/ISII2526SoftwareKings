@@ -1,0 +1,32 @@
+﻿using DataType = System.ComponentModel.DataAnnotations.DataType;
+namespace AppForSEII2526.API.DTOs.ItemDTOs
+{
+    public class ItemForPurchasingDTO
+    {
+        public ItemForPurchasingDTO(int id, string name, string brandName, string description, decimal purchasePrice, int quantityAvailaibleForPurchase)
+        {
+            Id = id;
+            Name = name;
+            Brand = brandName;
+            Description = description;
+            PurchasePrice = purchasePrice;
+            QuantityAvailableForPurchase = quantityAvailaibleForPurchase;
+        }
+        public int Id { get; set; }
+
+        [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
+        public string Name { get; set; }
+        public string Brand { get; set; }
+
+        [StringLength(500, ErrorMessage = "Description cannot be longer than 500 characters.")]
+        public string Description { get; set; }
+
+        [DataType(DataType.Currency)]
+        [Precision(10, 2)]
+        public decimal PurchasePrice { get; set; }
+
+        [Display(Name = "Quantity Available For Purchase")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity available must be 0 or more")]
+        public int QuantityAvailableForPurchase { get; set; }
+    }
+}
