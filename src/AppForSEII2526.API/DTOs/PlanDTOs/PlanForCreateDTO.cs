@@ -5,7 +5,7 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 {
     public class PlanForCreateDTO
     {
-        public PlanForCreateDTO(string name, string nameUser, string surnameUser, string? description, int weeks, DateTime createdDate, string? healthIssues, PaymentMethod paymentMethod, List<PlanItem> planItems)
+        public PlanForCreateDTO(string name, string nameUser, string surnameUser, string? description, int weeks, DateTime createdDate, string? healthIssues, PaymentMethod paymentMethod, List<PlanItemDTO> planItems)
         {
             Name = name;
             NameUser = nameUser;
@@ -45,6 +45,6 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 
 
         public PaymentMethod PaymentMethod { get; set; }
-        public List<PlanItem> PlanItems { get; set; }
+        public List<PlanItemDTO> PlanItems { get; set; }
     }
 }
