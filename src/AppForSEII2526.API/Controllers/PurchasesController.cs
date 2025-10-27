@@ -78,6 +78,11 @@ namespace AppForSEII2526.API.Controllers
                     _logger.LogWarning($"Purchase {id}: requested quantity ({item.AmountBought}) exceeds available ({dbItem.QuantityAvailableForPurchase}) for item {item.ItemId}.");
                     return BadRequest($"Requested quantity for item '{dbItem.Name}' exceeds available stock.");
                 }
+                if (item.AmountBought <= 0)
+                {
+                    _logger.LogError($"Invalid amount bought ({item.AmountBought}) for item {item.ItemId} in purchase {id}.");
+                    return BadRequest("Invalid purchase: item quantity must be greater than zero.");
+                }
             }
 
             return Ok(purchase);
