@@ -9,6 +9,21 @@ namespace AppForSEII2526.API.Models
 {
     public class Purchase
     {
+        public Purchase()
+        {
+         
+        }
+        public Purchase(string city, string country, DateTime date, string street, decimal totalPrice, PaymentMethod paymentMethod, string? description = null)
+        {
+            City = city;
+            Country = country;
+            Date = date;
+            Street = street;
+            TotalPrice = totalPrice;
+            PaymentMethod = paymentMethod;
+            Description = description;
+            PurchaseItems = new List<PurchaseItem>();
+        }
         public int Id { get; set; }
 
         [StringLength(50, ErrorMessage = "City cannot be longer than 50 characters.")]
