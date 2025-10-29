@@ -5,13 +5,14 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
 {
     public class PurchaseForCreateDTO
     {
-        public PurchaseForCreateDTO(string city, string country, string street, string? description, DateTime date, PaymentMethod paymentMethod, List<PurchaseItemDTO> purchaseItems)
+        public PurchaseForCreateDTO(string city, string country, string street, string? description, DateTime date, decimal totalPrice, PaymentMethod paymentMethod, List<PurchaseItemDTO> purchaseItems)
         {
             City = city;
             Country = country;
             Street = street;
             Description = description;
             Date = date;
+            TotalPrice = totalPrice;
             PaymentMethod = paymentMethod;
             PurchaseItems = purchaseItems;
         }
@@ -31,6 +32,10 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
+
+        [DataType(DataType.Currency)]
+        [Precision(10, 2)]
+        public decimal TotalPrice { get; set; }
 
         public PaymentMethod PaymentMethod { get; set; }
 
