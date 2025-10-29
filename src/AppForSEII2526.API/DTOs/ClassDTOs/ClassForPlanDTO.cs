@@ -24,5 +24,15 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
             Date = Date;
             Price = price;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ClassForPlanDTO dTO &&
+                   Id == dTO.Id &&
+                   Name == dTO.Name &&
+                   Price == dTO.Price &&
+                   Date == dTO.Date &&
+                   EqualityComparer<IList<TypeItem>>.Default.Equals(TypeItems, dTO.TypeItems);
+        }
     }
 }
