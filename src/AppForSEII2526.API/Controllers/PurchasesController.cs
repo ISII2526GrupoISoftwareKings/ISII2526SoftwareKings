@@ -82,5 +82,11 @@ namespace AppForSEII2526.API.Controllers
 
             return Ok(purchase);
         }
+        [HttpPost]
+        [Route("[action]")]
+
+        [ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.Created)]
+
+        [ProducesResponseType(typeof(PurchaseForDetailDTO), (int)HttpStatusCode.BadRequest)]
     }
 }
