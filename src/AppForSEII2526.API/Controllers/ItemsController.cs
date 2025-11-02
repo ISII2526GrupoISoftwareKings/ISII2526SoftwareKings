@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace AppForSEII2526.API.Controllers
 {
@@ -63,5 +64,41 @@ namespace AppForSEII2526.API.Controllers
 
             return Ok(itemsDTOS);
         }
+
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(IList<ItemForRestockDTO>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ModelError), (int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult> GetItemsForRestock(string? itemName, int? QuantityAvailableForPurchase)
+        {
+
+            IList<ItemForRestockDTO> itemsDtos = await _context.Items
+                .Include(item => item.Brand)
+                .Where(item =>
+                    ((itemName == null || item.Name.Contains(itemName)) &&
+                    (QuantityAvailableForPurchase == null || item.QuantityAvailableForPurchase <= QuantityAvailableForPurchase)) &&
+                    item.QuantityAvailableForPurchase < item.QuantityForRestock
+                )
+                .OrderBy(item => item.Name)
+                .Select(item => new ItemForRestockDTO(
+                    item.Id,
+                    item.Name,
+                    item.Brand.Name,
+                    item.RestockPrice,
+                    item.QuantityForRestock
+                ))
+                .ToListAsync();
+
+            if (itemsDtos == null || !itemsDtos.Any())
+            {
+                _logger.LogWarning($"{DateTime.Now} Warning: No items available for restock.");
+                return BadRequest("There are no items available for restock.");
+            }
+
+            return Ok(itemsDtos);
+        }
+
+
+
     }
 }
