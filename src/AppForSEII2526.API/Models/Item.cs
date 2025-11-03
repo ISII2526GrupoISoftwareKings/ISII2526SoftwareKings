@@ -6,6 +6,8 @@ namespace AppForSEII2526.API.Models
 {
     public class Item
     {
+        public Item() { }
+
         public int Id { get; set; }
 
         [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]

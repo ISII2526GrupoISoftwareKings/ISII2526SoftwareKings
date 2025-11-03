@@ -6,11 +6,9 @@
         public TypeItem()
         {
         }
-        public TypeItem(int id, string name, IList<Item> items)
+        public TypeItem(string name)
         {
-            Id = id;
             Name = name;
-            Items = items;
         }
 
         public int Id { get; set; }

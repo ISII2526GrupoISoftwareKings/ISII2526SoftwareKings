@@ -13,45 +13,60 @@ namespace AppForSEII2526.UT.ClassesController_test
     public class SelectClassesForPlan_test : AppForSEII25264SqliteUT
     {
         public SelectClassesForPlan_test() {
-            var classes = new List<Class>()
-            {
-                new Class(1, "Yoga Basics", 15.0m, 20, new DateTime(2025,10,12),
-                    new List<TypeItem>{ new TypeItem{ Id=1, Name="Yoga Mat" } },
-                    new List<PlanItem>()),
-                new Class(2, "Advanced Pilates", 20.00m, 15, new DateTime(2025,10,15),
-                    new List<TypeItem>{ new TypeItem { Id = 2, Name = "Pilates Block"} },
-                    new List<PlanItem>())
-            };
-            _context.Classes.AddRange(classes);
+
+            var typeItems = new List<TypeItem>() { new TypeItem("Dumbell"), new TypeItem("Mat") };
+
+            var classes = new List<Class>() {
+            new Class("Yoga Basics", 10m, 10, new DateTime(2025, 10, 11), typeItems),
+            new Class("Pilates Advanced", 15m, 20, new DateTime(2025, 10, 12), typeItems),
+            new Class("Yoga Basics", 20m, 15, new DateTime(2025, 10, 15), typeItems),
+        };
+            _context.AddRange(typeItems);
+            _context.AddRange(classes);
             _context.SaveChanges();
         }
 
-        [Fact]
-        [Trait("LevelTesting", "Unit Testing")]
-        public async Task SelectClassesForPlan_null_classname_date()
+        public static IEnumerable<object[]> TestCasesFor_GetClassesForPlan_OK()
         {
-            var expectedClasses = new List<ClassForPlanDTO>()
-            {
-                    new ClassForPlanDTO(1, "Yoga Basics",
-                        new List<TypeItem>{ new TypeItem{ Id=1, Name="Yoga Mat" } },
-                        new DateTime(2025,10,12),
-                        15.00m),
+            var typeItems = new List<TypeItem>() { new TypeItem("Dumbbell") };
 
-                    new ClassForPlanDTO(2, "Advanced Pilates",
-                        new List<TypeItem>{ new TypeItem { Id = 2, Name = "Pilates Block"} },
-                        new DateTime(2025,10,15),
-                        20.00m)
+            var expected1 = new List<ClassForPlanDTO>() {
+                new ClassForPlanDTO(1, "Yoga Basics", typeItems, new DateTime(2025, 10, 11), 10m),
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 12), 15m)
             };
 
-            var mock = new Mock<ILogger<ClassesController>>();
-            ILogger<ClassesController> logger = mock.Object;
-            ClassesController controller = new ClassesController(_context, logger);
+            var expected2 = new List<ClassForPlanDTO>() {
+                new ClassForPlanDTO(1, "Yoga Basics", typeItems, new DateTime(2025, 10, 11), 10m)
+            };
 
-            var result = await controller.GetClassesForPlan(null, null);
+            var allTests = new List<object[]> {
+                new object[] { null, null, expected1 },      
+                new object[] { "Yoga", null, expected2 },   
+                new object[] { "Pilates", new DateTime(2025,10,12),
+                        expected2 }
+            };
 
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var moviesactualresult = Assert.IsType<List<ClassForPlanDTO>>(okResult.Value);
-            Assert.Equivalent(expectedClasses, moviesactualresult);
+            return allTests;
         }
+
+
+        [Theory]
+        [Trait("LevelTesting", "Unit Testing")]
+        [MemberData(nameof(TestCasesFor_GetClassesForPlan_OK))]
+        public async Task GetClassesForPlan_filter_test(string? className, DateTime? date, List<ClassForPlanDTO> expectedClasses)
+        {
+            // Arrange
+            var controller = new ClassesController(_context, null);
+
+            // Act
+            var result = await controller.GetClassesForPlan(className, date);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var classesActual = Assert.IsType<List<ClassForPlanDTO>>(okResult.Value);
+            Assert.Equal(expectedClasses, classesActual);
+        }
+
+
     }
 }

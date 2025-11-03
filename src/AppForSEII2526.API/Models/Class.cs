@@ -10,15 +10,13 @@ namespace AppForSEII2526.API.Models
         {
             
         }
-        public Class(int id, string name, decimal price, int capacity, DateTime date, List<TypeItem> typeItems, List<PlanItem> planItems)
+        public Class(string name, decimal price, int capacity, DateTime date, List<TypeItem> typeItems)
         {
-            Id = id;
             Name = name;
             Price = price;
             Capacity = capacity;
             Date = date;
             TypeItems = typeItems;
-            PlanItems = planItems;
         }
 
         public int Id { get; set; }
