@@ -5,6 +5,20 @@ namespace AppForSEII2526.API.Models
     [PrimaryKey(nameof(PlanId), nameof(ClassId))]
     public class PlanItem
     {
+        public PlanItem()
+        {
+        }
+
+        public PlanItem(int planId, int classId, string goal, decimal price, Class @class, Plan plan)
+        {
+            PlanId = planId;
+            ClassId = classId;
+            Goal = goal;
+            Price = price;
+            Class = @class;
+            Plan = plan;
+        }
+
         public int PlanId { get; set; }
 
         public int ClassId { get; set; }
