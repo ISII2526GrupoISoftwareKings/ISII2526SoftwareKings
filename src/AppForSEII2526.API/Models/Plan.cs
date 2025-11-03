@@ -6,6 +6,23 @@
     [Index(nameof(Name), IsUnique = true)]
     public class Plan
     {
+        public Plan()
+        {
+
+        }
+
+        public Plan(string name, string? description, int weeks, DateTime createdDate, decimal totalPrice, string? healthIssues, PaymentMethod paymentMethod, List<PlanItem> planItems)
+        {
+            Name = name;
+            Description = description;
+            Weeks = weeks;
+            CreatedDate = createdDate;
+            TotalPrice = totalPrice;
+            HealthIssues = healthIssues;
+            PaymentMethod = paymentMethod;
+            PlanItems = planItems;
+        }
+
         public int Id { get; set; }
 
         [StringLength(20, ErrorMessage = "Name of Plan can be neither longer than 20 characters nor shorter than 1", MinimumLength = 1)]
