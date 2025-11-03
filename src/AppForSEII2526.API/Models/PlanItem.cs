@@ -8,6 +8,7 @@ namespace AppForSEII2526.API.Models
         public PlanItem()
         {
         }
+
         public PlanItem(int planId, int classId, string goal, decimal price, Class @class, Plan plan)
         {
             PlanId = planId;
