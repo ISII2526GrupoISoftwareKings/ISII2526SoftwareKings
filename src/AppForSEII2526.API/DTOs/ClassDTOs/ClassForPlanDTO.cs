@@ -21,7 +21,7 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
             Id = id;
             Name = name;
             TypeItems = typeItems;
-            Date = Date;
+            Date = date;
             Price = price;
         }
 
@@ -33,6 +33,10 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
                    Price == dTO.Price &&
                    Date == dTO.Date &&
                    EqualityComparer<IList<TypeItem>>.Default.Equals(TypeItems, dTO.TypeItems);
+        }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name, Price, Date);
         }
     }
 }
