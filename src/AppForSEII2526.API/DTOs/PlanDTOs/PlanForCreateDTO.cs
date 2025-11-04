@@ -46,5 +46,19 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 
         public PaymentMethod PaymentMethod { get; set; }
         public List<PlanItemDTO> PlanItems { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PlanForCreateDTO dTO &&
+                   Name == dTO.Name &&
+                   NameUser == dTO.NameUser &&
+                   SurnameUser == dTO.SurnameUser &&
+                   Description == dTO.Description &&
+                   Weeks == dTO.Weeks &&
+                   CreatedDate == dTO.CreatedDate &&
+                   HealthIssues == dTO.HealthIssues &&
+                   EqualityComparer<PaymentMethod>.Default.Equals(PaymentMethod, dTO.PaymentMethod) &&
+                   EqualityComparer<List<PlanItemDTO>>.Default.Equals(PlanItems, dTO.PlanItems);
+        }
     }
 }

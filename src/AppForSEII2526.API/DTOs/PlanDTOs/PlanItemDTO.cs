@@ -36,5 +36,17 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         public string Goal { get; set; }
 
         public List<TypeItem> TypeItems { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PlanItemDTO dTO &&
+                   ClassId == dTO.ClassId &&
+                   Name == dTO.Name &&
+                   Price == dTO.Price &&
+                   Capacity == dTO.Capacity &&
+                   Date == dTO.Date &&
+                   Goal == dTO.Goal &&
+                   EqualityComparer<List<TypeItem>>.Default.Equals(TypeItems, dTO.TypeItems);
+        }
     }
 }

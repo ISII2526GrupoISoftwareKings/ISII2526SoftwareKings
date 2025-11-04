@@ -18,5 +18,23 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         public decimal TotalPrice { get; set; }
 
         public DateTime PlanDate { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PlanForDetailDTO dTO &&
+                   base.Equals(obj) &&
+                   Name == dTO.Name &&
+                   NameUser == dTO.NameUser &&
+                   SurnameUser == dTO.SurnameUser &&
+                   Description == dTO.Description &&
+                   Weeks == dTO.Weeks &&
+                   CreatedDate == dTO.CreatedDate &&
+                   HealthIssues == dTO.HealthIssues &&
+                   EqualityComparer<PaymentMethod>.Default.Equals(PaymentMethod, dTO.PaymentMethod) &&
+                   EqualityComparer<List<PlanItemDTO>>.Default.Equals(PlanItems, dTO.PlanItems) &&
+                   Id == dTO.Id &&
+                   TotalPrice == dTO.TotalPrice &&
+                   PlanDate == dTO.PlanDate;
+        }
     }
 }

@@ -4,6 +4,12 @@ namespace AppForSEII2526.API.Models
 {
     public class CreditCard : PaymentMethod
     {
+        public CreditCard(string creditCardNumber, DateTime expirationDate)
+        {
+            CreditCardNumber = creditCardNumber;
+            ExpirationDate = expirationDate;
+        }
+        [Required]
         [CreditCard]
         [StringLength(16, MinimumLength = 13)]
         [DataType(DataType.CreditCard)]
