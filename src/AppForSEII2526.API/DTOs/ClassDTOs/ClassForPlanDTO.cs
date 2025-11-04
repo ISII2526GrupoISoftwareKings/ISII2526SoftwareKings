@@ -31,8 +31,7 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
                    Id == dTO.Id &&
                    Name == dTO.Name &&
                    Price == dTO.Price &&
-                   Date == dTO.Date &&
-                   EqualityComparer<IList<TypeItem>>.Default.Equals(TypeItems, dTO.TypeItems);
+                   Date == dTO.Date;
         }
         public override int GetHashCode()
         {

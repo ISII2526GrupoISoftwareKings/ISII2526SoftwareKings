@@ -15,7 +15,7 @@ namespace AppForSEII2526.UT.ClassesController_test
         public SelectClassesForPlan_test()
         {
 
-            var typeItems = new List<TypeItem>() { new TypeItem("Dumbell"), new TypeItem("Mat") };
+            var typeItems = new List<TypeItem>() { new TypeItem("Dumbbell"), new TypeItem("Mat") };
 
             var classes = new List<Class>() {
             new Class("Yoga Basics", 10m, 10, new DateTime(2025, 10, 11), typeItems),
@@ -47,7 +47,7 @@ namespace AppForSEII2526.UT.ClassesController_test
             var expected3 = new List<ClassForPlanDTO>()
             {
                 new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 13), 15m),
-                new ClassForPlanDTO(3, "CrossFit Pro", typeItems, new DateTime(2025, 10, 18), 20m)
+                new ClassForPlanDTO(3, "CrossFit", typeItems, new DateTime(2025, 10, 18), 20m)
             };
 
 

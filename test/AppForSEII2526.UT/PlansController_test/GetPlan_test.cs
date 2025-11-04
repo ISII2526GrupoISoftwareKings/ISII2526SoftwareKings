@@ -20,18 +20,19 @@ namespace AppForSEII2526.UT.PlansController_test
             var classType = new List<TypeItem>() { new TypeItem("Dumbell"), new TypeItem("Mat") };
             var trainingClass = new Class("Clase de Yoga", 25.0m, 15, new DateTime(2025, 10, 6), classType);
 
-            var plan = new Plan("Plan Fitness", 6, new DateTime(2025, 10, 1), paymentMethod, new List<PlanItem>());
+            var plan = new Plan("Plan Fitness", 6, new DateTime(2025, 10, 1), paymentMethod, new List<PlanItem>(), "Rutina semanal", "Ninguno");
 
+            _context.Classes.Add(trainingClass);
+            _context.SaveChanges();
 
             plan.PlanItems.Add(new PlanItem(trainingClass.Id, 35.0m, plan, "Mantener forma física"));
 
 
-            plan.TotalPrice = plan.PlanItems.Sum(pi => pi.Class.Price);
+            plan.TotalPrice = plan.PlanItems.Sum(pi => pi.Price);
 
 
             _context.Users.Add(user);
             _context.PaymentMethods.Add(paymentMethod);
-            _context.Classes.Add(trainingClass);
             _context.Plans.Add(plan);
             _context.SaveChanges();
         }
@@ -68,13 +69,13 @@ namespace AppForSEII2526.UT.PlansController_test
                 // Expected DTO
                 var expectedPlan = new PlanForDetailDTO(
                     1,
-                    25.0m,
+                    35.0m,
                     new DateTime(2025, 10, 1),
                     "Plan Fitness",
                     "Samuel",
                     "García Picazo",
                     "Rutina semanal",
-                    4,
+                    6,
                     new DateTime(2025, 10, 1),
                     "Ninguno",
                     new CreditCard("1234567890123456", new DateTime(2027, 12, 31)),
@@ -85,7 +86,7 @@ namespace AppForSEII2526.UT.PlansController_test
             var trainingClass = new Class("Clase de Yoga", 25.0m, 15, new DateTime(2025, 10, 6), classType);
 
             expectedPlan.PlanItems.Add(new PlanItemDTO(
-                    trainingClass.Id, 25.0m, "Mantener forma física"
+                    1, trainingClass.Id, 25.0m, 15, new DateTime(2025, 10, 6), "Mantener forma física"
                 ));
 
                 // Act

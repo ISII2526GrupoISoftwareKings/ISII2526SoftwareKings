@@ -11,13 +11,15 @@
 
         }
 
-        public Plan(string name, int weeks, DateTime createdDate, PaymentMethod paymentMethod, List<PlanItem> planItems)
+        public Plan(string name, int weeks, DateTime createdDate, PaymentMethod paymentMethod, List<PlanItem> planItems, string description, string healthIssues)
         {
             Name = name;
             Weeks = weeks;
             CreatedDate = createdDate;
             PaymentMethod = paymentMethod;
             PlanItems = planItems;
+            Description = description;
+            HealthIssues = healthIssues;
         }
 
         public int Id { get; set; }
@@ -38,7 +40,7 @@
         [DataType(DataType.Currency),]
         [Display(Name = "Total Price")]
         [Precision(5, 2)]
-        public decimal? TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
 
         [Display(Name = "Health Issues")]
         [StringLength(100, ErrorMessage = "Health Issues cannot be longer than 100 characters.")]

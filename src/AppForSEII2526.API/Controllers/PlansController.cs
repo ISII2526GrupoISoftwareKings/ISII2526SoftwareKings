@@ -36,7 +36,7 @@ namespace AppForSEII2526.API.Controllers
                     .ThenInclude(pm => pm.User)
 
                 .Select(p => new PlanForDetailDTO(p.Id, p.TotalPrice, p.CreatedDate, p.Name, p.PaymentMethod.User.Name, p.PaymentMethod.User.Surname, p.Description, p.Weeks, p.CreatedDate, p.HealthIssues, p.PaymentMethod, p.PlanItems
-                    .Select(pi => new PlanItemDTO(pi.PlanId, pi.Class.Name, pi.Class.Price, pi.Class.Capacity, pi.Class.Date, pi.Goal)).ToList())).FirstOrDefaultAsync();
+                    .Select(pi => new PlanItemDTO(pi.PlanId, pi.Class.Id, pi.Class.Price, pi.Class.Capacity, pi.Class.Date, pi.Goal)).ToList())).FirstOrDefaultAsync();
 
 
             if (plan == null)

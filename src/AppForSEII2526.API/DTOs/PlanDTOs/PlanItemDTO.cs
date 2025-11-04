@@ -6,13 +6,17 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 {
     public class PlanItemDTO
     {
-        public PlanItemDTO(int classId, decimal price, string goal)
+        public PlanItemDTO(int planId, int classId, decimal price, int capacity, DateTime date, string goal)
         {
+            PlanId = planId;
             ClassId = classId;
             Price = price;
             Goal = goal;
+            Capacity = Capacity;
+            Date = date;
         }
 
+        public int PlanId { get; set; }
         public int ClassId { get; set; }
 
         [StringLength(50, ErrorMessage = "Name cannot be longer than 50 characters.")]
