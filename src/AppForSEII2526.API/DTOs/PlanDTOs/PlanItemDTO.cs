@@ -6,13 +6,10 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 {
     public class PlanItemDTO
     {
-        public PlanItemDTO(int classId, string name, decimal price, int capacity, DateTime date, string goal)
+        public PlanItemDTO(int classId, decimal price, string goal)
         {
             ClassId = classId;
-            Name = name;
             Price = price;
-            Capacity = capacity;
-            Date = date;
             Goal = goal;
         }
 
