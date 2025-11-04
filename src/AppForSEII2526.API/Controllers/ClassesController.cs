@@ -66,7 +66,7 @@ namespace AppForSEII2526.API.Controllers
             IList<ClassForPlanDTO> classesDTO = await _context.Classes
                 .Include(c => c.TypeItems)
                 .Where(c => (c.Name.Contains(className) || (className == null)) && c.Date >= date && c.Date <= finalDate)
-                .OrderBy(c => c.Name)
+                .OrderBy(c => c.Id)
                 .Select(c => new ClassForPlanDTO(c.Id, c.Name, c.TypeItems, c.Date, c.Price))
                 .ToListAsync();
 

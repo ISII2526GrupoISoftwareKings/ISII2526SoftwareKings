@@ -5,6 +5,20 @@ namespace AppForSEII2526.API.Models
     [Index(nameof(Name), IsUnique = true)]
     public class Class
     {
+
+        public Class()
+        {
+            
+        }
+        public Class(string name, decimal price, int capacity, DateTime date, List<TypeItem> typeItems)
+        {
+            Name = name;
+            Price = price;
+            Capacity = capacity;
+            Date = date;
+            TypeItems = typeItems;
+        }
+
         public int Id { get; set; }
 
         [StringLength(50, ErrorMessage = "Name cannot be longer than 50 characters.")]
