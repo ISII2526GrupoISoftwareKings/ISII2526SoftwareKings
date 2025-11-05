@@ -76,12 +76,12 @@ namespace AppForSEII2526.UT.ItemsController_test
                 new ItemForPurchasingDTO(3, "Dumbbells Set", "Elyte", "Set of dumbbells for strength training", 50.0m, 5)
             };
 
-            var itemDTOsTC1 = new List<ItemForPurchasingDTO>() { itemDTOs[0], itemDTOs[1] };
+            var itemDTOsTC1 = new List<ItemForPurchasingDTO>() { itemDTOs[1], itemDTOs[0] };
             // the GetItemsForPurchasing method returns the items ordered by Name
 
 
             var itemDTOsTC2 = new List<ItemForPurchasingDTO>() { itemDTOs[0] };
-            var itemDTOsTC3 = new List<ItemForPurchasingDTO>() { itemDTOs[1] };
+            var itemDTOsTC3 = new List<ItemForPurchasingDTO>() { itemDTOs[1], itemDTOs[0] };
 
 
             var allTests = new List<object[]>
@@ -102,14 +102,14 @@ namespace AppForSEII2526.UT.ItemsController_test
         [Theory]
         [Trait("LevelTesting", "Unit Testing")]
         [MemberData(nameof(TestCasesFor_GetItemsForPurchasing_OK))]
-        public async Task GetMoviesForPurchase_filter_test(string? movieTitle, string? movieGenre, List<ItemForPurchasingDTO> expectedItems)
+        public async Task GetMoviesForPurchase_filter_test(string? name, string? brand, List<ItemForPurchasingDTO> expectedItems)
         {
             // Arrange
 
             var controller = new ItemsController(_context, null);
 
             // Act
-            var result = await controller.GetItemsForPurchasing(movieTitle, movieGenre);
+            var result = await controller.GetItemsForPurchasing(name, brand);
 
             //Assert
             //we check that the response type is OK 
