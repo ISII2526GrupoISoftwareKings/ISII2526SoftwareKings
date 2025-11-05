@@ -6,16 +6,17 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 {
     public class PlanItemDTO
     {
-        public PlanItemDTO(int classId, string name, decimal price, int capacity, DateTime date, string goal)
+        public PlanItemDTO(int planId, int classId, decimal price, int capacity, DateTime date, string goal)
         {
+            PlanId = planId;
             ClassId = classId;
-            Name = name;
             Price = price;
-            Capacity = capacity;
-            Date = date;
             Goal = goal;
+            Capacity = Capacity;
+            Date = date;
         }
 
+        public int PlanId { get; set; }
         public int ClassId { get; set; }
 
         [StringLength(50, ErrorMessage = "Name cannot be longer than 50 characters.")]
@@ -36,5 +37,17 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         public string Goal { get; set; }
 
         public List<TypeItem> TypeItems { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PlanItemDTO dTO &&
+                   ClassId == dTO.ClassId &&
+                   Name == dTO.Name &&
+                   Price == dTO.Price &&
+                   Capacity == dTO.Capacity &&
+                   Date == dTO.Date &&
+                   Goal == dTO.Goal &&
+                   EqualityComparer<List<TypeItem>>.Default.Equals(TypeItems, dTO.TypeItems);
+        }
     }
 }

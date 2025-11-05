@@ -12,14 +12,15 @@ namespace AppForSEII2526.UT.ClassesController_test
 {
     public class SelectClassesForPlan_test : AppForSEII25264SqliteUT
     {
-        public SelectClassesForPlan_test() {
+        public SelectClassesForPlan_test()
+        {
 
-            var typeItems = new List<TypeItem>() { new TypeItem("Dumbell"), new TypeItem("Mat") };
+            var typeItems = new List<TypeItem>() { new TypeItem("Dumbbell"), new TypeItem("Mat") };
 
             var classes = new List<Class>() {
             new Class("Yoga Basics", 10m, 10, new DateTime(2025, 10, 11), typeItems),
-            new Class("Pilates Advanced", 15m, 20, new DateTime(2025, 10, 12), typeItems),
-            new Class("Yoga Basics", 20m, 15, new DateTime(2025, 10, 15), typeItems),
+            new Class("Pilates Advanced", 15m, 20, new DateTime(2025, 10, 13), typeItems),
+            new Class("CrossFit", 20m, 15, new DateTime(2025, 10, 18), typeItems),
         };
             _context.AddRange(typeItems);
             _context.AddRange(classes);
@@ -30,20 +31,36 @@ namespace AppForSEII2526.UT.ClassesController_test
         {
             var typeItems = new List<TypeItem>() { new TypeItem("Dumbbell") };
 
-            var expected1 = new List<ClassForPlanDTO>() {
+            var expected1 = new List<ClassForPlanDTO>()
+            {
                 new ClassForPlanDTO(1, "Yoga Basics", typeItems, new DateTime(2025, 10, 11), 10m),
-                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 12), 15m)
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 13), 15m)
             };
 
-            var expected2 = new List<ClassForPlanDTO>() {
+
+            var expected2 = new List<ClassForPlanDTO>()
+            {
                 new ClassForPlanDTO(1, "Yoga Basics", typeItems, new DateTime(2025, 10, 11), 10m)
             };
 
+
+            var expected3 = new List<ClassForPlanDTO>()
+            {
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 13), 15m),
+                new ClassForPlanDTO(3, "CrossFit", typeItems, new DateTime(2025, 10, 18), 20m)
+            };
+
+
+            var expected4 = new List<ClassForPlanDTO>()
+            {
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 13), 15m)
+            };
+
             var allTests = new List<object[]> {
-                new object[] { null, null, expected1 },      
-                new object[] { "Yoga", null, expected2 },   
-                new object[] { "Pilates", new DateTime(2025,10,12),
-                        expected2 }
+                new object[] { null, null, expected1 },
+                new object[] { "Yoga", null, expected2 },
+                new object[] { null, new DateTime(2025, 10, 12), expected3 },
+                new object[] { "Pilates", new DateTime(2025,10,13), expected4 },
             };
 
             return allTests;

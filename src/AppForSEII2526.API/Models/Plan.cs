@@ -11,16 +11,15 @@
 
         }
 
-        public Plan(string name, string? description, int weeks, DateTime createdDate, decimal totalPrice, string? healthIssues, PaymentMethod paymentMethod, List<PlanItem> planItems)
+        public Plan(string name, int weeks, DateTime createdDate, PaymentMethod paymentMethod, List<PlanItem> planItems, string description, string healthIssues)
         {
             Name = name;
-            Description = description;
             Weeks = weeks;
             CreatedDate = createdDate;
-            TotalPrice = totalPrice;
-            HealthIssues = healthIssues;
             PaymentMethod = paymentMethod;
             PlanItems = planItems;
+            Description = description;
+            HealthIssues = healthIssues;
         }
 
         public int Id { get; set; }
