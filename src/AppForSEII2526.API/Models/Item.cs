@@ -10,9 +10,8 @@ namespace AppForSEII2526.API.Models
         {
         }
 
-        public Item(int id, string name, string description, decimal purchasePrice, int quantityAvailableForPurchase, int quantityForRestock, decimal? restockPrice, List<PurchaseItem> purchaseItems, TypeItem typeItem, Brand brand, IList<RestockItem> restockItems)
+        public Item(string name, string description, decimal purchasePrice, int quantityAvailableForPurchase, int quantityForRestock, decimal? restockPrice, List<PurchaseItem> purchaseItems, TypeItem typeItem, Brand brand, IList<RestockItem> restockItems)
         {
-            Id = id;
             Name = name;
             Description = description;
             PurchasePrice = purchasePrice;
