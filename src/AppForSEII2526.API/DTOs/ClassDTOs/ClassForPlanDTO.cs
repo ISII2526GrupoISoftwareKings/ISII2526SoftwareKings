@@ -21,8 +21,21 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
             Id = id;
             Name = name;
             TypeItems = typeItems;
-            Date = Date;
+            Date = date;
             Price = price;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ClassForPlanDTO dTO &&
+                   Id == dTO.Id &&
+                   Name == dTO.Name &&
+                   Price == dTO.Price &&
+                   Date == dTO.Date;
+        }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name, Price, Date);
         }
     }
 }
