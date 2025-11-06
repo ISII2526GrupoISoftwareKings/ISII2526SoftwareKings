@@ -115,7 +115,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 new PlanItemDTO (3, 3, 15.0m, 10, DateTime.Today.AddDays(-2), "Past class")
             };
 
-            // 1️⃣ DTO sin clases
+            // DTO sin clases
             var planWithoutItems = new PlanForCreateDTO(
                 "No Items Plan",
                 "samuel@uclm.es",
@@ -128,7 +128,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 new List<PlanItemDTO>()
             );
 
-            // 2️⃣ Clase con fecha inválida (antes de hoy)
+            // Clase con fecha inválida (antes de hoy)
             var planWithPastClass = new PlanForCreateDTO(
                 "Past Class Plan",
                 "samuel@uclm.es",
@@ -141,7 +141,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 pastClassItems
             );
 
-            // 3️⃣ Plan sin nombre
+            // Plan sin nombre
             var planWithoutName = new PlanForCreateDTO(
                 "",
                 "samuel@uclm.es",
@@ -154,7 +154,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
-            // 4️⃣ Plan con semanas <= 0
+            // Plan con semanas <= 0
             var planWithZeroWeeks = new PlanForCreateDTO(
                 "Zero Weeks Plan",
                 "samuel@uclm.es",
@@ -167,7 +167,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
-            // 5️⃣ Plan con método de pago inválido
+            // Plan con método de pago inválido
             var planWithInvalidPayment = new PlanForCreateDTO(
                 "Invalid Payment Plan",
                 "samuel@uclm.es",
@@ -180,7 +180,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
-            // 6️⃣ Usuario no registrado
+            // Usuario no registrado
             var planWithUnregisteredUser = new PlanForCreateDTO(
                 "Unregistered User Plan",
                 "victor.lopez@uclm.es",
@@ -193,7 +193,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
-            // 7️⃣ Clase sin capacidad
+            // Clase sin capacidad
             var planWithFullClass = new PlanForCreateDTO(
                 "Full Class Plan",
                 "samuel@uclm.es",
