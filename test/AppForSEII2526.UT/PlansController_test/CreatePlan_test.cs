@@ -86,8 +86,7 @@ namespace AppForSEII2526.UT.PlansController_test
         {
             // Datos base
             var today = DateTime.Today;
-            var validPaymentMethod = new PaymentMethodDTO { Id = 1, Name = "Credit Card" };
-            var invalidPaymentMethod = new PaymentMethodDTO { Id = 0, Name = "" };
+            
 
             // Clases de ejemplo
             var futureClass = new ClassForPlanDTO
@@ -110,14 +109,14 @@ namespace AppForSEII2526.UT.PlansController_test
 
             // ITEMS
             var validPlanItems = new List<PlanItemDTO>
-    {
-        new PlanItemDTO { ClassId = 1, Goal = "Improve flexibility", Price = 20.0m }
-    };
+            {
+                new PlanItemDTO { ClassId = 1, Goal = "Improve flexibility", Price = 20.0m }
+            };
 
             var invalidPlanItems = new List<PlanItemDTO>
-    {
-        new PlanItemDTO { ClassId = 2, Goal = "Invalid class date", Price = 15.0m }
-    };
+            {
+                new PlanItemDTO { ClassId = 2, Goal = "Invalid class date", Price = 15.0m }
+            };
 
             // 1️⃣ DTO sin clases
             var planWithoutItems = new PlanForCreateDTO
@@ -215,22 +214,22 @@ namespace AppForSEII2526.UT.PlansController_test
                 NameUser = "elena@uclm.es",
                 SurnameUser = "Martinez",
                 PlanItems = new List<PlanItemDTO>
-        {
-            new PlanItemDTO { ClassId = 3, Goal = "Too popular", Price = 30.0m }
-        }
+                {
+                    new PlanItemDTO { ClassId = 3, Goal = "Too popular", Price = 30.0m }
+                }
             };
 
             // Todos los casos de prueba con el mensaje esperado
             var allTests = new List<object[]>
-    {
-        new object[] { planWithoutItems, "You must select at least one class to create a plan." },
-        new object[] { planWithPastClass, "One or more selected classes have invalid dates (before today)." },
-        new object[] { planWithoutName, "Plan name is mandatory." },
-        new object[] { planWithZeroWeeks, "Number of weeks must be greater than 0." },
-        new object[] { planWithInvalidPayment, "A valid payment method must be provided." },
-        new object[] { planWithUnregisteredUser, "Error! UserName is not registered" },
-        new object[] { planWithFullClass, "Class 'Yoga Class' does not have enough capacity." }
-    };
+            {
+                new object[] { planWithoutItems, "You must select at least one class to create a plan." },
+                new object[] { planWithPastClass, "One or more selected classes have invalid dates (before today)." },
+                new object[] { planWithoutName, "Plan name is mandatory." },
+                new object[] { planWithZeroWeeks, "Number of weeks must be greater than 0." },
+                new object[] { planWithInvalidPayment, "A valid payment method must be provided." },
+                new object[] { planWithUnregisteredUser, "Error! UserName is not registered" },
+                new object[] { planWithFullClass, "Class 'Yoga Class' does not have enough capacity." }
+            };
 
             return allTests;
         }

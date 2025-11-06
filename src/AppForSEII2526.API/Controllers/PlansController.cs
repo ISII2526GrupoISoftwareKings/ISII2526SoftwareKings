@@ -65,15 +65,6 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest("Invalid plan data.");
             }
 
-            var availableClasses = await _context.Classes
-                .Where(c => c.Date >= DateTime.Today)
-                .ToListAsync();
-
-            if (!availableClasses.Any())
-            {
-                return BadRequest("No available classes for enrollment.");
-            }
-
             if (dto.PlanItems == null || !dto.PlanItems.Any())
             {
                 return BadRequest("You must select at least one class to create a plan.");
@@ -94,7 +85,7 @@ namespace AppForSEII2526.API.Controllers
             if (dto.Weeks <= 0)
                 return BadRequest("Number of weeks must be greater than 0.");
 
-            if (dto.PaymentMethod == null || dto.PaymentMethod.Id <= 0)
+            if (dto.PaymentMethod == null)
                 return BadRequest("A valid payment method must be provided.");
 
 
