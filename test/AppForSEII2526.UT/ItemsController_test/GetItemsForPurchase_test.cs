@@ -1,16 +1,12 @@
-﻿using AppForSEII2526;
-using AppForSEII2526.API.Controllers;
-using AppForSEII2526.API.Data;          
-using AppForSEII2526.API.Models;    
+﻿using AppForSEII2526.API.Controllers;
 using AppForSEII2526.API.DTOs.ItemDTOs;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using AppForSEII2526.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppForSEII2526.UT.ItemsController_test
 {

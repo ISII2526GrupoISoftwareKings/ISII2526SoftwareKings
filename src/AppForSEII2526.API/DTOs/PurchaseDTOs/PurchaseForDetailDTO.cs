@@ -17,5 +17,23 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
         [DataType(DataType.Currency)]
         [Precision(10, 2)]
         public decimal TotalPrice { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PurchaseForDetailDTO dTO &&
+                   City == dTO.City &&
+                   Country == dTO.Country &&
+                   Street == dTO.Street &&
+                   Description == dTO.Description &&
+                   Date == dTO.Date &&
+                   TotalPrice == dTO.TotalPrice &&
+                   Id == dTO.Id &&
+                   TotalPrice == dTO.TotalPrice;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Date);
+        }
     }
 }
