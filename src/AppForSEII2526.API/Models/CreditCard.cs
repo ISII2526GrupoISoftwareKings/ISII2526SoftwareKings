@@ -4,7 +4,12 @@ namespace AppForSEII2526.API.Models
 {
     public class CreditCard : PaymentMethod
     {
-        public CreditCard(string creditCardNumber, DateTime expirationDate)
+
+        public CreditCard()
+        {
+
+        }
+        public CreditCard(string creditCardNumber, DateTime expirationDate, int id, ApplicationUser user) : base(id, user)
         {
             CreditCardNumber = creditCardNumber;
             ExpirationDate = expirationDate;

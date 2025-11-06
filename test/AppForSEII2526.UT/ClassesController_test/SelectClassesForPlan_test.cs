@@ -18,9 +18,9 @@ namespace AppForSEII2526.UT.ClassesController_test
             var typeItems = new List<TypeItem>() { new TypeItem("Dumbbell"), new TypeItem("Mat") };
 
             var classes = new List<Class>() {
-            new Class("Yoga Basics", 10m, 10, new DateTime(2025, 10, 11), typeItems),
-            new Class("Pilates Advanced", 15m, 20, new DateTime(2025, 10, 13), typeItems),
-            new Class("CrossFit", 20m, 15, new DateTime(2025, 10, 18), typeItems),
+            new Class(1, "Yoga Basics", 10m, 10, new DateTime(2025, 10, 11), typeItems),
+            new Class(2, "Pilates Advanced", 15m, 20, new DateTime(2025, 10, 13), typeItems),
+            new Class(3, "CrossFit", 20m, 15, new DateTime(2025, 10, 18), typeItems),
         };
             _context.AddRange(typeItems);
             _context.AddRange(classes);
