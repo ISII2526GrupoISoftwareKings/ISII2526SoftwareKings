@@ -9,7 +9,7 @@ on:
 #      - development
 # for considering only those changes affecting to a specific folder
 #    paths:
-#      - 'src/AppForMovies.API**'
+#      - 'src/AppForSEII2526.API**'
   pull_request:
     branches: 
        - development
