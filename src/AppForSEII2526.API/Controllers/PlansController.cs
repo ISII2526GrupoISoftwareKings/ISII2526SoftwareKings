@@ -58,25 +58,9 @@ namespace AppForSEII2526.API.Controllers
         public async Task<ActionResult> CreatePlan(PlanForCreateDTO dto)
         {
 
-
-            if (dto == null)
-            {
-                _logger.LogError("Plan creation failed: DTO is null.");
-                return BadRequest("Invalid plan data.");
-            }
-
-            var availableClasses = await _context.Classes
-                .Where(c => c.Date >= DateTime.Today)
-                .ToListAsync();
-
-            if (!availableClasses.Any())
-            {
-                return BadRequest("No available classes for enrollment.");
-            }
-
             if (dto.PlanItems == null || !dto.PlanItems.Any())
             {
-                return BadRequest("You must select at least one class to create a plan.");
+                ModelState.AddModelError("PlanItems", "You must select at least one class to create a plan.");
             }
 
             var invalidDates = await _context.Classes
@@ -85,17 +69,17 @@ namespace AppForSEII2526.API.Controllers
 
             if (invalidDates.Any())
             {
-                return BadRequest("One or more selected classes have invalid dates (before today).");
+                ModelState.AddModelError("PlanItems", "One or more selected classes have invalid dates (before today).");
             }
 
             if (string.IsNullOrWhiteSpace(dto.Name))
-                return BadRequest("Plan name is mandatory.");
+                ModelState.AddModelError("Name", "Plan name is mandatory.");
 
             if (dto.Weeks <= 0)
-                return BadRequest("Number of weeks must be greater than 0.");
+                ModelState.AddModelError("Weeks", "Number of weeks must be greater than 0.");
 
-            if (dto.PaymentMethod == null || dto.PaymentMethod.Id <= 0)
-                return BadRequest("A valid payment method must be provided.");
+            if (dto.PaymentMethod == null)
+                ModelState.AddModelError("PaymentMethod", "A valid payment method must be provided.");
 
 
             var selectedClassIds = dto.PlanItems.Select(pi => pi.ClassId).ToList();
@@ -107,7 +91,7 @@ namespace AppForSEII2526.API.Controllers
             {
                 if (c.Capacity <= 0)
                 {
-                    return Conflict($"Class '{c.Name}' does not have enough capacity.");
+                    ModelState.AddModelError("PlanItems", $"Class '{c.Name}' does not have enough capacity.");
                 }
             }
 
@@ -115,8 +99,11 @@ namespace AppForSEII2526.API.Controllers
             if (user == null)
                 ModelState.AddModelError("RentalApplicationUser", "Error! UserName is not registered");
 
-            try
+            if (!ModelState.IsValid)
             {
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
+
                 decimal totalPrice = dto.PlanItems.Sum(i => i.Price);
 
                 var plan = new Plan
@@ -136,9 +123,18 @@ namespace AppForSEII2526.API.Controllers
                 };
 
                 _context.Plans.Add(plan);
-                await _context.SaveChangesAsync();
 
-                var result = new PlanForDetailDTO(
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{DateTime.Now}: {ex.Message}");
+                return Conflict("Error while saving your plan.");
+            }
+
+            var result = new PlanForDetailDTO(
                     plan.Id,
                     plan.TotalPrice,
                     plan.CreatedDate,
@@ -151,19 +147,9 @@ namespace AppForSEII2526.API.Controllers
                     plan.HealthIssues,
                     plan.PaymentMethod,
                     dto.PlanItems
-                );
+            );
 
                 return CreatedAtAction("GetPlan", new { id = plan.Id }, result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error creating plan: {ex.Message}");
-                return BadRequest("Error while creating plan.");
-            }
         }
-
-
-
-
     }
 }
