@@ -13,7 +13,7 @@ namespace AppForSEII2526.UT.PurchasesController_test
         public GetPurchase_test()
         {
             var user = new ApplicationUser("1", "Samuel", "García Picazo", "samuel@uclm.es", "Calle Real 10");
-            var paymentMethod = new CreditCard("1234567890123456", new DateTime(2027, 12, 31));
+            var paymentMethod = new CreditCard("1234567890123456", new DateTime(2027, 12, 31), 1, user);
             paymentMethod.User = user;
 
             var brand = new Brand("Elyte");
@@ -91,7 +91,7 @@ namespace AppForSEII2526.UT.PurchasesController_test
             var mock = new Mock<ILogger<PurchasesController>>();
             ILogger<PurchasesController> logger = mock.Object;
             var controller = new PurchasesController(_context, logger);
-
+            var user = new ApplicationUser("1", "Samuel", "García Picazo", "samuel@uclm.es", "Calle Real 10");
             var expected = new PurchaseForDetailDTO(
                 id: 1,
                 totalPrice: 5.00m,
@@ -100,7 +100,7 @@ namespace AppForSEII2526.UT.PurchasesController_test
                 street: "Calle Real 10",
                 description: "Compra de snacks",
                 date: new DateTime(2025, 10, 2),
-                paymentMethod: new CreditCard("1234567890123456", new DateTime(2027, 12, 31)),
+                paymentMethod: new CreditCard("1234567890123456", new DateTime(2027, 12, 31), 1, user),
                 purchaseItems: new List<PurchaseItemDTO>()
             );
 
