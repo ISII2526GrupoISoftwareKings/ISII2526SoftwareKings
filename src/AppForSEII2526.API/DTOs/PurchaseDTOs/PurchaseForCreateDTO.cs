@@ -40,5 +40,18 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
         public PaymentMethod PaymentMethod { get; set; }
 
         public List<PurchaseItemDTO> PurchaseItems { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is PurchaseForCreateDTO dTO &&
+                   City == dTO.City &&
+                   Country == dTO.Country &&
+                   Street == dTO.Street &&
+                   Description == dTO.Description &&
+                   Date == dTO.Date &&
+                   TotalPrice == dTO.TotalPrice &&
+                   EqualityComparer<PaymentMethod>.Default.Equals(PaymentMethod, dTO.PaymentMethod) &&
+                   EqualityComparer<List<PurchaseItemDTO>>.Default.Equals(PurchaseItems, dTO.PurchaseItems);
+        }
     }
 }

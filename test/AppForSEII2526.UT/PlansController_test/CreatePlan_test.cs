@@ -13,9 +13,9 @@ namespace AppForSEII2526.UT.PlansController_test
     public class CreatePlan_test : AppForSEII25264SqliteUT
     {
         private const string _nameUser = "Samuel";
-        private const string _surnameUser = "García";
+        private const string _surnameUser = "Garcia";
         private const string _userName = "samuel@uclm.es";
-        private const string _paymentMethodName = "Tarjeta";
+        private const string _paymentMethodName = "Card";
         private const string _class1Name = "Yoga Advanced";
         private const string _class2Name = "Crossfit";
         private const string _class3Name = "Pilates";
@@ -28,7 +28,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 UserName = _userName,
                 Name = _nameUser,
                 Surname = _surnameUser,
-                Address = "Calle Real 10"
+                Address = "10 Real Street"
             };
             _context.Users.Add(user);
 
@@ -115,12 +115,12 @@ namespace AppForSEII2526.UT.PlansController_test
                 new PlanItemDTO (3, 3, 15.0m, 10, DateTime.Today.AddDays(-2), "Past class")
             };
 
-            // DTO sin clases
+            // DTO without classes
             var planWithoutItems = new PlanForCreateDTO(
                 "No Items Plan",
                 "samuel@uclm.es",
-                "García",
-                "Plan sin clases",
+                "Garcia",
+                "Plan without classes",
                 4,
                 today,
                 "",
@@ -128,12 +128,12 @@ namespace AppForSEII2526.UT.PlansController_test
                 new List<PlanItemDTO>()
             );
 
-            // Clase con fecha inválida (antes de hoy)
+            // Class with invalid date (before today)
             var planWithPastClass = new PlanForCreateDTO(
                 "Past Class Plan",
                 "samuel@uclm.es",
-                "García",
-                "Incluye clase con fecha inválida",
+                "Garcia",
+                "Includes class with invalid date",
                 4,
                 today,
                 "",
@@ -141,12 +141,12 @@ namespace AppForSEII2526.UT.PlansController_test
                 pastClassItems
             );
 
-            // Plan sin nombre
+            // Plan without name
             var planWithoutName = new PlanForCreateDTO(
                 "",
                 "samuel@uclm.es",
-                "García",
-                "Falta el nombre del plan",
+                "Garcia",
+                "Missing plan name",
                 4,
                 today,
                 "",
@@ -154,12 +154,12 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
-            // Plan con semanas <= 0
+            // Plan with weeks <= 0
             var planWithZeroWeeks = new PlanForCreateDTO(
                 "Zero Weeks Plan",
                 "samuel@uclm.es",
-                "García",
-                "Semanas igual a 0",
+                "Garcia",
+                "Weeks equal to 0",
                 0,
                 today,
                 "",
@@ -167,12 +167,12 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
-            // Plan con método de pago inválido
+            // Plan with invalid payment method
             var planWithInvalidPayment = new PlanForCreateDTO(
                 "Invalid Payment Plan",
                 "samuel@uclm.es",
-                "García",
-                "Método de pago inválido",
+                "Garcia",
+                "Invalid payment method",
                 4,
                 today,
                 "",
@@ -180,12 +180,12 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
-            // Usuario no registrado
+            // Unregistered user
             var planWithUnregisteredUser = new PlanForCreateDTO(
                 "Unregistered User Plan",
                 "victor.lopez@uclm.es",
                 "Lopez",
-                "Usuario no registrado",
+                "Unregistered user",
                 4,
                 today,
                 "",
@@ -193,12 +193,12 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
-            // Clase sin capacidad
+            // Class without capacity
             var planWithFullClass = new PlanForCreateDTO(
                 "Full Class Plan",
                 "samuel@uclm.es",
-                "García",
-                "Clase sin capacidad",
+                "Garcia",
+                "Class without capacity",
                 4,
                 today,
                 "",
@@ -261,7 +261,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 UserName = _userName,
                 Name = _nameUser,
                 Surname = _surnameUser,
-                Address = "Calle Real 11"
+                Address = "11 Real Street"
             };
 
             var paymentMethod2 = new CreditCard
@@ -291,10 +291,10 @@ namespace AppForSEII2526.UT.PlansController_test
             };
 
             var expectedDto = new PlanForCreateDTO(
-                "Plan Correcto",
+                "Valid Plan",
                 "samuel@uclm.es",
-                "García",
-                "Plan con clases válidas",
+                "Garcia",
+                "Plan with valid classes",
                 4,
                 today,
                 "",
