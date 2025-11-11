@@ -28,5 +28,21 @@ namespace AppForSEII2526.API.DTOs.ItemDTOs
         [Display(Name = "Quantity Available For Purchase")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity available must be 0 or more")]
         public int QuantityAvailableForPurchase { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ItemForPurchasingDTO dTO &&
+                   Id == dTO.Id &&
+                   Name == dTO.Name &&
+                   Brand == dTO.Brand &&
+                   Description == dTO.Description &&
+                   PurchasePrice == dTO.PurchasePrice &&
+                   QuantityAvailableForPurchase == dTO.QuantityAvailableForPurchase;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name, Brand, Description, PurchasePrice, QuantityAvailableForPurchase);
+        }
     }
 }

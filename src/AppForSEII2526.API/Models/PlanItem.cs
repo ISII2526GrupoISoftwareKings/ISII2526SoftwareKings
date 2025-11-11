@@ -9,14 +9,12 @@ namespace AppForSEII2526.API.Models
         {
         }
 
-        public PlanItem(int planId, int classId, string goal, decimal price, Class @class, Plan plan)
+        public PlanItem(int classId, decimal price, Plan plan, string goal)
         {
-            PlanId = planId;
             ClassId = classId;
-            Goal = goal;
             Price = price;
-            Class = @class;
             Plan = plan;
+            Goal = goal;
         }
 
         public int PlanId { get; set; }

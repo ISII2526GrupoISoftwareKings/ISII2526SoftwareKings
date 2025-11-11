@@ -6,7 +6,23 @@ namespace AppForSEII2526.API.Models
 {
     public class Item
     {
-        public Item() { }
+        public Item()
+        {
+        }
+
+        public Item(string name, string description, decimal purchasePrice, int quantityAvailableForPurchase, int quantityForRestock, decimal? restockPrice, List<PurchaseItem> purchaseItems, TypeItem typeItem, Brand brand, IList<RestockItem> restockItems)
+        {
+            Name = name;
+            Description = description;
+            PurchasePrice = purchasePrice;
+            QuantityAvailableForPurchase = quantityAvailableForPurchase;
+            QuantityForRestock = quantityForRestock;
+            RestockPrice = restockPrice;
+            PurchaseItems = purchaseItems;
+            TypeItem = typeItem;
+            Brand = brand;
+            RestockItems = restockItems;
+        }
 
         public int Id { get; set; }
 

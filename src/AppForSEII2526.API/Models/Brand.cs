@@ -4,6 +4,14 @@ namespace AppForSEII2526.API.Models
 {
     public class Brand
     {
+        public Brand()
+        {
+
+        }
+        public Brand(string name)
+        {
+            Name = name;
+        }
         public int Id { get; set; }
 
         [StringLength(100, ErrorMessage = "Brand name cannot be longer than 100 characters.")]

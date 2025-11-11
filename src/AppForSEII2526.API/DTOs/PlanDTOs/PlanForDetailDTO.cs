@@ -18,5 +18,27 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         public decimal TotalPrice { get; set; }
 
         public DateTime PlanDate { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not PlanForDetailDTO dTO)
+                return false;
+
+            return Id == dTO.Id &&
+                   TotalPrice == dTO.TotalPrice &&
+                   PlanDate == dTO.PlanDate &&
+                   Name == dTO.Name &&
+                   NameUser == dTO.NameUser &&
+                   SurnameUser == dTO.SurnameUser &&
+                   Description == dTO.Description &&
+                   Weeks == dTO.Weeks &&
+                   CreatedDate == dTO.CreatedDate &&
+                   HealthIssues == dTO.HealthIssues;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name, CreatedDate);
+        }
     }
 }

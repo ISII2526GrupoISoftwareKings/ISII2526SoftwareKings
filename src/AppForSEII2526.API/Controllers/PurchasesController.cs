@@ -115,7 +115,7 @@ namespace AppForSEII2526.API.Controllers
             Purchase purchase = new Purchase(
                 purchaseForCreate.City,
                 purchaseForCreate.Country,
-                DateTime.Now,
+                DateTime.Today,
                 purchaseForCreate.Street,
                 purchaseForCreate.TotalPrice,
                 purchaseForCreate.PaymentMethod,
@@ -164,7 +164,7 @@ namespace AppForSEII2526.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(DateTime.Now + ":" + ex.Message);
+                _logger.LogError(DateTime.Today + ":" + ex.Message);
                 return Conflict("Error: " + ex.Message);
             }
 
