@@ -9,6 +9,7 @@ builder.Services.AddControllers()
 //show definitions of enums as strings
 .AddJsonOptions(options => {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 // Add service for managing a sqlserver database that will be managed using ApplicationDBContext

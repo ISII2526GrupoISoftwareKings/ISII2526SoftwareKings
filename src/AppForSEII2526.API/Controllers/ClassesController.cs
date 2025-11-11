@@ -49,8 +49,8 @@ namespace AppForSEII2526.API.Controllers
                 //return BadRequest( Problem("fromDate must be earlier than toDate", 
                 //    $"fromDate ({fromDate}) toDate({toDate})", 400,"Bad Request", 
                 //    "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"));
-                ModelState.AddModelError("Date&finalDate", "Date must be earlier than startDate");
-                _logger.LogError($"{DateTime.Now} Error: Date must be earlier than startDate");
+                ModelState.AddModelError("Date&finalDate", "Date must be later than 10/10/2025");
+                _logger.LogError($"{DateTime.Now} Error: Date must be later than 10/10/2025");
                 return BadRequest(new ValidationProblemDetails(ModelState));
             } else if (date != null){
                 finalDate = date.Value.AddDays(7);
