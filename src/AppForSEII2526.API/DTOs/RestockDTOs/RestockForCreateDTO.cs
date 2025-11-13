@@ -1,17 +1,30 @@
-﻿using DataType = System.ComponentModel.DataAnnotations.DataType;
-
+﻿// ... usings de siempre
 namespace AppForSEII2526.API.DTOs.RestockDTOs
 {
     public class RestockForCreateDTO
     {
-        public RestockForCreateDTO(string deliveryAddress, string title, string? description, DateTime? expectedDate, IList<RestockItemDTO> restockItems)
+        public RestockForCreateDTO()
+        {
+            RestockItems = new List<RestockItemDTO>();
+        }
+
+        public RestockForCreateDTO(IList<RestockItemDTO> restockItems)
+        {
+            RestockItems = restockItems;
+        }
+
+        public RestockForCreateDTO(string deliveryAddress, string title, string? description, DateTime? expectedDate, DateTime restockDate, IList<RestockItemDTO> restockItems)
         {
             DeliveryAddress = deliveryAddress ?? throw new ArgumentNullException(nameof(deliveryAddress));
             Title = title ?? throw new ArgumentNullException(nameof(title));
             Description = description;
             ExpectedDate = expectedDate;
             RestockItems = restockItems ?? throw new ArgumentNullException(nameof(restockItems));
+            RestockDate = restockDate;
         }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please, set a valid user name")]
+        public string ApplicationUserName { get; set; } = string.Empty;
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.MultilineText)]
         [Display(Name = "Delivery Address")]
@@ -23,10 +36,8 @@ namespace AppForSEII2526.API.DTOs.RestockDTOs
         public string Title { get; set; }
 
         public string? Description { get; set; }
-
         public DateTime? ExpectedDate { get; set; }
-
-        public IList<RestockItemDTO> RestockItems { get; set; }
-
+        public DateTime RestockDate { get; set; }
+        public IList<RestockItemDTO> RestockItems { get; set; } = new List<RestockItemDTO>();
     }
 }

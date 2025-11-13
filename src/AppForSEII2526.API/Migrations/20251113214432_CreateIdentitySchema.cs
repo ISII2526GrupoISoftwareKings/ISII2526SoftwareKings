@@ -32,6 +32,7 @@ namespace AppForSEII2526.API.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -219,7 +220,7 @@ namespace AppForSEII2526.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExpectedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpectedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RestockDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -367,16 +368,14 @@ namespace AppForSEII2526.API.Migrations
                 name: "PurchaseItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AmountBought = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     ItemId = table.Column<int>(type: "int", nullable: false),
-                    PurchaseId = table.Column<int>(type: "int", nullable: false)
+                    PurchaseId = table.Column<int>(type: "int", nullable: false),
+                    AmountBought = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PurchaseItems", x => x.Id);
+                    table.PrimaryKey("PK_PurchaseItems", x => new { x.ItemId, x.PurchaseId });
                     table.ForeignKey(
                         name: "FK_PurchaseItems_Items_ItemId",
                         column: x => x.ItemId,
@@ -492,11 +491,6 @@ namespace AppForSEII2526.API.Migrations
                 name: "IX_Plans_PaymentMethodId",
                 table: "Plans",
                 column: "PaymentMethodId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PurchaseItems_ItemId",
-                table: "PurchaseItems",
-                column: "ItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PurchaseItems_PurchaseId",
