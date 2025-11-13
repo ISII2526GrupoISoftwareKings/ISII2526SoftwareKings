@@ -69,7 +69,7 @@ namespace AppForSEII2526.UT.PlansController_test
                     _class3Name,
                     20,
                     12,
-                    DateTime.Today.AddDays(-2),
+                    new DateTime(2025, 2, 10),
                     new List<TypeItem>{new TypeItem ("Mat" )}
                 )
             };
@@ -110,7 +110,7 @@ namespace AppForSEII2526.UT.PlansController_test
             };
             var pastClassItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (3, 3, 15.0m, 10, DateTime.Today.AddDays(-2), "Past class")
+                new PlanItemDTO (3, 3, 15.0m, 10, new DateTime(2025, 2, 10), "Past class")
             };
 
             // DTO without classes
