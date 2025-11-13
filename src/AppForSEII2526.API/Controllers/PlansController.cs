@@ -63,8 +63,10 @@ namespace AppForSEII2526.API.Controllers
                 ModelState.AddModelError("PlanItems", "You must select at least one class to create a plan.");
             }
 
+            var fechaLimite = new DateTime(2025, 10, 10);
+
             var invalidDates = await _context.Classes
-                .Where(c => dto.PlanItems.Select(pi => pi.ClassId).Contains(c.Id) && c.Date < DateTime.Today)
+                .Where(c => dto.PlanItems.Select(pi => pi.ClassId).Contains(c.Id) && c.Date < fechaLimite)
                 .ToListAsync();
 
             if (invalidDates.Any())
@@ -104,7 +106,7 @@ namespace AppForSEII2526.API.Controllers
 
             var user = await _context.Users.FirstOrDefaultAsync(au => au.UserName == dto.NameUser);
             if (user == null)
-                ModelState.AddModelError("RentalApplicationUser", "Error! UserName is not registered");
+                ModelState.AddModelError("ApplicationUser", "Error! UserName is not registered");
 
             if (!ModelState.IsValid)
             {

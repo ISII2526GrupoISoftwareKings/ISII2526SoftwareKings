@@ -30,7 +30,7 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         [StringLength(100, ErrorMessage = "Description cannot be longer than 100 characters.")]
         public string? Description { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Minimum quantity for renting is 1")]
+        [Range(1, int.MaxValue, ErrorMessage = "Minimum number of weeks is 1")]
         public int Weeks { get; set; }
 
         [DataType(DataType.Date), Display(Name = "Created Date")]
