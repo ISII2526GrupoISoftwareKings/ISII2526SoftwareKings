@@ -5,7 +5,7 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 {
     public class PlanForCreateDTO
     {
-        public PlanForCreateDTO(string name, string nameUser, string surnameUser, string? description, int weeks, DateTime createdDate, string? healthIssues, PaymentMethod paymentMethod, List<PlanItemDTO> planItems)
+        public PlanForCreateDTO(string name, string nameUser, string surnameUser, string? description, int weeks, DateTime createdDate, string? healthIssues, PaymentmethodDTO paymentMethod, List<PlanItemDTO> planItems)
         {
             Name = name;
             NameUser = nameUser;
@@ -44,7 +44,7 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         public string? HealthIssues { get; set; }
 
 
-        public PaymentMethod PaymentMethod { get; set; }
+        public PaymentmethodDTO PaymentMethod { get; set; }
         public List<PlanItemDTO> PlanItems { get; set; }
 
         public override bool Equals(object? obj)
@@ -57,7 +57,7 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
                    Weeks == dTO.Weeks &&
                    CreatedDate == dTO.CreatedDate &&
                    HealthIssues == dTO.HealthIssues &&
-                   EqualityComparer<PaymentMethod>.Default.Equals(PaymentMethod, dTO.PaymentMethod) &&
+                   EqualityComparer<PaymentmethodDTO>.Default.Equals(PaymentMethod, dTO.PaymentMethod) &&
                    EqualityComparer<List<PlanItemDTO>>.Default.Equals(PlanItems, dTO.PlanItems);
         }
     }

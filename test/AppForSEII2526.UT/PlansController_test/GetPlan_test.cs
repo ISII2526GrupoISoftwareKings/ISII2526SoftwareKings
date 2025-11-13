@@ -80,7 +80,7 @@ namespace AppForSEII2526.UT.PlansController_test
                     6,
                     new DateTime(2025, 10, 1),
                     "Ninguno",
-                    new CreditCard("1234567890123456", new DateTime(2027, 12, 31), 1, user),
+                    new PaymentmethodDTO(1, user.UserName),
                     new List<PlanItemDTO>()
                 );
 
@@ -89,7 +89,7 @@ namespace AppForSEII2526.UT.PlansController_test
 
             expectedPlan.PlanItems.Add(new PlanItemDTO(
                     1, trainingClass.Id, 25.0m, 15, new DateTime(2025, 10, 6), "Mantener forma física"
-                ));
+            ));
 
                 // Act
                 var result = await controller.GetPlan(1);

@@ -35,7 +35,7 @@ namespace AppForSEII2526.API.Controllers
                 .Include(p => p.PaymentMethod)
                     .ThenInclude(pm => pm.User)
 
-                .Select(p => new PlanForDetailDTO(p.Id, p.TotalPrice, p.CreatedDate, p.Name, p.PaymentMethod.User.Name, p.PaymentMethod.User.Surname, p.Description, p.Weeks, p.CreatedDate, p.HealthIssues, p.PaymentMethod, p.PlanItems
+                .Select(p => new PlanForDetailDTO(p.Id, p.TotalPrice, p.CreatedDate, p.Name, p.PaymentMethod.User.Name, p.PaymentMethod.User.Surname, p.Description, p.Weeks, p.CreatedDate, p.HealthIssues, new PaymentmethodDTO(p.PaymentMethod.Id, p.PaymentMethod.User.Name), p.PlanItems
                     .Select(pi => new PlanItemDTO(pi.PlanId, pi.Class.Id, pi.Class.Price, pi.Class.Capacity, pi.Class.Date, pi.Goal)).ToList())).FirstOrDefaultAsync();
 
 
@@ -78,8 +78,15 @@ namespace AppForSEII2526.API.Controllers
             if (dto.Weeks <= 0)
                 ModelState.AddModelError("Weeks", "Number of weeks must be greater than 0.");
 
-            if (dto.PaymentMethod == null)
+            var paymentMethod = await _context.PaymentMethods
+                .Include(pm => pm.User)
+                .FirstOrDefaultAsync(pm => pm.Id == dto.PaymentMethod.Id);
+
+            if (paymentMethod == null)
+            {
                 ModelState.AddModelError("PaymentMethod", "A valid payment method must be provided.");
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
 
 
             var selectedClassIds = dto.PlanItems.Select(pi => pi.ClassId).ToList();
@@ -113,7 +120,7 @@ namespace AppForSEII2526.API.Controllers
                     Weeks = dto.Weeks,
                     CreatedDate = dto.CreatedDate,
                     HealthIssues = dto.HealthIssues,
-                    PaymentMethod = dto.PaymentMethod,
+                    PaymentMethod = paymentMethod,
                     TotalPrice = totalPrice,
                     PlanItems = dto.PlanItems.Select(pi => new PlanItem
                     {
@@ -145,7 +152,7 @@ namespace AppForSEII2526.API.Controllers
                     plan.Weeks,
                     plan.CreatedDate,
                     plan.HealthIssues,
-                    plan.PaymentMethod,
+                    new PaymentmethodDTO(plan.PaymentMethod.Id, plan.PaymentMethod.User.Name),
                     dto.PlanItems
             );
 
