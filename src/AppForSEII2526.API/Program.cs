@@ -3,12 +3,24 @@ using System.Data.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers()
 //show definitions of enums as strings
 .AddJsonOptions(options => {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 // Add service for managing a sqlserver database that will be managed using ApplicationDBContext
@@ -105,6 +117,8 @@ if (app.Environment.IsDevelopment()) {
         c.DisplayOperationId();
     });
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

@@ -3,7 +3,7 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 {
     public class PlanForDetailDTO:PlanForCreateDTO
     {
-        public PlanForDetailDTO(int id, decimal totalPrice, DateTime planDate, string name, string nameUser, string surnameUser, string? description, int weeks, DateTime createdDate, string? healthIssues, PaymentMethod paymentMethod, List<PlanItemDTO> planItems) : base(name, nameUser, surnameUser, description, weeks, createdDate, healthIssues, paymentMethod, planItems)
+        public PlanForDetailDTO(int id, decimal totalPrice, DateTime planDate, string name, string nameUser, string surnameUser, string? description, int weeks, DateTime createdDate, string? healthIssues, PaymentmethodDTO paymentMethod, List<PlanItemDTO> planItems) : base(name, nameUser, surnameUser, description, weeks, createdDate, healthIssues, paymentMethod, planItems)
         {
             Id = id;
             TotalPrice = totalPrice;

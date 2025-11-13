@@ -6,14 +6,17 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 {
     public class PlanItemDTO
     {
+
+        public PlanItemDTO() {
+        }
+    
         public PlanItemDTO(int planId, int classId, decimal price, int capacity, DateTime date, string goal)
         {
             PlanId = planId;
             ClassId = classId;
             Price = price;
             Goal = goal;
-            Capacity = Capacity;
-            Date = date;
+            Capacity = capacity;
         }
 
         public int PlanId { get; set; }
@@ -29,14 +32,8 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         [Range(1, int.MaxValue, ErrorMessage = "Minimum capacity is 1.")]
         public int Capacity { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime Date { get; set; }
-
         [StringLength(100, ErrorMessage = "Goal can be neither longer than 100 characters nor shorter than 1", MinimumLength = 1)]
         public string Goal { get; set; }
-
-        public List<TypeItem> TypeItems { get; set; }
 
         public override bool Equals(object? obj)
         {
@@ -45,9 +42,7 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
                    Name == dTO.Name &&
                    Price == dTO.Price &&
                    Capacity == dTO.Capacity &&
-                   Date == dTO.Date &&
-                   Goal == dTO.Goal &&
-                   EqualityComparer<List<TypeItem>>.Default.Equals(TypeItems, dTO.TypeItems);
+                   Goal == dTO.Goal;
         }
     }
 }

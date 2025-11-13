@@ -1,5 +1,6 @@
 ﻿using AppForSEII2526.API.Controllers;
 using AppForSEII2526.API.DTOs.ClassDTOs;
+using AppForSEII2526.API.DTOs.TypeItemDTOs;
 using AppForSEII2526.API.Models;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace AppForSEII2526.UT.ClassesController_test
 
         public static IEnumerable<object[]> TestCasesFor_GetClassesForPlan_OK()
         {
-            var typeItems = new List<TypeItem>() { new TypeItem("Dumbbell") };
+            var typeItems = new List<TypeItemForClassDTO>() { new TypeItemForClassDTO(1, "Dumbbell") };
 
             var expected1 = new List<ClassForPlanDTO>()
             {
