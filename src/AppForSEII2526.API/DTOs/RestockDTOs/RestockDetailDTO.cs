@@ -30,6 +30,8 @@
         {
             return obj is RestockDetailDTO dto &&
                    base.Equals(obj) &&
+                   AdminName == dto.AdminName &&
+                   AdminSurname == dto.AdminSurname &&
                    TotalPrice == dto.TotalPrice &&
                    Id == dto.Id;
         }
