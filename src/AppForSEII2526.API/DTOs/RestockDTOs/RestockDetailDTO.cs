@@ -28,16 +28,17 @@
 
         public override bool Equals(object? obj)
         {
-            return obj is RestockDetailDTO dto &&
+            return obj is RestockDetailDTO dTO &&
                    base.Equals(obj) &&
-                   TotalPrice == dto.TotalPrice &&
-                   Id == dto.Id;
+                   Id == dTO.Id &&
+                   TotalPrice == dTO.TotalPrice &&
+                   AdminName == dTO.AdminName &&
+                   AdminSurname == dTO.AdminSurname;
         }
 
         public override int GetHashCode()
         {
-            // Igual que tu patrón: combina el hash del base con los campos propios
-            return HashCode.Combine(base.GetHashCode(), TotalPrice, Id);
+            return HashCode.Combine(base.GetHashCode(), Id, TotalPrice, AdminName, AdminSurname);
         }
     }
 }

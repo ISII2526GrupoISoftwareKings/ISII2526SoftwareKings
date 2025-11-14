@@ -39,5 +39,22 @@ namespace AppForSEII2526.API.DTOs.RestockDTOs
         public DateTime? ExpectedDate { get; set; }
         public DateTime RestockDate { get; set; }
         public IList<RestockItemDTO> RestockItems { get; set; } = new List<RestockItemDTO>();
+
+        public override bool Equals(object? obj)
+        {
+            return obj is RestockForCreateDTO dTO &&
+                   ApplicationUserName == dTO.ApplicationUserName &&
+                   DeliveryAddress == dTO.DeliveryAddress &&
+                   Title == dTO.Title &&
+                   Description == dTO.Description &&
+                   ExpectedDate == dTO.ExpectedDate &&
+                   RestockDate == dTO.RestockDate &&
+                   EqualityComparer<IList<RestockItemDTO>>.Default.Equals(RestockItems, dTO.RestockItems);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ApplicationUserName, DeliveryAddress, Title, Description, ExpectedDate, RestockDate, RestockItems);
+        }
     }
 }
