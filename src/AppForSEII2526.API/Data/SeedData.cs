@@ -73,6 +73,7 @@
                     Email = "alberto@uclm.es",
                     Name = "Alberto",
                     Surname = "Bueno Baquero",
+                    Address = "Calle Falsa 123, Ciudad Real",
                     EmailConfirmed = true
                 };
 

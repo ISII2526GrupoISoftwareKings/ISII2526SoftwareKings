@@ -379,7 +379,7 @@ namespace AppForSEII2526.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ExpectedDate")
+                    b.Property<DateTime?>("ExpectedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("RestockDate")
