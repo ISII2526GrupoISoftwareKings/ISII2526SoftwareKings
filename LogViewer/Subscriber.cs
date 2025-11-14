@@ -32,7 +32,13 @@ private readonly IBasicProperties _properties;
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
 
-        _channel.ExchangeDeclare(_exchangeName, ExchangeType.Fanout);
+        _channel.ExchangeDeclare(
+            exchange: _exchangeName,
+            type: ExchangeType.Fanout,
+            durable: true,
+            autoDelete: false,
+            arguments: null
+        );
 
 
 

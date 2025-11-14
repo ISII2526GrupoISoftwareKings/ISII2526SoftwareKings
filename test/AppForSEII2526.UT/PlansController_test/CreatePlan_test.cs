@@ -69,7 +69,7 @@ namespace AppForSEII2526.UT.PlansController_test
                     _class3Name,
                     20,
                     12,
-                    DateTime.Today.AddDays(-2),
+                    new DateTime(2025, 2, 10),
                     new List<TypeItem>{new TypeItem ("Mat" )}
                 )
             };
@@ -91,14 +91,12 @@ namespace AppForSEII2526.UT.PlansController_test
             };
 
             var today = DateTime.Today;
-            var validPaymentMethod = new CreditCard
+            var validPaymentMethod = new PaymentmethodDTO
             (
-                "1234567890123456",
-                new DateTime(2027, 12, 31),
-                2,
-                user
+                1,
+                user.UserName
             );
-            CreditCard invalidPaymentMethod = null;
+            var invalidPaymentMethod = new PaymentmethodDTO(0, user.UserName);
 
             var validPlanItems = new List<PlanItemDTO>
             {
@@ -112,7 +110,7 @@ namespace AppForSEII2526.UT.PlansController_test
             };
             var pastClassItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (3, 3, 15.0m, 10, DateTime.Today.AddDays(-2), "Past class")
+                new PlanItemDTO (3, 3, 15.0m, 10, new DateTime(2025, 2, 10), "Past class")
             };
 
             // DTO without classes
@@ -264,11 +262,17 @@ namespace AppForSEII2526.UT.PlansController_test
                 Address = "11 Real Street"
             };
 
-            var paymentMethod2 = new CreditCard
+            var paymentMethod2 = new PaymentmethodDTO
             (
-                "1234567890123456",
-                new DateTime(2027, 12, 31),
-                3,
+                2,
+                user2.UserName
+            );
+            
+            var paymentMethodEntity = new CreditCard
+            (
+                "6543210987654321",
+                new DateTime(2028, 11, 30),
+                2,
                 user2
             );
 
@@ -290,7 +294,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 new PlanItemDTO (1, 4, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
             };
 
-            var expectedDto = new PlanForCreateDTO(
+            var planDto = new PlanForCreateDTO(
                 "Valid Plan",
                 "samuel@uclm.es",
                 "Garcia",
@@ -302,13 +306,32 @@ namespace AppForSEII2526.UT.PlansController_test
                 validPlanItems
             );
 
+            var expectedDto = new PlanForDetailDTO
+            (
+                1,
+                25.0m,
+                today,
+                "Valid Plan",
+                _userName,
+                _surnameUser,
+                "Plan with valid classes",
+                4,
+                today,
+                "",
+                new PaymentmethodDTO(2, _nameUser),
+                new List<PlanItemDTO>
+                {
+                    new PlanItemDTO (1, 4, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
+                }
+            );
+
             _context.Users.Add(user2);
-            _context.PaymentMethods.Add(paymentMethod2);
+            _context.PaymentMethods.Add(paymentMethodEntity);
             _context.Classes.Add(yogaClass);
             _context.SaveChanges();
 
             // Act
-            var result = await controller.CreatePlan(expectedDto);
+            var result = await controller.CreatePlan(planDto);
 
             // Assert
             var createdResult = Assert.IsType<CreatedAtActionResult>(result);

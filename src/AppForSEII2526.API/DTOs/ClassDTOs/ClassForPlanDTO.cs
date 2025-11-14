@@ -1,4 +1,5 @@
-﻿using DataType = System.ComponentModel.DataAnnotations.DataType;
+﻿using AppForSEII2526.API.DTOs.TypeItemDTOs;
+using DataType = System.ComponentModel.DataAnnotations.DataType;
 namespace AppForSEII2526.API.DTOs.ClassDTOs
 {
     public class ClassForPlanDTO
@@ -14,9 +15,9 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
-        public IList<TypeItem> TypeItems { get; set; }
+        public IList<TypeItemForClassDTO> TypeItems { get; set; }
 
-        public ClassForPlanDTO(int id, string name, IList<TypeItem> typeItems, DateTime date, decimal price)
+        public ClassForPlanDTO(int id, string name, IList<TypeItemForClassDTO> typeItems, DateTime date, decimal price)
         {
             Id = id;
             Name = name;
