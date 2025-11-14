@@ -4,6 +4,8 @@ using System.Data.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.AddRabbitMQ(builder.Configuration.GetSection("RabbitMQ"));
+
 // Add services to the container.
 
 builder.Services.AddControllers()
