@@ -20,6 +20,12 @@
         public int Id { get; set; }
         public decimal? TotalPrice { get; set; }
 
+        [StringLength(30, ErrorMessage = "Name cannot be longer than 30 characters.")]
+        public string? AdminName { get; set; }
+
+        [StringLength(30, ErrorMessage = "Surname cannot be longer than 30 characters.")]
+        public string? AdminSurname { get; set; }
+
         public override bool Equals(object? obj)
         {
             return obj is RestockDetailDTO dto &&
