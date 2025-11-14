@@ -27,5 +27,20 @@ namespace AppForSEII2526.API.DTOs.ItemDTOs
         [Display(Name = "Quantity In Stock")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity in stock must be 0 or more")]
         public int QuantityForRestock { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ItemForRestockDTO dTO &&
+                   Id == dTO.Id &&
+                   Name == dTO.Name &&
+                   Brand == dTO.Brand &&
+                   RestockPrice == dTO.RestockPrice &&
+                   QuantityForRestock == dTO.QuantityForRestock;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Name, Brand, RestockPrice, QuantityForRestock);
+        }
     }
 }
