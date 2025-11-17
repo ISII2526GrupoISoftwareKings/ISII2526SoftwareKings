@@ -62,7 +62,7 @@ namespace AppForSEII2526.UT.RestocksController_test
                 ApplicationUserName = _userName,
                 DeliveryAddress = _deliveryAddress,
                 Title = "Restock without items",
-                Description = "No items selected",
+                Description = "Restock for some products",
                 ExpectedDate = futureDate,
                 RestockDate = today,
                 RestockItems = new List<RestockItemDTO>()
@@ -74,7 +74,7 @@ namespace AppForSEII2526.UT.RestocksController_test
                 ApplicationUserName = _userName,
                 DeliveryAddress = _deliveryAddress,
                 Title = "",
-                Description = "Missing title",
+                Description = "Restock for some products",
                 ExpectedDate = futureDate,
                 RestockDate = today,
                 RestockItems = new List<RestockItemDTO>
@@ -89,7 +89,7 @@ namespace AppForSEII2526.UT.RestocksController_test
                 ApplicationUserName = _userName,
                 DeliveryAddress = _deliveryAddress,
                 Title = "Restock with past date",
-                Description = "Expected date in the past",
+                Description = "Restock for some products",
                 ExpectedDate = today.AddDays(-1),
                 RestockDate = today,
                 RestockItems = new List<RestockItemDTO>
@@ -104,7 +104,7 @@ namespace AppForSEII2526.UT.RestocksController_test
                 ApplicationUserName = "unknown.user@uclm.es",
                 DeliveryAddress = _deliveryAddress,
                 Title = "Restock with unregistered user",
-                Description = "User not in DB",
+                Description = "Restock for some products",
                 ExpectedDate = futureDate,
                 RestockDate = today,
                 RestockItems = new List<RestockItemDTO>
@@ -120,7 +120,7 @@ namespace AppForSEII2526.UT.RestocksController_test
                 ApplicationUserName = _userName,
                 DeliveryAddress = _deliveryAddress,
                 Title = "Restock with invalid item",
-                Description = "Item not found in DB",
+                Description = "Restock for some products",
                 ExpectedDate = futureDate,
                 RestockDate = today,
                 RestockItems = new List<RestockItemDTO>
@@ -135,7 +135,7 @@ namespace AppForSEII2526.UT.RestocksController_test
                 ApplicationUserName = _userName,
                 DeliveryAddress = _deliveryAddress,
                 Title = "Restock with invalid quantity",
-                Description = "Quantity <= 0",
+                Description = "Restock for some products",
                 ExpectedDate = futureDate,
                 RestockDate = today,
                 RestockItems = new List<RestockItemDTO>
@@ -150,12 +150,27 @@ namespace AppForSEII2526.UT.RestocksController_test
                 ApplicationUserName = _userName,
                 DeliveryAddress = _deliveryAddress,
                 Title = "Restock with invalid item id",
-                Description = "ItemId <= 0",
+                Description = "Restock for some products",
                 ExpectedDate = futureDate,
                 RestockDate = today,
                 RestockItems = new List<RestockItemDTO>
                 {
                     new RestockItemDTO(0, _itemName, _brandName, 0, null, 3)
+                }
+            };
+
+            // AF8: Description not null and does not start with Restock For
+            var restockWithInvalidDescription = new RestockForCreateDTO
+            {
+                ApplicationUserName = _userName,
+                DeliveryAddress = _deliveryAddress,
+                Title = "Restock with invalid item id",
+                Description = "I want to restock something",
+                ExpectedDate = futureDate,
+                RestockDate = today,
+                RestockItems = new List<RestockItemDTO>
+                {
+                    CreateValidRestockItem(3)
                 }
             };
 
@@ -167,7 +182,8 @@ namespace AppForSEII2526.UT.RestocksController_test
                 new object[] { restockWithUnregisteredUser,"Error! UserName is not registered" },
                 new object[] { restockWithInvalidItem,     "Error! Item 'Non existing item (Elyte)' is not valid for restocking" },
                 new object[] { restockWithNonPositiveQuantity, "Error! Quantity to buy must be greater than zero" },
-                new object[] { restockWithInvalidItemId,   "Error! Invalid item identifier" }
+                new object[] { restockWithInvalidItemId,   "Error! Invalid item identifier" },
+                new object[] { restockWithInvalidDescription,   "Error!, You must start the Description with Restock for" },
             };
 
             return allTests;
@@ -210,7 +226,7 @@ namespace AppForSEII2526.UT.RestocksController_test
                 ApplicationUserName = _userName,
                 DeliveryAddress = _deliveryAddress,
                 Title = "Valid restock",
-                Description = $"Restock of {_itemName}",
+                Description = $"Restock for {_itemName}",
                 ExpectedDate = futureDate,
                 RestockDate = today,
                 RestockItems = new List<RestockItemDTO>
