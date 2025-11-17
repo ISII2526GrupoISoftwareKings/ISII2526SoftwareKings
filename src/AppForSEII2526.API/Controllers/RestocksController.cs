@@ -93,7 +93,7 @@ namespace AppForSEII2526.API.Controllers
             if (restockForCreate.ExpectedDate < DateTime.Today)
                 ModelState.AddModelError("ExpectedDate", "Error! Expected date cannot be in the past");
 
-            if (restockForCreate.Description != null && !(restockForCreate.Description.StartsWith("Restock For")))
+            if (restockForCreate.Description != null && !(restockForCreate.Description.StartsWith("Restock for")))
                 ModelState.AddModelError("Description", "Error!, You must start the Description with Restock for");
 
             if (restockForCreate.RestockItems != null)
