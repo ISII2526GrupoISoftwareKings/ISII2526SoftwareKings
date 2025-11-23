@@ -1,0 +1,12 @@
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (1, 1, 2, CAST(29.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (3, 1, 1, CAST(12.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (4, 1, 1, CAST(24.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (5, 2, 1, CAST(89.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (6, 2, 1, CAST(45.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (2, 3, 2, CAST(19.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (8, 3, 1, CAST(14.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (7, 4, 2, CAST(34.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (9, 4, 1, CAST(39.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (10, 4, 1, CAST(27.99 AS Decimal(10, 2)))
+INSERT INTO [dbo].[PurchaseItems] ([ItemId], [PurchaseId], [AmountBought], [Price]) VALUES (11, 4, 1, CAST(49.99 AS Decimal(10, 2)))
+
