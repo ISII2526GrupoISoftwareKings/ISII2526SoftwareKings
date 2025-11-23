@@ -16,6 +16,8 @@ namespace AppForSEII2526.API.Controllers
         {
             _context = context;
             _logger = logger;
+            // Practica SSDD: uso del logger para registrar la inicialización del servicio:
+            _logger.LogInformation("PurchasesController initialized");
         }
 
         [HttpGet]
@@ -24,6 +26,8 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult> GetPurchase(int id)
         {
+            _logger.LogInformation("Received request to get purchase. id={PurchaseId}", id);
+
             var purchase = await _context.Purchases
                 .Where(p => p.Id == id)
                 .Include(p => p.PurchaseItems)
@@ -94,6 +98,8 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(PurchaseForDetailDTO), (int)HttpStatusCode.Created)]
         public async Task<ActionResult> CreatePurchase(PurchaseForCreateDTO purchaseForCreate)
         {
+            _logger.LogInformation("Received request to create purchase. TotalPrice={TotalPrice}, ItemsCount={ItemsCount}", purchaseForCreate.TotalPrice, purchaseForCreate.PurchaseItems?.Count ?? 0);
+
             //any validation defined in PurchaseForCreateDTO is checked before running the method so they don't have to be checked again
             if (purchaseForCreate.PaymentMethod == null)
                 ModelState.AddModelError("PaymentMethod", "Error! You must select a payment method");
