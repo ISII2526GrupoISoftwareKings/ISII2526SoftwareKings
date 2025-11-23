@@ -17,6 +17,8 @@ namespace AppForSEII2526.API.Controllers
         {
             _context = context;
             _logger = logger;
+            // Practica SSDD: uso del logger para registrar la inicialización del servicio:
+            _logger.LogInformation("TodoService initialized");
         }
 
         //[HttpGet]
@@ -45,10 +47,16 @@ namespace AppForSEII2526.API.Controllers
             DateTime finalDate;
             DateTime startDate = new DateTime(2025, 10, 10);
 
+            _logger.LogInformation("Received request to get classes. className={ClassName}, date={Date}", className, date);
+
+
             if (date != null && date < startDate)
             {
-                ModelState.AddModelError("Date&finalDate", "Date must be later than 10/10/2025");
-                _logger.LogError($"{DateTime.Now} Error: Date must be later than 10/10/2025");
+                //return BadRequest( Problem("fromDate must be earlier than toDate", 
+                //    $"fromDate ({fromDate}) toDate({toDate})", 400,"Bad Request", 
+                //    "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"));
+                ModelState.AddModelError("Date&finalDate", "Date must be earlier than startDate");
+                _logger.LogError($"{DateTime.Now} Error: Date must be earlier than startDate");
                 return BadRequest(new ValidationProblemDetails(ModelState));
             } else if (date != null){
                 finalDate = date.Value.AddDays(7);
@@ -57,6 +65,7 @@ namespace AppForSEII2526.API.Controllers
             {
                 date = new DateTime(2025,10,10);
                 finalDate = date.Value.AddDays(7);
+                _logger.LogDebug("No date provided. Defaulting to {StartDate} - {FinalDate}", date, finalDate);
             }
 
 
