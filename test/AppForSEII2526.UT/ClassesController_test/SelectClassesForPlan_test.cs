@@ -19,9 +19,9 @@ namespace AppForSEII2526.UT.ClassesController_test
             var typeItems = new List<TypeItem>() { new TypeItem("Dumbbell"), new TypeItem("Mat") };
 
             var classes = new List<Class>() {
-            new Class(1, "Yoga Basics", 10m, 10, new DateTime(2025, 10, 11), typeItems),
-            new Class(2, "Pilates Advanced", 15m, 20, new DateTime(2025, 10, 13), typeItems),
-            new Class(3, "CrossFit", 20m, 15, new DateTime(2025, 10, 18), typeItems),
+            new Class(1, "Yoga Basics", 10m, 10, DateTime.Today.AddDays(1), typeItems),
+            new Class(2, "Pilates Advanced", 15m, 20, DateTime.Today.AddDays(3), typeItems),
+            new Class(3, "CrossFit", 20m, 15, DateTime.Today.AddDays(8), typeItems),
         };
             _context.AddRange(typeItems);
             _context.AddRange(classes);
@@ -34,34 +34,34 @@ namespace AppForSEII2526.UT.ClassesController_test
 
             var expected1 = new List<ClassForPlanDTO>()
             {
-                new ClassForPlanDTO(1, "Yoga Basics", typeItems, new DateTime(2025, 10, 11), 10m),
-                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 13), 15m)
+                new ClassForPlanDTO(1, "Yoga Basics", typeItems, DateTime.Today.AddDays(1), 10m),
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m)
             };
 
 
             var expected2 = new List<ClassForPlanDTO>()
             {
-                new ClassForPlanDTO(1, "Yoga Basics", typeItems, new DateTime(2025, 10, 11), 10m)
+                new ClassForPlanDTO(1, "Yoga Basics", typeItems, DateTime.Today.AddDays(1), 10m)
             };
 
 
             var expected3 = new List<ClassForPlanDTO>()
             {
-                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 13), 15m),
-                new ClassForPlanDTO(3, "CrossFit", typeItems, new DateTime(2025, 10, 18), 20m)
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m),
+                new ClassForPlanDTO(3, "CrossFit", typeItems, DateTime.Today.AddDays(8), 20m)
             };
 
 
             var expected4 = new List<ClassForPlanDTO>()
             {
-                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, new DateTime(2025, 10, 13), 15m)
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m)
             };
 
             var allTests = new List<object[]> {
                 new object[] { null, null, expected1 },
                 new object[] { "Yoga", null, expected2 },
-                new object[] { null, new DateTime(2025, 10, 12), expected3 },
-                new object[] { "Pilates", new DateTime(2025,10,13), expected4 },
+                new object[] { null, DateTime.Today.AddDays(2), expected3 },
+                new object[] { "Pilates", DateTime.Today.AddDays(3), expected4 },
             };
 
             return allTests;

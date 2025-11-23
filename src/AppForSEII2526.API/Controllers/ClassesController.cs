@@ -45,7 +45,7 @@ namespace AppForSEII2526.API.Controllers
         public async Task<ActionResult> GetClassesForPlan(string? className, DateTime? date)
         {
             DateTime finalDate;
-            DateTime startDate = new DateTime(2025, 10, 10);
+            DateTime startDate = DateTime.Today;
 
             _logger.LogInformation("Received request to get classes. className={ClassName}, date={Date}", className, date);
 
@@ -55,17 +55,17 @@ namespace AppForSEII2526.API.Controllers
                 //return BadRequest( Problem("fromDate must be earlier than toDate", 
                 //    $"fromDate ({fromDate}) toDate({toDate})", 400,"Bad Request", 
                 //    "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"));
-                ModelState.AddModelError("Date&finalDate", "Date must be earlier than startDate");
-                _logger.LogError($"{DateTime.Now} Error: Date must be earlier than startDate");
+                ModelState.AddModelError("Date&finalDate", "Date must be later than Today");
+                _logger.LogError($"{DateTime.Now} Error: Date must be later than Today");
                 return BadRequest(new ValidationProblemDetails(ModelState));
             } else if (date != null){
                 finalDate = date.Value.AddDays(7);
             }
             else //if not renting dates are provided a value by default is assigned
             {
-                date = new DateTime(2025,10,10);
-                finalDate = date.Value.AddDays(7);
-                _logger.LogDebug("No date provided. Defaulting to {StartDate} - {FinalDate}", date, finalDate);
+                date = startDate;
+                finalDate = startDate.AddDays(7);
+                _logger.LogDebug("No date provided. Defaulting to {StartDate} - {FinalDate}", startDate, finalDate);
             }
 
 
