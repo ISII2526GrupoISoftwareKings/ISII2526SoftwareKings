@@ -17,6 +17,8 @@ namespace AppForSEII2526.API.Controllers
         {
             _context = context;
             _logger = logger;
+            // Practica SSDD: uso del logger para registrar la inicialización del servicio:
+            _logger.LogInformation("ItemsController initialized");
         }
 
         /*
@@ -43,6 +45,13 @@ namespace AppForSEII2526.API.Controllers
 
         public async Task<ActionResult> GetItemsForPurchasing(string? itemName, string? brandName)
         {
+            _logger.LogInformation("Received request to get items for purchasing. itemName={ItemName}, brandName={BrandName}", itemName, brandName);
+
+            if (itemName == null && brandName == null)
+            {
+                _logger.LogDebug("No filters provided. Returning all available items for purchase.");
+            }
+
             IList<ItemForPurchasingDTO> itemsDTOS = await _context.Items
                 .Include(item => item.Brand)
                 .Where(item =>
