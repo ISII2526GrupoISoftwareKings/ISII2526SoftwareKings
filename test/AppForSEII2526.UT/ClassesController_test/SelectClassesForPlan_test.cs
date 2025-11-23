@@ -74,7 +74,9 @@ namespace AppForSEII2526.UT.ClassesController_test
         public async Task GetClassesForPlan_filter_test(string? className, DateTime? date, List<ClassForPlanDTO> expectedClasses)
         {
             // Arrange
-            var controller = new ClassesController(_context, null);
+            var mock = new Mock<ILogger<ClassesController>>();
+            ILogger<ClassesController> logger = mock.Object;
+            var controller = new ClassesController(_context, logger);
 
             // Act
             var result = await controller.GetClassesForPlan(className, date);
