@@ -5,6 +5,10 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
 {
     public class PurchaseItemDTO
     {
+        public PurchaseItemDTO()
+        {
+        }
+
         public PurchaseItemDTO(int itemId, string name, string brand, int amountBought, decimal price)
         {
             ItemId = itemId;

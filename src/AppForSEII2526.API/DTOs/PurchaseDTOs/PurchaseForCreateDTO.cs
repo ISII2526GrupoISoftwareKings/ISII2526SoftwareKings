@@ -5,7 +5,12 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
 {
     public class PurchaseForCreateDTO
     {
-        public PurchaseForCreateDTO(string city, string country, string street, string? description, DateTime date, decimal totalPrice, PaymentMethod paymentMethod, List<PurchaseItemDTO> purchaseItems)
+        public PurchaseForCreateDTO()
+        {
+            PurchaseItems = new List<PurchaseItemDTO>();
+        }
+
+        public PurchaseForCreateDTO(string city, string country, string street, string? description, DateTime date, decimal totalPrice, PaymentMethodDTO paymentMethod, List<PurchaseItemDTO> purchaseItems)
         {
             City = city;
             Country = country;
@@ -37,9 +42,9 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
         [Precision(10, 2)]
         public decimal TotalPrice { get; set; }
 
-        public PaymentMethod PaymentMethod { get; set; }
+        public PaymentMethodDTO PaymentMethod { get; set; }
 
-        public List<PurchaseItemDTO> PurchaseItems { get; set; }
+        public List<PurchaseItemDTO> PurchaseItems { get; set; } = new List<PurchaseItemDTO>();
 
         public override bool Equals(object? obj)
         {
@@ -50,7 +55,7 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
                    Description == dTO.Description &&
                    Date == dTO.Date &&
                    TotalPrice == dTO.TotalPrice &&
-                   EqualityComparer<PaymentMethod>.Default.Equals(PaymentMethod, dTO.PaymentMethod) &&
+                   EqualityComparer<PaymentMethodDTO>.Default.Equals(PaymentMethod, dTO.PaymentMethod) &&
                    EqualityComparer<List<PurchaseItemDTO>>.Default.Equals(PurchaseItems, dTO.PurchaseItems);
         }
     }
