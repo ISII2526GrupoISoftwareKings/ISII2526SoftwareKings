@@ -66,20 +66,8 @@ namespace AppForSEII2526.UT.PurchasesController_test
             // Recreate the data needed to build DTOs for the parameterized tests
             var today = DateTime.Today;
 
-            var user = new ApplicationUser
-            {
-                UserName = _customerEmail,
-                Name = _customerFirstName,
-                Surname = _customerSurname,
-                Address = _deliveryStreet
-            };
-
-            var validPaymentMethod = new CreditCard(
-                "1234567890123456",
-                new DateTime(2027, 12, 31),
-                2,
-                user
-            );
+            // Use PaymentMethodDTO with the seeded payment method ID
+            var validPaymentMethod = new PaymentMethodDTO(_seedPaymentMethodId);
 
             // Alternate flow 4: missing mandatory payment selection
             var purchaseWithoutPaymentMethod = new PurchaseForCreateDTO(
@@ -205,16 +193,34 @@ namespace AppForSEII2526.UT.PurchasesController_test
                 new PurchaseItemDTO(_seedItemId, _itemName, _brandName, 2, _itemUnitPrice)
             };
 
-            var expectedTotalPrice = _itemUnitPrice * 2;
             var purchaseRequest = new PurchaseForCreateDTO(
                 _deliveryCity,
                 _deliveryCountry,
                 _deliveryStreet,
                 "Monthly snack purchase",
                 DateTime.Today,
-                expectedTotalPrice,
-                paymentMethod,
+                0m, // TotalPrice is calculated from items, so this value doesn't matter
+                new PaymentMethodDTO(paymentMethod.Id),
                 purchaseItems
+            );
+
+            // Expected result - TotalPrice is calculated as Sum(Price * AmountBought)
+            // Note: Prices are updated from database in controller, but in this test they already match
+            var expectedTotalPrice = _itemUnitPrice * 2;
+            var expectedPurchaseItems = new List<PurchaseItemDTO>
+            {
+                new PurchaseItemDTO(_seedItemId, _itemName, _brandName, 2, _itemUnitPrice)
+            };
+            var expectedPurchase = new PurchaseForDetailDTO(
+                1, // First purchase will have Id = 1
+                expectedTotalPrice,
+                _deliveryCity,
+                _deliveryCountry,
+                _deliveryStreet,
+                "Monthly snack purchase",
+                DateTime.Today,
+                new PaymentMethodDTO(paymentMethod.Id),
+                expectedPurchaseItems
             );
 
             // Act
@@ -224,7 +230,7 @@ namespace AppForSEII2526.UT.PurchasesController_test
             var createdResult = Assert.IsType<CreatedAtActionResult>(result);
             var purchaseCreated = Assert.IsType<PurchaseForDetailDTO>(createdResult.Value);
 
-            Assert.Equal(purchaseRequest, purchaseCreated);
+            Assert.Equal(expectedPurchase, purchaseCreated);
         }
     }
 }

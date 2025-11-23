@@ -5,7 +5,7 @@ namespace AppForSEII2526.API.DTOs.PurchaseDTOs
 {
     public class PurchaseForDetailDTO : PurchaseForCreateDTO
     {
-        public PurchaseForDetailDTO(int id, decimal totalPrice, string city, string country, string street, string? description, DateTime date, PaymentMethod paymentMethod, List<PurchaseItemDTO> purchaseItems)
+        public PurchaseForDetailDTO(int id, decimal totalPrice, string city, string country, string street, string? description, DateTime date, PaymentMethodDTO paymentMethod, List<PurchaseItemDTO> purchaseItems)
             : base(city, country, street, description, date, totalPrice, paymentMethod, purchaseItems)
         {
             Id = id;

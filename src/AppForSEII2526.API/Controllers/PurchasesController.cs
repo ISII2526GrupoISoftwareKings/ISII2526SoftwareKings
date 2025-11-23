@@ -43,7 +43,7 @@ namespace AppForSEII2526.API.Controllers
                     p.Street,
                     p.Description,
                     p.Date,
-                    p.PaymentMethod,
+                    new PaymentMethodDTO(p.PaymentMethod.Id),
                     p.PurchaseItems.Select(pi => new PurchaseItemDTO(
                         pi.ItemId,
                         pi.Item.Name,
@@ -60,9 +60,13 @@ namespace AppForSEII2526.API.Controllers
                 return NotFound();
             }
 
-            if (purchase.PaymentMethod == null
-                || purchase.PaymentMethod.User == null
-                || string.IsNullOrEmpty(purchase.PaymentMethod.User.Name))
+            var paymentMethodEntity = await _context.PaymentMethods
+                .Include(pm => pm.User)
+                .FirstOrDefaultAsync(pm => pm.Id == purchase.PaymentMethod.Id);
+
+            if (paymentMethodEntity == null
+                || paymentMethodEntity.User == null
+                || string.IsNullOrEmpty(paymentMethodEntity.User.Name))
             {
                 _logger.LogWarning($"Purchase {id} has missing payment details.");
                 return BadRequest("Missing mandatory payment information.");
@@ -101,67 +105,98 @@ namespace AppForSEII2526.API.Controllers
             _logger.LogInformation("Received request to create purchase. TotalPrice={TotalPrice}, ItemsCount={ItemsCount}", purchaseForCreate.TotalPrice, purchaseForCreate.PurchaseItems?.Count ?? 0);
 
             //any validation defined in PurchaseForCreateDTO is checked before running the method so they don't have to be checked again
-            if (purchaseForCreate.PaymentMethod == null)
-                ModelState.AddModelError("PaymentMethod", "Error! You must select a payment method");
+            if (purchaseForCreate.PurchaseItems == null || purchaseForCreate.PurchaseItems.Count == 0)
+            {
+                ModelState.AddModelError("PurchaseItems", "Error! You must include at least one item to purchase");
+            }
 
             if (string.IsNullOrEmpty(purchaseForCreate.City) || string.IsNullOrEmpty(purchaseForCreate.Country) || string.IsNullOrEmpty(purchaseForCreate.Street))
                 ModelState.AddModelError("Address", "Error! City, Country and Street are mandatory");
 
-            if (purchaseForCreate.PurchaseItems.Count == 0)
-                ModelState.AddModelError("PurchaseItems", "Error! You must include at least one item to purchase");
+            // Look up the PaymentMethod entity from the database
+            PaymentMethod? paymentMethodEntity = null;
+            if (purchaseForCreate.PaymentMethod != null)
+            {
+                paymentMethodEntity = await _context.PaymentMethods
+                    .Include(pm => pm.User)
+                    .FirstOrDefaultAsync(pm => pm.Id == purchaseForCreate.PaymentMethod.Id);
+
+                if (paymentMethodEntity == null)
+                {
+                    ModelState.AddModelError("PaymentMethod", "Error! Payment method with the provided ID does not exist");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("PaymentMethod", "Error! You must select a payment method");
+            }
 
             //we must check that all the items to be purchased exist in the database
-            var itemIds = purchaseForCreate.PurchaseItems.Select(pi => pi.ItemId).ToList<int>();
+            var itemIds = purchaseForCreate.PurchaseItems?.Select(pi => pi.ItemId).ToList() ?? new List<int>();
 
             var items = await _context.Items
                 .Where(i => itemIds.Contains(i.Id))
                 .ToListAsync();
 
-            //we must provide purchase with the info to be saved in the database
-            Purchase purchase = new Purchase(
-                purchaseForCreate.City,
-                purchaseForCreate.Country,
-                DateTime.Today,
-                purchaseForCreate.Street,
-                purchaseForCreate.TotalPrice,
-                purchaseForCreate.PaymentMethod,
-                purchaseForCreate.Description
-            );
-
-            foreach (var pi in purchaseForCreate.PurchaseItems)
+            // Validate each item exists and has enough quantity
+            if (purchaseForCreate.PurchaseItems != null)
             {
-                var item = items.FirstOrDefault(i => i.Id == pi.ItemId);
+                foreach (var pi in purchaseForCreate.PurchaseItems)
+                {
+                    var item = items.FirstOrDefault(i => i.Id == pi.ItemId);
 
-                //we must check that there is enough quantity to be purchased in the database
-                if (item == null)
-                {
-                    ModelState.AddModelError("PurchaseItems", $"Error! Item with id '{pi.ItemId}' does not exist");
+                    if (item == null)
+                    {
+                        ModelState.AddModelError("PurchaseItems", $"Error! Item with id '{pi.ItemId}' does not exist");
+                    }
+                    else if (pi.AmountBought > item.QuantityAvailableForPurchase)
+                    {
+                        ModelState.AddModelError("PurchaseItems", $"Error! Requested quantity for item '{item.Name}' exceeds available stock");
+                    }
+                    else if (pi.AmountBought <= 0)
+                    {
+                        ModelState.AddModelError("PurchaseItems", $"Error! Invalid amount bought for item '{item.Name}'. Quantity must be greater than zero.");
+                    }
+                    else
+                    {
+                        // Update the price from the database
+                        pi.Price = item.PurchasePrice;
+                    }
                 }
-                else if (pi.AmountBought > item.QuantityAvailableForPurchase)
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ValidationProblemDetails(ModelState));
+            }
+
+            // Calculate total price from items
+            decimal totalPrice = purchaseForCreate.PurchaseItems?.Sum(pi => pi.Price * pi.AmountBought) ?? 0;
+
+            // Create Purchase using object initializer syntax
+            var purchase = new Purchase
+            {
+                City = purchaseForCreate.City,
+                Country = purchaseForCreate.Country,
+                Street = purchaseForCreate.Street,
+                Description = purchaseForCreate.Description,
+                Date = DateTime.Today,
+                TotalPrice = totalPrice,
+                PaymentMethod = paymentMethodEntity!,
+                PurchaseItems = purchaseForCreate.PurchaseItems!.Select(pi =>
                 {
-                    ModelState.AddModelError("PurchaseItems", $"Error! Requested quantity for item '{item.Name}' exceeds available stock");
-                }
-                else
-                {
-                    // purchase does not exist in the database yet, so we must relate purchaseitem to the object purchase
-                    purchase.PurchaseItems.Add(new PurchaseItem
+                    var item = items.First(i => i.Id == pi.ItemId);
+                    return new PurchaseItem
                     {
                         ItemId = item.Id,
                         Item = item,
                         AmountBought = pi.AmountBought,
                         Price = pi.Price
-                    });
-                    pi.Price = item.PurchasePrice;
-                }
-            }
+                    };
+                }).ToList()
+            };
 
-            //if there is any problem because of the available quantity of items or because any item does not exist
-            if (ModelState.ErrorCount > 0)
-            {
-                return BadRequest(new ValidationProblemDetails(ModelState));
-            }
-
-            _context.Add(purchase);
+            _context.Purchases.Add(purchase);
 
             try
             {
@@ -183,7 +218,7 @@ namespace AppForSEII2526.API.Controllers
                 purchase.Street,
                 purchase.Description,
                 purchase.Date,
-                purchase.PaymentMethod,
+                new PaymentMethodDTO(purchase.PaymentMethod.Id),
                 purchaseForCreate.PurchaseItems
             );
 
