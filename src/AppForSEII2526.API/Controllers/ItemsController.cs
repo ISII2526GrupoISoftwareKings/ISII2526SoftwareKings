@@ -18,7 +18,7 @@ namespace AppForSEII2526.API.Controllers
             _context = context;
             _logger = logger;
             // Practica SSDD: uso del logger para registrar la inicialización del servicio:
-            _logger.LogInformation("ItemsController initialized");
+            _logger?.LogInformation("ItemsController initialized");
         }
 
         /*
@@ -45,11 +45,11 @@ namespace AppForSEII2526.API.Controllers
 
         public async Task<ActionResult> GetItemsForPurchasing(string? itemName, string? brandName)
         {
-            _logger.LogInformation("Received request to get items for purchasing. itemName={ItemName}, brandName={BrandName}", itemName, brandName);
+            _logger?.LogInformation("Received request to get items for purchasing. itemName={ItemName}, brandName={BrandName}", itemName, brandName);
 
             if (itemName == null && brandName == null)
             {
-                _logger.LogDebug("No filters provided. Returning all available items for purchase.");
+                _logger?.LogDebug("No filters provided. Returning all available items for purchase.");
             }
 
             IList<ItemForPurchasingDTO> itemsDTOS = await _context.Items
@@ -66,7 +66,7 @@ namespace AppForSEII2526.API.Controllers
 
             if (itemsDTOS == null || !itemsDTOS.Any())
             {
-                _logger.LogWarning($"{DateTime.Now} Warning: No items available for purchasing.");
+                _logger?.LogWarning($"{DateTime.Now} Warning: No items available for purchasing.");
                 return BadRequest("There are no items available for purchase.");
             }
 
@@ -100,7 +100,7 @@ namespace AppForSEII2526.API.Controllers
 
             if (itemsDtos == null || !itemsDtos.Any())
             {
-                _logger.LogWarning($"{DateTime.Now} Warning: No items available for restock.");
+                _logger?.LogWarning($"{DateTime.Now} Warning: No items available for restock.");
                 return BadRequest("There are no items available for restock.");
             }
 
