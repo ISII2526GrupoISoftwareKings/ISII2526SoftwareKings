@@ -16,6 +16,58 @@ namespace AppForSEII2526.API.Controllers
             _logger = logger;
         }
 
+
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(RestockDetailDTO), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<ActionResult> GetRestock(int id)
+        {
+            if (_context.Restocks == null)
+            {
+                _logger.LogError("Error: Restocks table does not exist");
+                return NotFound();
+            }
+
+            var restock = await _context.Restocks
+                .Where(r => r.Id == id)
+                    .Include(r => r.RestockItems)
+                        .ThenInclude(ri => ri.Item)
+                            .ThenInclude(i => i.Brand)
+                    .Include(r => r.ApplicationUser)
+                .Select(r => new RestockDetailDTO(
+                        r.Id,
+                        r.RestockDate,
+                        r.DeliveryAddress,
+                        r.Title,
+                        r.Description,
+                        r.ExpectedDate,
+                        r.RestockItems
+                            .Select(ri => new RestockItemDTO(
+                                ri.Item.Id,
+                                ri.Item.Name,
+                                ri.Item.Brand.Name,
+                                0,
+                                ri.RestockPrice ?? 0,
+                                ri.Quantity))
+                            .ToList(),
+                        r.TotalPrice)
+                {
+                    AdminName = r.ApplicationUser.Name,
+                    AdminSurname = r.ApplicationUser.Surname
+                })
+                .FirstOrDefaultAsync();
+
+            if (restock == null)
+            {
+                _logger.LogError($"Error: Restock with id {id} does not exist");
+                return NotFound();
+            }
+
+            return Ok(restock);
+        }
+
+
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(RestockDetailDTO), (int)HttpStatusCode.Created)]
@@ -40,6 +92,9 @@ namespace AppForSEII2526.API.Controllers
 
             if (restockForCreate.ExpectedDate < DateTime.Today)
                 ModelState.AddModelError("ExpectedDate", "Error! Expected date cannot be in the past");
+
+            if (restockForCreate.Description != null && !(restockForCreate.Description.StartsWith("Restock for")))
+                ModelState.AddModelError("Description", "Error!, You must start the Description with Restock for");
 
             if (restockForCreate.RestockItems != null)
             {
@@ -142,8 +197,8 @@ namespace AppForSEII2526.API.Controllers
 
             detail.ApplicationUserName = user!.UserName;
 
-            return Ok(detail);
-            //return CreatedAtAction("GetRestock", new { id = restock.Id }, detail);
+            //return Ok(detail);
+            return CreatedAtAction("GetRestock", new { id = restock.Id }, detail);
         }
 
 

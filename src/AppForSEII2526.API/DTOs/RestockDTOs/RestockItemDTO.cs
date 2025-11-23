@@ -32,5 +32,21 @@ namespace AppForSEII2526.API.DTOs.RestockDTOs
 
         [Range(1, int.MaxValue, ErrorMessage = "Minimum amount bought is 1")]
         public int QuantityForRestock { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is RestockItemDTO dTO &&
+                   ItemId == dTO.ItemId &&
+                   Name == dTO.Name &&
+                   Brand == dTO.Brand &&
+                   QuantityInRestock == dTO.QuantityInRestock &&
+                   PriceOfRestock == dTO.PriceOfRestock &&
+                   QuantityForRestock == dTO.QuantityForRestock;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ItemId, Name, Brand, QuantityInRestock, PriceOfRestock, QuantityForRestock);
+        }
     }
 }
