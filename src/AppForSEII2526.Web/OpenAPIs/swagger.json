@@ -14,6 +14,54 @@
     "version": "v1"
   },
   "paths": {
+    "/GetBrands": {
+      "get": {
+        "tags": [
+          "Brands"
+        ],
+        "operationId": "GetBrands",
+        "parameters": [
+          {
+            "name": "brandName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Classes/GetClassesForPlan": {
       "get": {
         "tags": [
@@ -1473,7 +1521,7 @@
             "type": "string",
             "nullable": true
           },
-          "purchasePrice": {
+          "price": {
             "type": "number",
             "format": "currency"
           },
@@ -1540,7 +1588,7 @@
             "type": "string",
             "nullable": true
           },
-          "purchasePrice": {
+          "price": {
             "type": "number",
             "format": "currency"
           },

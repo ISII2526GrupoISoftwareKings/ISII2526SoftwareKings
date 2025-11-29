@@ -1439,7 +1439,7 @@
             "type": "string",
             "nullable": true
           },
-          "purchasePrice": {
+          "price": {
             "type": "number",
             "format": "currency"
           },
