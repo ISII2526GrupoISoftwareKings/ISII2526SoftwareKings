@@ -1,0 +1,176 @@
+@page "/purchase/selectitemsforpurchase"
+
+@using Microsoft.AspNetCore.Authorization
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<SelectItemsForPurchase> logger
+@inject PurchaseStateContainer purchaseState
+@inject NavigationManager navigation
+
+@attribute [Authorize]
+
+<h3>Select Items For Purchase</h3>
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Item Name</span>
+                        <input type="text" id="inputItemName" @bind=itemName class="form-control" placeholder="Item Name" aria-label="Item Name" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon2">Brand</span>
+                        <select class="form-select" aria-label="Default select" @bind="itemBrandSelected" id="selectBrand">
+                            <option value="All" selected>All</option>
+                            @foreach (string brandName in brandNames) {
+                                <option value="@brandName" id="brandNameSelected_@brandName">@brandName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" @onclick=@SearchItems id="searchItems">Search items</button>
+                </div>
+            </div>
+            <div class="row">
+                @if (items == null) {
+                    <p>Loading items....</p>
+                }
+                else
+                {
+                    <div class="mh-100 table-responsive">
+                        <table class="table table-condensed table-hover" id="TableOfItems">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Brand</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    <th>Available</th>
+                                    <th>Add</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in items) {
+                                    <tr id="ItemData_@item.Name">
+                                        <td>@item.Name</td>
+                                        <td>@item.Brand</td>
+                                        <td>@item.Description</td>
+                                        <td>@item.PurchasePrice</td>
+                                        <td>@item.QuantityAvailableForPurchase</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" id="itemToPurchase_@item.Name" @onclick="@(() => AddItem(item))">Add</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-2" hidden="@hidePurchaseCart">
+            <div class="row">
+                <h3>Shopping Cart</h3>
+            </div>
+            @foreach (PurchaseItemDTO item in purchase.PurchaseItems) {
+                <div class="row">
+                    <button type="button" class="btn btn-light" id="removeItem_@item.Name" @onclick="@(() => RemovePurchaseItem(item))">x @item.Name - @item.Price€ x @item.AmountBought</button>
+                </div>
+            }
+            <div class="row">
+                <button type="button" class="btn btn-primary" id="purchaseItemsButton" @onclick=@PurchaseItems>Purchase items</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@implements IDisposable
+
+@code {
+    private string itemBrandSelected;
+    private ICollection<string>? brandNames = new List<string>();
+    private bool hidePurchaseCart { get { return purchase.PurchaseItems.Count == 0; } }
+    private ICollection<ItemForPurchasingDTO> items;
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private string errors = "";
+    private string itemName { get; set; }
+    private string itemBrand { get; set; }
+    private PurchaseForCreateDTO purchase => purchaseState.Purchase;
+
+    private void AddItem(ItemForPurchasingDTO item) {
+        // Convert ItemForPurchasingDTO to PurchaseItemDTO
+        var purchaseItem = new PurchaseItemDTO()
+        {
+            ItemId = item.Id,
+            Name = item.Name,
+            Brand = item.Brand,
+            AmountBought = 1,
+            Price = (double)item.PurchasePrice
+        };
+        purchaseState.AddItemToPurchase(purchaseItem);
+        StateHasChanged();
+    }
+
+    private void RemovePurchaseItem(PurchaseItemDTO item) {
+        purchaseState.RemoveItemFromPurchase(item);
+        if (purchase.PurchaseItems.Count == 0) {
+            StateHasChanged();
+        }
+    }
+
+    public async void SearchItems() {
+        itemBrand = itemBrandSelected == "All" ? null : itemBrandSelected;
+
+        try {
+            items = await apiclient.GetItemsForPurchasingAsync(itemName, itemBrand);
+            errors = "";
+
+            // Extract unique brand names from items for the dropdown
+            if (items != null && items.Any()) {
+                brandNames = items.Select(i => i.Brand).Distinct().OrderBy(b => b).ToList();
+            }
+        }
+        catch (ApiException ex) {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            errors = "Error while connecting to the system";
+        }
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            // Initial search to get items and extract brand names
+            items = await apiclient.GetItemsForPurchasingAsync(null, null);
+            
+            if (items != null && items.Any()) {
+                brandNames = items.Select(i => i.Brand).Distinct().OrderBy(b => b).ToList();
+            } else {
+                brandNames = new List<string>();
+            }
+        }
+        catch (ApiException ex) {
+            if (brandNames == null) brandNames = new List<string>();
+            logger.LogError("Error! There was an error while connecting to the GetItemsForPurchasingAsync service");
+            errors = "Error while loading items";
+        }
+
+        // Subscribe to purchase state changes
+        purchaseState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose() {
+        purchaseState.OnChange -= StateHasChanged;
+    }
+
+    private void PurchaseItems() {
+        navigation.NavigateTo("/purchase/createpurchase");
+    }
+}
+
