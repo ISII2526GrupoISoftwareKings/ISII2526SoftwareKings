@@ -42,6 +42,13 @@
                 @if (items == null) {
                     <p>Loading items....</p>
                 }
+                else if (items.Count == 0)
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <p>There are no items available for purchase.</p>
+                        <button type="button" class="btn btn-secondary" @onclick="@(() => navigation.NavigateTo("/"))">Go back to Home</button>
+                    </div>
+                }
                 else
                 {
                     <div class="mh-100 table-responsive">
@@ -62,7 +69,7 @@
                                         <td>@item.Name</td>
                                         <td>@item.Brand</td>
                                         <td>@item.Description</td>
-                                        <td>@item.PurchasePrice</td>
+                                        <td>@item.Price</td>
                                         <td>@item.QuantityAvailableForPurchase</td>
                                         <td>
                                             <button class="btn btn-outline-secondary" id="itemToPurchase_@item.Name" @onclick="@(() => AddItem(item))">Add</button>
@@ -80,12 +87,26 @@
                 <h3>Shopping Cart</h3>
             </div>
             @foreach (PurchaseItemDTO item in purchase.PurchaseItems) {
-                <div class="row">
-                    <button type="button" class="btn btn-light" id="removeItem_@item.Name" @onclick="@(() => RemovePurchaseItem(item))">x @item.Name - @item.Price€ x @item.AmountBought</button>
+                <div class="row mb-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">@item.Name</h6>
+                            <p class="card-text small">
+                                <strong>Brand:</strong> @item.Brand<br/>
+                                <strong>Quantity:</strong> @item.AmountBought<br/>
+                                <strong>Price:</strong> @item.Price€<br/>
+                                <strong>Total:</strong> @((item.Price * item.AmountBought).ToString("F2"))€
+                            </p>
+                            <button type="button" class="btn btn-sm btn-danger" id="removeItem_@item.Name" @onclick="@(() => RemovePurchaseItem(item))">Remove</button>
+                        </div>
+                    </div>
                 </div>
             }
+            <div class="row mb-2">
+                <button type="button" class="btn btn-primary" id="purchaseItemsButton" @onclick=@PurchaseItems>Buy</button>
+            </div>
             <div class="row">
-                <button type="button" class="btn btn-primary" id="purchaseItemsButton" @onclick=@PurchaseItems>Purchase items</button>
+                <button type="button" class="btn btn-secondary" id="backToModifyButton" @onclick=@BackToModify>Back to modify</button>
             </div>
         </div>
     </div>
@@ -105,24 +126,11 @@
     private PurchaseForCreateDTO purchase => purchaseState.Purchase;
 
     private void AddItem(ItemForPurchasingDTO item) {
-        // Convert ItemForPurchasingDTO to PurchaseItemDTO
-        var purchaseItem = new PurchaseItemDTO()
-        {
-            ItemId = item.Id,
-            Name = item.Name,
-            Brand = item.Brand,
-            AmountBought = 1,
-            Price = (double)item.PurchasePrice
-        };
-        purchaseState.AddItemToPurchase(purchaseItem);
-        StateHasChanged();
+        purchaseState.AddItemToPurchase(item);
     }
 
     private void RemovePurchaseItem(PurchaseItemDTO item) {
         purchaseState.RemoveItemFromPurchase(item);
-        if (purchase.PurchaseItems.Count == 0) {
-            StateHasChanged();
-        }
     }
 
     public async void SearchItems() {
@@ -131,11 +139,7 @@
         try {
             items = await apiclient.GetItemsForPurchasingAsync(itemName, itemBrand);
             errors = "";
-
-            // Extract unique brand names from items for the dropdown
-            if (items != null && items.Any()) {
-                brandNames = items.Select(i => i.Brand).Distinct().OrderBy(b => b).ToList();
-            }
+            // No need to extract brands anymore - they're loaded separately
         }
         catch (ApiException ex) {
             logger.LogError($"{DateTime.Now} Error: {ex}");
@@ -146,19 +150,21 @@
 
     protected override async Task OnInitializedAsync() {
         try {
-            // Initial search to get items and extract brand names
-            items = await apiclient.GetItemsForPurchasingAsync(null, null);
+            // Load brands from the dedicated endpoint
+            brandNames = await apiclient.GetBrandsAsync(null);
             
-            if (items != null && items.Any()) {
-                brandNames = items.Select(i => i.Brand).Distinct().OrderBy(b => b).ToList();
-            } else {
+            if (brandNames == null) {
                 brandNames = new List<string>();
             }
+            
+            // Also load initial items (optional - you might want to load items only after user searches)
+            items = await apiclient.GetItemsForPurchasingAsync(null, null);
+            errors = "";
         }
         catch (ApiException ex) {
             if (brandNames == null) brandNames = new List<string>();
-            logger.LogError("Error! There was an error while connecting to the GetItemsForPurchasingAsync service");
-            errors = "Error while loading items";
+            logger.LogError("Error! There was an error while connecting to the GetBrandsAsync service");
+            errors = "Error while loading brands";
         }
 
         // Subscribe to purchase state changes
@@ -171,6 +177,12 @@
 
     private void PurchaseItems() {
         navigation.NavigateTo("/purchase/createpurchase");
+    }
+
+    private void BackToModify() {
+        // This allows the user to continue modifying the shopping cart
+        // The cart is already visible, so this just ensures focus is on the items list
+        StateHasChanged();
     }
 }
 

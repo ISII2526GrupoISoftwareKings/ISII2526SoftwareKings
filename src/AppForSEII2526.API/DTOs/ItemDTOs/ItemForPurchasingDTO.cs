@@ -3,13 +3,13 @@ namespace AppForSEII2526.API.DTOs.ItemDTOs
 {
     public class ItemForPurchasingDTO
     {
-        public ItemForPurchasingDTO(int id, string name, string brandName, string description, decimal purchasePrice, int quantityAvailaibleForPurchase)
+        public ItemForPurchasingDTO(int id, string name, string brandName, string description, decimal price, int quantityAvailaibleForPurchase)
         {
             Id = id;
             Name = name;
             Brand = brandName;
             Description = description;
-            PurchasePrice = purchasePrice;
+            Price = price;
             QuantityAvailableForPurchase = quantityAvailaibleForPurchase;
         }
         public int Id { get; set; }
@@ -23,7 +23,7 @@ namespace AppForSEII2526.API.DTOs.ItemDTOs
 
         [DataType(DataType.Currency)]
         [Precision(10, 2)]
-        public decimal PurchasePrice { get; set; }
+        public decimal Price { get; set; }
 
         [Display(Name = "Quantity Available For Purchase")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity available must be 0 or more")]
@@ -36,13 +36,13 @@ namespace AppForSEII2526.API.DTOs.ItemDTOs
                    Name == dTO.Name &&
                    Brand == dTO.Brand &&
                    Description == dTO.Description &&
-                   PurchasePrice == dTO.PurchasePrice &&
+                   Price == dTO.Price &&
                    QuantityAvailableForPurchase == dTO.QuantityAvailableForPurchase;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Name, Brand, Description, PurchasePrice, QuantityAvailableForPurchase);
+            return HashCode.Combine(Id, Name, Brand, Description, Price, QuantityAvailableForPurchase);
         }
     }
 }

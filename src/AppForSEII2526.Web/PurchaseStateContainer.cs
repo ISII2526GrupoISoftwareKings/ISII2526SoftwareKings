@@ -1,4 +1,5 @@
 ﻿using AppForSEII2526.Web.API;
+using AppForSEII2526.API.DTOs.ItemDTOs;
 
 namespace AppForSEII2526.Web
 {
@@ -24,6 +25,7 @@ namespace AppForSEII2526.Web
         public void AddItemToPurchase(PurchaseItemDTO item)
         {
             if (!Purchase.PurchaseItems.Any(i => i.ItemId == item.ItemId))
+            {
                 //we add it if is not in the list
                 Purchase.PurchaseItems.Add(new PurchaseItemDTO()
                 {
@@ -34,6 +36,26 @@ namespace AppForSEII2526.Web
                     Price = item.Price
                 }
             );
+                NotifyStateChanged();
+            }
+        }
+
+        public void AddItemToPurchase(ItemForPurchasingDTO item)
+        {
+            if (!Purchase.PurchaseItems.Any(i => i.ItemId == item.Id))
+            {
+                //we add it if is not in the list
+                Purchase.PurchaseItems.Add(new PurchaseItemDTO()
+                {
+                    ItemId = item.Id,
+                    Name = item.Name,
+                    Brand = item.Brand,
+                    AmountBought = 1,
+                    Price = item.Price
+                }
+            );
+                NotifyStateChanged();
+            }
         }
 
         //to delete an item from the list of selected items
