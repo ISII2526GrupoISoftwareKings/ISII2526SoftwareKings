@@ -2,7 +2,7 @@
 
 namespace AppForSEII2526.Web
 {
-    public class RentalStateContainer
+    public class PlanStateContainer
     {
 
         //we create an instance of Plan when an instance of PlanStateContainer is created
