@@ -1,0 +1,171 @@
+﻿@page "/plan/selectclassesforplan"
+
+@using Microsoft.AspNetCore.Authorization
+@using AppForSEII2526.Web.API
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<SelectClassesForPlan> logger
+@inject PlanStateContainer planState
+@inject NavigationManager navigation
+
+@* @attribute [Authorize]*@
+<h3>Select Classes For Plan</h3>
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Class Name</span>
+                        <input type="text" id="inputClassName" @bind=className class="form-control" placeholder="Class Name" aria-label="Class Name" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Date</span>
+                        <InputDate @bind-Value="@ClassDate" id="classDate" />
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" @onclick=@SearchClasses id="searchClasses">Search classes</button>
+                </div>
+
+            </div>
+            <div class="row">
+                @if (classes == null)
+                {
+                    <p>Loading classes....</p>
+                }
+                else
+                {
+                    <div class="mh-100 table-responsive">
+                        <table class="table table-condensed table-hover" id="TableOfClasses">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type Items</th>
+                                    <th>Date</th>
+                                    <th>Price</th>
+                                    <th>Capacity</th>
+                                    <th>Add</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var classItem in classes)
+                                {
+                                    <tr id="ClassData_@classItem.Name">
+                                        <td>@classItem.Name</td>
+                                        <td>@string.Join(", ", classItem.TypeItems.Select(ti => ti.Name))</td>
+                                        <td>@classItem.Date.DateTime.ToShortDateString</td>
+                                        <td>@classItem.Price €</td>
+                                        <td>@classItem.Capacity</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" id="classToPlan_@classItem.Name" @onclick="@(() => AddClass(classItem))">Add</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+            </div>
+        </div>
+        <div class="col-2" hidden="@hidePlanCart">
+            <div class="row">
+                <h3>Plan Cart</h3>
+            </div>
+            @foreach (PlanItemDTO item in plan.PlanItems)
+            {
+                <div class="row">
+                    <button type="button" class="btn btn-light" id="removeClass_@item.ClassId" @onclick="@(() => RemovePlanItem(item))">x Class ID: @item.ClassId - @item.Price€</button>
+                </div>
+            }
+            <div class="row">
+                <button type="button" class="btn btn-primary" id="createPlanButton" @onclick=@CreatePlan>Create Plan</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@code {
+    private bool hidePlanCart { get { return plan.PlanItems.Count == 0; } }
+    private ICollection<ClassForPlanDTO> classes;
+    private bool hideErrors { get { return errors.Length == 0; } }
+    private string errors = "";
+    private string className { get; set; }
+    private DateTime _classDate;
+    private DateTime ClassDate
+    {
+        get { return _classDate; }
+        set
+        {
+            if (_classDate != value)
+            {
+                //the plan cart is cleared to ensure that only classes available for the selected date are selected
+                _classDate = value;
+                planState.ClearPlanCart();
+
+            }
+        }
+    }
+    private PlanForCreateDTO plan => planState.Plan;
+
+
+    private void AddClass(ClassForPlanDTO classdto)
+    {
+        planState.AddClassToPlan(classdto);
+    }
+
+    private void RemovePlanItem(PlanItemDTO item)
+    {
+        planState.RemovePlanItemToPlan(item);
+    }
+
+    public async void SearchClasses()
+    {
+
+        if (_classDate < DateTime.Today)
+        {
+            errors = "The class date must be today or later";
+            return;
+        }
+
+        try
+        {
+            classes = await apiclient.GetClassesForPlanAsync(className, _classDate);
+            errors = "";
+
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            errors = "Error while connecting to the system";
+        }
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        //the type of ClassDate is DateTime, it is required to set a default value
+        //https://learn.microsoft.com/es-es/dotnet/standard/datetime/converting-between-datetime-and-offset\r
+        _classDate = (_classDate == new DateTime(1, 1, 1)) ?
+            DateTime.SpecifyKind(DateTime.Today.AddDays(1), DateTimeKind.Utc)
+            : _classDate;
+
+        SearchClasses();
+
+        // return base.OnInitializedAsync();
+    }
+
+    private void CreatePlan()
+    {
+        navigation.NavigateTo("/plans/createplan");
+    }
+
+}
