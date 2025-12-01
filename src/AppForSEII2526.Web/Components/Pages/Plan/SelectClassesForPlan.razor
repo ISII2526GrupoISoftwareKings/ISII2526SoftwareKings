@@ -58,7 +58,7 @@
                                     <tr id="ClassData_@classItem.Name">
                                         <td>@classItem.Name</td>
                                         <td>@string.Join(", ", classItem.TypeItems.Select(ti => ti.Name))</td>
-                                        <td>@classItem.Date.DateTime.ToShortDateString</td>
+                                        <td>@classItem.Date.DateTime.ToShortDateString()</td>
                                         <td>@classItem.Price €</td>
                                         <td>@classItem.Capacity</td>
                                         <td>
@@ -73,18 +73,47 @@
                 }
             </div>
         </div>
-        <div class="col-2" hidden="@hidePlanCart">
-            <div class="row">
-                <h3>Plan Cart</h3>
-            </div>
-            @foreach (PlanItemDTO item in plan.PlanItems)
-            {
-                <div class="row">
-                    <button type="button" class="btn btn-light" id="removeClass_@item.ClassId" @onclick="@(() => RemovePlanItem(item))">x Class ID: @item.ClassId - @item.Price€</button>
+        <div class="col-4" hidden="@hidePlanCart">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Plan Cart</h5>
+                    <small>@plan.PlanItems.Count classes selected</small>
                 </div>
-            }
-            <div class="row">
-                <button type="button" class="btn btn-primary" id="createPlanButton" @onclick=@CreatePlan>Create Plan</button>
+                <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                    @foreach (PlanItemDTO item in plan.PlanItems)
+                    {
+                        var classInfo = classes?.FirstOrDefault(c => c.Id == item.ClassId);
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h6>@(classInfo?.Name ?? "Class")</h6>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm" 
+                                            id="removeClass_@item.ClassId" 
+                                            @onclick="@(() => RemovePlanItem(item))">
+                                        Remove
+                                    </button>
+                                </div>
+                                <p class="mb-1"><small>Date: @(classInfo?.Date.DateTime.ToShortDateString() ?? "N/A")</small></p>
+                                @if (classInfo != null)
+                                {
+                                    <p class="mb-1"><small>Type: @string.Join(", ", classInfo.TypeItems.Select(ti => ti.Name))</small></p>
+                                    <p class="mb-1"><small>Capacity: @classInfo.Capacity</small></p>
+                                }
+                                <p class="mb-0"><strong>Price: @item.Price €</strong></p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>Total:</strong>
+                        <strong>@plan.PlanItems.Sum(i => i.Price) €</strong>
+                    </div>
+                    <button type="button" class="btn btn-success w-100" id="createPlanButton" @onclick=@CreatePlan>
+                        Create Plan
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -93,9 +122,9 @@
 </div>
 
 @code {
-    private bool hidePlanCart { get { return plan.PlanItems.Count == 0; } }
+    private bool hidePlanCart => plan.PlanItems.Count == 0;
     private ICollection<ClassForPlanDTO> classes;
-    private bool hideErrors { get { return errors.Length == 0; } }
+    private bool hideErrors => errors.Length == 0;
     private string errors = "";
     private string className { get; set; }
     private DateTime _classDate;
@@ -153,7 +182,7 @@
     {
 
         //the type of ClassDate is DateTime, it is required to set a default value
-        //https://learn.microsoft.com/es-es/dotnet/standard/datetime/converting-between-datetime-and-offset\r
+        //https://learn.microsoft.com/es-es/dotnet/standard/datetime/converting-between-datetime-and-offset\\r
         _classDate = (_classDate == new DateTime(1, 1, 1)) ?
             DateTime.SpecifyKind(DateTime.Today.AddDays(1), DateTimeKind.Utc)
             : _classDate;
