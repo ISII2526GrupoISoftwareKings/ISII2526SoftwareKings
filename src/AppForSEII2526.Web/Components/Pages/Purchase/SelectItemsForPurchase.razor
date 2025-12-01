@@ -7,7 +7,7 @@
 @inject PurchaseStateContainer purchaseState
 @inject NavigationManager navigation
 
-@attribute [Authorize]
+@*@attribute [Authorize]*@
 
 <h3>Select Items For Purchase</h3>
 <div class="container-fluid">
@@ -26,12 +26,7 @@
                 <div class="col">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon2">Brand</span>
-                        <select class="form-select" aria-label="Default select" @bind="itemBrandSelected" id="selectBrand">
-                            <option value="All" selected>All</option>
-                            @foreach (string brandName in brandNames) {
-                                <option value="@brandName" id="brandNameSelected_@brandName">@brandName</option>
-                            }
-                        </select>
+                        <input type="text" id="inputBrandName" @bind=itemBrand class="form-control" placeholder="Brand" aria-label="Brand" aria-describedby="basic-addon2">
                     </div>
                 </div>
                 <div class="col">
@@ -115,8 +110,6 @@
 @implements IDisposable
 
 @code {
-    private string itemBrandSelected;
-    private ICollection<string>? brandNames = new List<string>();
     private bool hidePurchaseCart { get { return purchase.PurchaseItems.Count == 0; } }
     private ICollection<ItemForPurchasingDTO> items;
     private bool hideErrors { get { return errors.Length == 0; } }
@@ -134,12 +127,13 @@
     }
 
     public async void SearchItems() {
-        itemBrand = itemBrandSelected == "All" ? null : itemBrandSelected;
+        // Normalize empty strings to null so backend treats them as "no filter"
+        if (string.IsNullOrWhiteSpace(itemName)) itemName = null;
+        if (string.IsNullOrWhiteSpace(itemBrand)) itemBrand = null;
 
         try {
             items = await apiclient.GetItemsForPurchasingAsync(itemName, itemBrand);
             errors = "";
-            // No need to extract brands anymore - they're loaded separately
         }
         catch (ApiException ex) {
             logger.LogError($"{DateTime.Now} Error: {ex}");
@@ -150,21 +144,13 @@
 
     protected override async Task OnInitializedAsync() {
         try {
-            // Load brands from the dedicated endpoint
-            brandNames = await apiclient.GetBrandsAsync(null);
-            
-            if (brandNames == null) {
-                brandNames = new List<string>();
-            }
-            
-            // Also load initial items (optional - you might want to load items only after user searches)
+            // Load initial items with no filters
             items = await apiclient.GetItemsForPurchasingAsync(null, null);
             errors = "";
         }
         catch (ApiException ex) {
-            if (brandNames == null) brandNames = new List<string>();
-            logger.LogError("Error! There was an error while connecting to the GetBrandsAsync service");
-            errors = "Error while loading brands";
+            logger.LogError("Error! There was an error while loading items for purchase: {Ex}", ex);
+            errors = "Error while loading items";
         }
 
         // Subscribe to purchase state changes

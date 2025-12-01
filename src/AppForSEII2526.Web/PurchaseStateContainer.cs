@@ -23,9 +23,11 @@ namespace AppForSEII2526.Web
 
         public void AddItemToPurchase(PurchaseItemDTO item)
         {
-            if (!Purchase.PurchaseItems.Any(i => i.ItemId == item.ItemId))
+            var existingItem = Purchase.PurchaseItems.FirstOrDefault(i => i.ItemId == item.ItemId);
+
+            if (existingItem is null)
             {
-                //we add it if is not in the list
+                // we add it if it is not in the list
                 Purchase.PurchaseItems.Add(new PurchaseItemDTO()
                 {
                     ItemId = item.ItemId,
@@ -33,17 +35,24 @@ namespace AppForSEII2526.Web
                     Brand = item.Brand,
                     AmountBought = 1,
                     Price = item.Price
-                }
-            );
-                NotifyStateChanged();
+                });
             }
+            else
+            {
+                // if it already exists, increase quantity
+                existingItem.AmountBought += 1;
+            }
+
+            NotifyStateChanged();
         }
 
         public void AddItemToPurchase(ItemForPurchasingDTO item)
         {
-            if (!Purchase.PurchaseItems.Any(i => i.ItemId == item.Id))
+            var existingItem = Purchase.PurchaseItems.FirstOrDefault(i => i.ItemId == item.Id);
+
+            if (existingItem is null)
             {
-                //we add it if is not in the list
+                // we add it if it is not in the list
                 Purchase.PurchaseItems.Add(new PurchaseItemDTO()
                 {
                     ItemId = item.Id,
@@ -51,10 +60,15 @@ namespace AppForSEII2526.Web
                     Brand = item.Brand,
                     AmountBought = 1,
                     Price = item.Price
-                }
-            );
-                NotifyStateChanged();
+                });
             }
+            else
+            {
+                // if it already exists, increase quantity
+                existingItem.AmountBought += 1;
+            }
+
+            NotifyStateChanged();
         }
 
         //to delete an item from the list of selected items
