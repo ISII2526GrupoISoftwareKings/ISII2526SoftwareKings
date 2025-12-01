@@ -14,54 +14,6 @@
     "version": "v1"
   },
   "paths": {
-    "/GetBrands": {
-      "get": {
-        "tags": [
-          "Brands"
-        ],
-        "operationId": "GetBrands",
-        "parameters": [
-          {
-            "name": "brandName",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Classes/GetClassesForPlan": {
       "get": {
         "tags": [
@@ -586,106 +538,159 @@
           }
         }
       }
+    },
+    "/api/Restocks/GetRestock": {
+      "get": {
+        "tags": [
+          "Restocks"
+        ],
+        "operationId": "GetRestock",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestockDetailDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestockDetailDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestockDetailDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Restocks/CreateRestock": {
+      "post": {
+        "tags": [
+          "Restocks"
+        ],
+        "operationId": "CreateRestock",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestockForCreateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestockForCreateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestockForCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestockDetailDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestockDetailDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestockDetailDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "ApplicationUser": {
-        "required": [
-          "address",
-          "name",
-          "surname"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "nullable": true
-          },
-          "userName": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedUserName": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "normalizedEmail": {
-            "type": "string",
-            "nullable": true
-          },
-          "emailConfirmed": {
-            "type": "boolean"
-          },
-          "passwordHash": {
-            "type": "string",
-            "nullable": true
-          },
-          "securityStamp": {
-            "type": "string",
-            "nullable": true
-          },
-          "concurrencyStamp": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumberConfirmed": {
-            "type": "boolean"
-          },
-          "twoFactorEnabled": {
-            "type": "boolean"
-          },
-          "lockoutEnd": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "lockoutEnabled": {
-            "type": "boolean"
-          },
-          "accessFailedCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "maxLength": 30,
-            "minLength": 0,
-            "type": "string"
-          },
-          "surname": {
-            "maxLength": 30,
-            "minLength": 0,
-            "type": "string"
-          },
-          "address": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "paymentMethods": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PaymentMethod"
-            },
-            "nullable": true
-          },
-          "restocks": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Restock"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "Assembly": {
         "type": "object",
         "properties": {
@@ -786,29 +791,6 @@
         },
         "additionalProperties": false
       },
-      "Brand": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "maxLength": 100,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Item"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "CallingConventions": {
         "enum": [
           "Standard",
@@ -818,50 +800,6 @@
           "ExplicitThis"
         ],
         "type": "string"
-      },
-      "Class": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "maxLength": 50,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "price": {
-            "type": "number",
-            "format": "currency"
-          },
-          "capacity": {
-            "maximum": 2147483647,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
-          },
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "typeItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TypeItem"
-            },
-            "nullable": true
-          },
-          "planItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PlanItem"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
       },
       "ClassForPlanDTO": {
         "type": "object",
@@ -876,6 +814,12 @@
             "type": "string",
             "nullable": true
           },
+          "capacity": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
           "price": {
             "type": "number",
             "format": "currency"
@@ -887,7 +831,7 @@
           "typeItems": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TypeItem"
+              "$ref": "#/components/schemas/TypeItemForClassDTO"
             },
             "nullable": true
           }
@@ -1353,69 +1297,6 @@
         "type": "object",
         "additionalProperties": false
       },
-      "Item": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "maxLength": 100,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "maxLength": 500,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "purchasePrice": {
-            "type": "number",
-            "format": "currency"
-          },
-          "quantityAvailableForPurchase": {
-            "maximum": 2147483647,
-            "minimum": 0,
-            "type": "integer",
-            "format": "int32"
-          },
-          "quantityForRestock": {
-            "maximum": 2147483647,
-            "minimum": 0,
-            "type": "integer",
-            "format": "int32"
-          },
-          "restockPrice": {
-            "type": "number",
-            "format": "currency",
-            "nullable": true
-          },
-          "purchaseItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PurchaseItem"
-            },
-            "nullable": true
-          },
-          "typeItem": {
-            "$ref": "#/components/schemas/TypeItem"
-          },
-          "brand": {
-            "$ref": "#/components/schemas/Brand"
-          },
-          "restockItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RestockItem"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "ItemForPurchasingDTO": {
         "type": "object",
         "properties": {
@@ -1439,7 +1320,7 @@
             "type": "string",
             "nullable": true
           },
-          "price": {
+          "purchasePrice": {
             "type": "number",
             "format": "currency"
           },
@@ -2025,73 +1906,28 @@
         },
         "additionalProperties": false
       },
-      "PaymentMethod": {
+      "PaymentMethodDTO": {
+        "required": [
+          "id"
+        ],
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
-          },
-          "user": {
-            "$ref": "#/components/schemas/ApplicationUser"
-          },
-          "plans": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Plan"
-            },
-            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "Plan": {
+      "PaymentmethodDTO": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "format": "int32"
           },
-          "name": {
-            "maxLength": 20,
-            "minLength": 1,
+          "userName": {
             "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "maxLength": 100,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "weeks": {
-            "maximum": 2147483647,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
-          },
-          "createdDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "totalPrice": {
-            "type": "number",
-            "format": "currency"
-          },
-          "healthIssues": {
-            "maxLength": 100,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
-          },
-          "planItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PlanItem"
-            },
             "nullable": true
           }
         },
@@ -2141,7 +1977,7 @@
             "nullable": true
           },
           "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
+            "$ref": "#/components/schemas/PaymentmethodDTO"
           },
           "planItems": {
             "type": "array",
@@ -2197,7 +2033,7 @@
             "nullable": true
           },
           "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
+            "$ref": "#/components/schemas/PaymentmethodDTO"
           },
           "planItems": {
             "type": "array",
@@ -2217,36 +2053,6 @@
           "planDate": {
             "type": "string",
             "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "PlanItem": {
-        "type": "object",
-        "properties": {
-          "planId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "classId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "goal": {
-            "maxLength": 100,
-            "minLength": 1,
-            "type": "string",
-            "nullable": true
-          },
-          "price": {
-            "type": "number",
-            "format": "currency"
-          },
-          "class": {
-            "$ref": "#/components/schemas/Class"
-          },
-          "plan": {
-            "$ref": "#/components/schemas/Plan"
           }
         },
         "additionalProperties": false
@@ -2278,21 +2084,10 @@
             "type": "integer",
             "format": "int32"
           },
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
           "goal": {
             "maxLength": 100,
             "minLength": 1,
             "type": "string",
-            "nullable": true
-          },
-          "typeItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TypeItem"
-            },
             "nullable": true
           }
         },
@@ -2402,58 +2197,6 @@
         },
         "additionalProperties": false
       },
-      "Purchase": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "city": {
-            "maxLength": 50,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "country": {
-            "maxLength": 50,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "description": {
-            "maxLength": 200,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "street": {
-            "maxLength": 100,
-            "minLength": 0,
-            "type": "string",
-            "nullable": true
-          },
-          "totalPrice": {
-            "type": "number",
-            "format": "currency"
-          },
-          "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
-          },
-          "purchaseItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PurchaseItem"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "PurchaseForCreateDTO": {
         "type": "object",
         "properties": {
@@ -2490,7 +2233,7 @@
             "format": "currency"
           },
           "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
+            "$ref": "#/components/schemas/PaymentMethodDTO"
           },
           "purchaseItems": {
             "type": "array",
@@ -2534,7 +2277,7 @@
             "format": "date"
           },
           "paymentMethod": {
-            "$ref": "#/components/schemas/PaymentMethod"
+            "$ref": "#/components/schemas/PaymentMethodDTO"
           },
           "purchaseItems": {
             "type": "array",
@@ -2550,36 +2293,6 @@
           "totalPrice": {
             "type": "number",
             "format": "currency"
-          }
-        },
-        "additionalProperties": false
-      },
-      "PurchaseItem": {
-        "type": "object",
-        "properties": {
-          "amountBought": {
-            "maximum": 2147483647,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
-          },
-          "price": {
-            "type": "number",
-            "format": "currency"
-          },
-          "itemId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "item": {
-            "$ref": "#/components/schemas/Item"
-          },
-          "purchaseId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "purchase": {
-            "$ref": "#/components/schemas/Purchase"
           }
         },
         "additionalProperties": false
@@ -2616,76 +2329,152 @@
         },
         "additionalProperties": false
       },
-      "Restock": {
+      "RestockDetailDTO": {
+        "required": [
+          "applicationUserName",
+          "deliveryAddress",
+          "title"
+        ],
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
+          "applicationUserName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "deliveryAddress": {
+            "maxLength": 50,
+            "minLength": 10,
+            "type": "string",
+            "format": "multiline"
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
           },
           "description": {
             "type": "string",
             "nullable": true
           },
-          "deliveryAddress": {
-            "type": "string",
-            "nullable": true
-          },
           "expectedDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "restockDate": {
             "type": "string",
             "format": "date-time"
           },
-          "title": {
-            "type": "string",
+          "restockItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RestockItemDTO"
+            },
             "nullable": true
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
           },
           "totalPrice": {
             "type": "number",
             "format": "double",
             "nullable": true
           },
-          "restockItems": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RestockItem"
-            },
+          "adminName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string",
             "nullable": true
           },
-          "applicationUser": {
-            "$ref": "#/components/schemas/ApplicationUser"
+          "adminSurname": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "RestockItem": {
+      "RestockForCreateDTO": {
+        "required": [
+          "applicationUserName",
+          "deliveryAddress",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "applicationUserName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "deliveryAddress": {
+            "maxLength": 50,
+            "minLength": 10,
+            "type": "string",
+            "format": "multiline"
+          },
+          "title": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "expectedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "restockDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "restockItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RestockItemDTO"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RestockItemDTO": {
         "type": "object",
         "properties": {
           "itemId": {
             "type": "integer",
             "format": "int32"
           },
-          "item": {
-            "$ref": "#/components/schemas/Item"
-          },
-          "restockId": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "restock": {
-            "$ref": "#/components/schemas/Restock"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "restockPrice": {
-            "type": "number",
-            "format": "double",
+          "name": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
             "nullable": true
+          },
+          "brand": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "quantityInRestock": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "priceOfRestock": {
+            "type": "number",
+            "format": "currency",
+            "nullable": true
+          },
+          "quantityForRestock": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -3443,7 +3232,7 @@
         },
         "additionalProperties": false
       },
-      "TypeItem": {
+      "TypeItemForClassDTO": {
         "type": "object",
         "properties": {
           "id": {
@@ -3452,13 +3241,6 @@
           },
           "name": {
             "type": "string",
-            "nullable": true
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Item"
-            },
             "nullable": true
           }
         },

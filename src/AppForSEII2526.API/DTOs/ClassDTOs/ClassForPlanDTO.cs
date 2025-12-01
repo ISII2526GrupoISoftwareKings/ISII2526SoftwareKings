@@ -8,6 +8,9 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
 
         [StringLength(50, ErrorMessage = "Name cannot be longer than 50 characters.")]
         public string Name { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Minimum capacity is 1.")]
+        public int Capacity { get; set; }
         [DataType(DataType.Currency)]
         [Precision(5, 2)]
         public decimal Price { get; set; }
@@ -17,13 +20,14 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
 
         public IList<TypeItemForClassDTO> TypeItems { get; set; }
 
-        public ClassForPlanDTO(int id, string name, IList<TypeItemForClassDTO> typeItems, DateTime date, decimal price)
+        public ClassForPlanDTO(int id, string name, IList<TypeItemForClassDTO> typeItems, DateTime date, decimal price, int capacity)
         {
             Id = id;
             Name = name;
             TypeItems = typeItems;
             Date = date;
             Price = price;
+            Capacity = capacity;
         }
 
         public override bool Equals(object? obj)
@@ -32,11 +36,12 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
                    Id == dTO.Id &&
                    Name == dTO.Name &&
                    Price == dTO.Price &&
+                   Capacity == dTO.Capacity &&
                    Date == dTO.Date;
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Name, Price, Date);
+            return HashCode.Combine(Id, Name, Price, Date, Capacity);
         }
     }
 }

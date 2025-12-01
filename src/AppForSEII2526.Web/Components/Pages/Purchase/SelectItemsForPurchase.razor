@@ -110,6 +110,8 @@
 @implements IDisposable
 
 @code {
+    private string itemBrandSelected;
+    private ICollection<string>? brandNames = new List<string>();
     private bool hidePurchaseCart { get { return purchase.PurchaseItems.Count == 0; } }
     private ICollection<ItemForPurchasingDTO> items;
     private bool hideErrors { get { return errors.Length == 0; } }
@@ -134,6 +136,7 @@
         try {
             items = await apiclient.GetItemsForPurchasingAsync(itemName, itemBrand);
             errors = "";
+            // No need to extract brands anymore - they're loaded separately
         }
         catch (ApiException ex) {
             logger.LogError($"{DateTime.Now} Error: {ex}");

@@ -36,14 +36,15 @@ namespace AppForSEII2526.Web
                     AmountBought = 1,
                     Price = item.Price
                 });
-            }
+                }
             else
             {
                 // if it already exists, increase quantity
                 existingItem.AmountBought += 1;
             }
 
-            NotifyStateChanged();
+                NotifyStateChanged();
+            }
         }
 
         public void AddItemToPurchase(ItemForPurchasingDTO item)
@@ -66,9 +67,10 @@ namespace AppForSEII2526.Web
             {
                 // if it already exists, increase quantity
                 existingItem.AmountBought += 1;
-            }
+                }
 
-            NotifyStateChanged();
+                NotifyStateChanged();
+            }
         }
 
         //to delete an item from the list of selected items
