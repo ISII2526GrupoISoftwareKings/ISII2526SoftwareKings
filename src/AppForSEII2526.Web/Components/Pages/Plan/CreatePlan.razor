@@ -1,0 +1,216 @@
+﻿@page "/plans/createplan"
+@inject NavigationManager navigation
+@using AppForSEII2526.Web.Components.Shared
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<CreatePlan> logger
+@inject PlanStateContainer planState
+
+@*@attribute [Authorize]*@
+
+<h3>Create Plan</h3>
+
+@* plan is the object that will be edited thanks to the form *@
+<EditForm Model="plan" OnValidSubmit="OpenDialog">
+    <div class="row">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="row alert alert-danger" />
+    </div>
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @messageError</p>
+    </div>
+    <div class="row g-3">
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="plan.NameUser" class="form-control" id="Name" />
+                <label for="Name">Name </label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="plan.SurnameUser" class="form-control" id="Surname" />
+                <label for="Surname">Surname </label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="plan.Name" class="form-control" id="PlanName" />
+                <label for="PlanName">Plan Name</label>
+            </div>
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputTextArea @bind-Value="plan.Description" class="form-control" id="Description" style="height: 100px" />
+                <label for="Description">Description</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputNumber @bind-Value="plan.Weeks" class="form-control" id="Weeks" />
+                <label for="Weeks">Number of Weeks</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputTextArea @bind-Value="plan.HealthIssues" class="form-control" id="HealthIssues" style="height: 100px" />
+                <label for="HealthIssues">Health Issues</label>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2">
+        <div class="col-md">
+            <div class="form-floating">
+                @*a dropdown for selecting the payment method*@
+                <InputSelect class="form-select" @bind-Value="@selectedPaymentMethodId" id="PaymentMethod">
+                    <option value="1" selected>Payment Method 1</option>
+                    <option value="2">Payment Method 2</option>
+                    <option value="3">Payment Method 3</option>
+                </InputSelect>
+                <label for="PaymentMethod">Payment Method</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating">
+                @*this button will be used to ask the user if they want to proceed to create the plan*@
+                <button class="btn btn-primary" type="submit" id="Submit">
+                    Create your plan
+                </button>
+            </div>
+        </div>
+    </div>
+    <h4>Plan detail</h4>
+    <p><b>Created Date:</b> @plan.CreatedDate.ToString("dd/MM/yyyy")</p>
+    <p>
+        <b>Total price:</b> @TotalCost €
+        <button class="btn btn-outline-primary" type="button" @onclick="ModifyPlanItems" id="ModifyClasses">
+            Modify classes
+        </button>
+    </p>
+    
+    <div class="mh-100 table-responsive">
+        <table class="table table-condensed table-hover" id="TableOfPlanItems">
+            <thead>
+                <tr>
+                    <th>Class ID</th>
+                    <th>Price</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in plan.PlanItems) {
+                    <tr id="ClassData_@item.ClassId">
+                        <td>@item.ClassId</td>
+                        <td>@item.Price €</td>
+                        <td><InputText @bind-Value="item.Goal" class="form-control" id="@($"goal_{item.ClassId}")" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</EditForm>
+
+@*a modal popup dialog for checking if user wants to proceed to create plan*@
+@if (DialogIsOpen)
+{
+    <Dialog Caption="Create Plan"
+    Message="Do you want to proceed to create this plan?"
+    OnClose="@OnDialogClose"
+    Type=Dialog.Category.SaveNot>
+    </Dialog>
+}
+
+@code {
+    private string messageError = "";
+    private bool hideErrors { get { return messageError.Length == 0; } }
+    private bool DialogIsOpen;
+    private int selectedPaymentMethodId = 1;
+    
+    private decimal TotalCost { 
+        get {
+            double price = plan.PlanItems.Sum(pi => pi.Price);
+            return Convert.ToDecimal(price);
+        }
+    }
+    
+    private void ModifyPlanItems() {
+        navigation.NavigateTo("/plan/selectclassesforplan");
+    }
+    
+    private PlanForCreateDTO plan => planState.Plan;
+
+    private void OpenDialog()
+    {
+        DialogIsOpen = true;
+    }
+
+    private async Task OnDialogClose(bool isOk) {
+
+        DialogIsOpen = false;
+        if (isOk) {
+            // Process the data introduced by the user if they are valid
+            if (plan.PlanItems.Count > 0) {
+                
+                // Get the authenticated user's username for the payment method
+                var authState = await authenticationState;
+                string userName = authState?.User?.Identity?.Name ?? "";
+                
+                // Assign the selected payment method using object initializer instead of constructor
+                plan.PaymentMethod = new PaymentmethodDTO
+                {
+                    Id = selectedPaymentMethodId,
+                    UserName = userName
+                };
+                
+                try {
+                    var created = await apiclient.CreatePlanAsync(plan);
+                    planState.PlanProcessed();
+                    navigation.NavigateTo($"/plans/detailplan/?PlanID={created.Id}");
+                }
+                catch (ApiException<ValidationProblemDetails> apiexceptionvalidation) {
+
+                    if (apiexceptionvalidation.Result.Errors.Values != null) {
+                        messageError = "";
+                        foreach (var errors in apiexceptionvalidation.Result.Errors.Values)
+                            //https://learn.microsoft.com/en-us/dotnet/api/system.string.join?view=net-7.0
+                            messageError = string.Join("(*) ", messageError, string.Join(" (*) ", errors));
+                    }
+                }
+                catch (ApiException apiexception) {
+                    //we need to inform user that there was some other error while processing the request
+                    messageError = "Error while processing your request, please try again later!";
+
+                }
+
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync() {
+
+        // Initialize created date
+        plan.CreatedDate = DateTime.UtcNow;
+
+        if (authenticationState is not null) {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            if (user is not null) {
+                if (user.Identity is not null && user.Identity.IsAuthenticated) {
+                    // Set default payment method
+                    selectedPaymentMethodId = 1;
+                }
+            }
+            plan.NameUser = plan.NameUser == null ? "" : plan.NameUser;
+            plan.SurnameUser = plan.SurnameUser == null ? "" : plan.SurnameUser;
+            plan.Name = plan.Name == null ? "" : plan.Name;
+
+        }
+    }
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+ }
