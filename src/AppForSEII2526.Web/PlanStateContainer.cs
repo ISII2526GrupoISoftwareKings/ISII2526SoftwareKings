@@ -35,6 +35,7 @@ namespace AppForSEII2526.Web
                 {
                     ClassId = classdto.Id,
                     Price = classdto.Price,
+                    Capacity = classdto.Capacity,
                 }
             );
 
