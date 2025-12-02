@@ -1,0 +1,157 @@
+﻿@page "/plans/detailplan"
+
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject AppForSEII2526APIClient apiclient
+@inject NavigationManager navigation
+@inject ILogger<DetailPlan> logger
+
+<h3>Plan Details</h3>
+
+@*@attribute [Authorize]*@
+
+@if (plan == null)
+{
+    <p>@error</p>
+}
+else
+{
+    <table class="table table-borderless table-sm">
+        <tr>
+            <th>Name and Surname</th>
+            <td id="NameSurname">@plan.NameUser @plan.SurnameUser</td>
+        </tr>
+        <tr>
+            <th>Plan Date</th>
+            <td id="PlanDate">@plan.PlanDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+        </tr>
+        <tr>
+            <th>Total Price</th>
+            <td id="TotalPrice">@plan.TotalPrice €</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td id="PlanName">@plan.Name</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td id="Description">@(plan.Description ?? "N/A")</td>
+        </tr>
+        <tr>
+            <th>Number of Weeks</th>
+            <td id="NumberOfWeeks">@plan.Weeks</td>
+        </tr>
+        <tr>
+            <th>Health Issues</th>
+            <td id="HealthIssues">@(plan.HealthIssues ?? "None")</td>
+        </tr>
+    </table>
+
+    <h4>Enrolled Classes</h4>
+
+    @if (capacityWarning)
+    {
+        <div class="alert alert-warning" role="alert">
+            <strong>Warning!</strong> One or more classes do not have enough capacity. Please return to select different classes.
+            <button type="button" class="btn btn-primary mt-2" @onclick="ReturnToSelectClasses">Modify Classes</button>
+        </div>
+    }
+
+    <table class="table" id="EnrolledClasses">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Price</th>
+                <th scope="col">Date</th>
+                <th scope="col">Time</th>
+                <th scope="col">Goals</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (PlanItemDTO item in plan.PlanItems)
+            {
+                <tr id="PlanItem_@item.ClassId" class="@(item.Capacity <= 0 ? "table-warning" : "")">
+                    <td>@item.Name</td>
+                    <td>@string.Join(", ", item.TypeItems.Select(ti => ti.Name))</td>
+                    <td>@item.Price €</td>
+                    <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Date.ToString("HH:mm")</td>
+                    <td>@item.Goal</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            @*colspan is used to state that FIVE columns are collapsed*@
+            <th scope="row" colspan="5" class="text-end">Total Price</th>
+            <td id="TotalPriceFooter">@plan.TotalPrice €</td>
+        </tfoot>
+
+    </table>
+
+}
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int PlanID { get; set; }
+    
+    private PlanForDetailDTO plan;
+    private string error = "";
+    private bool capacityWarning = false;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        //we check the user is logged in
+        string userName = "";
+        if (authenticationState is not null)
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            //we retrieve the id of the user logged in
+            if (user is not null)
+            {
+                if (user.Identity is not null && user.Identity.IsAuthenticated && user.IsInRole("User"))
+                {
+                    userName = user.Identity.Name;
+                }
+            }
+        }
+
+        try
+        {
+            plan = await apiclient.GetPlanAsync(PlanID);
+            
+            // Check Alternative flow 7: verify if any class has not enough capacity
+            if (plan != null && plan.PlanItems != null)
+            {
+                capacityWarning = plan.PlanItems.Any(item => item.Capacity <= 0);
+            }
+        }
+        catch (ApiException exception)
+        {
+            logger.LogError($"Error fetching plan: {exception}");
+            plan = null;
+        }
+        
+        if ((plan == null) || (!string.IsNullOrEmpty(userName) && plan.NameUser != userName))
+        {
+            error = $"Error! You are not authorized to see this plan or there is not a plan with id={PlanID}";
+        }
+
+
+    }
+
+    private void ReturnToSelectClasses()
+    {
+        // Alternative flow 7: return to step 2 to modify selected classes
+        navigation.NavigateTo("/plan/selectclassesforplan");
+    }
+
+}

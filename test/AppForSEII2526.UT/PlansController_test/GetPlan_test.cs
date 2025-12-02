@@ -1,5 +1,6 @@
 ﻿using AppForSEII2526.API.Controllers;
 using AppForSEII2526.API.DTOs.PlanDTOs;
+using AppForSEII2526.API.DTOs.TypeItemDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace AppForSEII2526.UT.PlansController_test
             var paymentMethod = new CreditCard("1234567890123456", new DateTime(2027, 12, 31),1 , user);
             paymentMethod.User = user;
 
-            var classType = new List<TypeItem>() { new TypeItem("Dumbell"), new TypeItem("Mat") };
+            var classType = new List<TypeItem>() { new TypeItem("Dumbbell"), new TypeItem("Mat") };
             var trainingClass = new Class(1, "Clase de Yoga", 25.0m, 15, new DateTime(2025, 10, 6), classType);
 
             var plan = new Plan("Plan Fitness", 6, new DateTime(2025, 10, 1), paymentMethod, new List<PlanItem>(), "Rutina semanal", "Ninguno");
@@ -88,7 +89,7 @@ namespace AppForSEII2526.UT.PlansController_test
             var trainingClass = new Class(1, "Clase de Yoga", 25.0m, 15, new DateTime(2025, 10, 6), classType);
 
             expectedPlan.PlanItems.Add(new PlanItemDTO(
-                    1, trainingClass.Id, 25.0m, 15, new DateTime(2025, 10, 6), "Mantener forma física"
+                    trainingClass.Id, trainingClass.Name, new List<TypeItemForClassDTO> { new TypeItemForClassDTO(5, "Dumbbell"), new TypeItemForClassDTO(6, "Mat") }, 25.0m, 15, new DateTime(2025, 10, 6), "Mantener forma física"
             ));
 
                 // Act

@@ -1,6 +1,7 @@
 ﻿using AppForSEII2526.API.Controllers;
 using AppForSEII2526.API.DTOs.ClassDTOs;
 using AppForSEII2526.API.DTOs.PlanDTOs;
+using AppForSEII2526.API.DTOs.TypeItemDTOs;
 using AppForSEII2526.API.Models;
 using System;
 using System.Collections.Generic;
@@ -100,17 +101,17 @@ namespace AppForSEII2526.UT.PlansController_test
 
             var validPlanItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (1, 1, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility") 
+                new PlanItemDTO (1, _class1Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(1, "Yoga Mat") }, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility") 
             };
 
             var fullClassItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (2, 2, 30.0m, 0, DateTime.Today.AddDays(5), "Class full")
+                new PlanItemDTO (2, _class2Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(2, "Dumbbell") }, 30.0m, 0, DateTime.Today.AddDays(5), "Class full")
 
             };
             var pastClassItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (3, 3, 15.0m, 10, new DateTime(2025, 2, 10), "Past class")
+                new PlanItemDTO (3, _class3Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(3, "Mat") }, 15.0m, 10, new DateTime(2025, 2, 10), "Past class")
             };
 
             // DTO without classes
@@ -291,7 +292,7 @@ namespace AppForSEII2526.UT.PlansController_test
 
             var validPlanItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (1, 4, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
+                new PlanItemDTO (4, "Yoga Basics", new List<TypeItemForClassDTO>{new TypeItemForClassDTO(4, "Basic Mat") }, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
             };
 
             var planDto = new PlanForCreateDTO(
@@ -321,7 +322,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 new PaymentmethodDTO(2, _nameUser),
                 new List<PlanItemDTO>
                 {
-                    new PlanItemDTO (1, 4, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
+                    new PlanItemDTO (4, "Yoga Basics", new List<TypeItemForClassDTO>{new TypeItemForClassDTO(4, "Basic Mat") }, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
                 }
             );
 
