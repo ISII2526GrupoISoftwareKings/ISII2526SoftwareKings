@@ -38,9 +38,9 @@
                   "type": "array",
                   "items": {
                     "type": "string"
-                  }
+      }
                 }
-              },
+    },
               "application/json": {
                 "schema": {
                   "type": "array",
@@ -862,12 +862,6 @@
             "type": "string",
             "nullable": true
           },
-          "capacity": {
-            "maximum": 2147483647,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int32"
-          },
           "price": {
             "type": "number",
             "format": "currency"
@@ -882,6 +876,12 @@
               "$ref": "#/components/schemas/TypeItemForClassDTO"
             },
             "nullable": true
+          },
+          "capacity": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -2122,6 +2122,13 @@
             "type": "string",
             "nullable": true
           },
+          "typeItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TypeItemForClassDTO"
+            },
+            "nullable": true
+          },
           "price": {
             "type": "number",
             "format": "currency"
@@ -2131,6 +2138,10 @@
             "minimum": 1,
             "type": "integer",
             "format": "int32"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
           },
           "goal": {
             "maxLength": 100,
