@@ -876,6 +876,12 @@
             "type": "string",
             "nullable": true
           },
+          "capacity": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
           "price": {
             "type": "number",
             "format": "currency"
@@ -887,7 +893,7 @@
           "typeItems": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TypeItem"
+              "$ref": "#/components/schemas/TypeItemForClassDTO"
             },
             "nullable": true
           }

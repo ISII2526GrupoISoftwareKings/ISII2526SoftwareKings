@@ -136,7 +136,6 @@
         try {
             items = await apiclient.GetItemsForPurchasingAsync(itemName, itemBrand);
             errors = "";
-            // No need to extract brands anymore - they're loaded separately
         }
         catch (ApiException ex) {
             logger.LogError($"{DateTime.Now} Error: {ex}");
@@ -169,7 +168,6 @@
     }
 
     private void BackToModify() {
-        // This allows the user to continue modifying the shopping cart
         // The cart is already visible, so this just ensures focus is on the items list
         StateHasChanged();
     }

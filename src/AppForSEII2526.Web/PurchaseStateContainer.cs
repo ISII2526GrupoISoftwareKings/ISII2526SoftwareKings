@@ -44,7 +44,6 @@ namespace AppForSEII2526.Web
             }
 
                 NotifyStateChanged();
-            }
         }
 
         public void AddItemToPurchase(ItemForPurchasingDTO item)
@@ -70,7 +69,6 @@ namespace AppForSEII2526.Web
                 }
 
                 NotifyStateChanged();
-            }
         }
 
         //to delete an item from the list of selected items
