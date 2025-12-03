@@ -220,7 +220,7 @@ namespace AppForSEII2526.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DeliveryAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExpectedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpectedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RestockDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -344,7 +344,7 @@ namespace AppForSEII2526.API.Migrations
                 {
                     PlanId = table.Column<int>(type: "int", nullable: false),
                     ClassId = table.Column<int>(type: "int", nullable: false),
-                    Goal = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Goal = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Price = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false)
                 },
                 constraints: table =>

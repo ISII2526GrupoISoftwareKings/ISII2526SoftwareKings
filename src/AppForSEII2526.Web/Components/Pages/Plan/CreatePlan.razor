@@ -65,9 +65,9 @@
             <div class="form-floating">
                 @*a dropdown for selecting the payment method*@
                 <InputSelect class="form-select" @bind-Value="@selectedPaymentMethodId" id="PaymentMethod">
-                    <option value="1" selected>Payment Method 1</option>
-                    <option value="2">Payment Method 2</option>
-                    <option value="3">Payment Method 3</option>
+                    <option value="1" selected>CreditCard</option>
+                    <option value="2">Paypal</option>
+                    <option value="3">Bizum</option>
                 </InputSelect>
                 <label for="PaymentMethod">Payment Method</label>
             </div>
@@ -94,7 +94,7 @@
         <table class="table table-condensed table-hover" id="TableOfPlanItems">
             <thead>
                 <tr>
-                    <th>Class ID</th>
+                    <th>Class Name</th>
                     <th>Price</th>
                     <th>Goal</th>
                 </tr>
@@ -102,7 +102,7 @@
             <tbody>
                 @foreach (var item in plan.PlanItems) {
                     <tr id="ClassData_@item.ClassId">
-                        <td>@item.ClassId</td>
+                        <td>@item.Name</td>
                         <td>@item.Price €</td>
                         <td><InputText @bind-Value="item.Goal" class="form-control" id="@($"goal_{item.ClassId}")" /></td>
                     </tr>
