@@ -169,11 +169,20 @@
             classes = await apiclient.GetClassesForPlanAsync(className, _classDate);
             errors = "";
 
+
         }
         catch (ApiException ex)
         {
             logger.LogError($"{DateTime.Now} Error: {ex}");
+            if (ex.StatusCode == 400)
+            {
+                errors = "There are no classes available for the selected filters.";
+                classes = new List<ClassForPlanDTO>();
+            }
+            else
+            {
             errors = "Error while connecting to the system";
+        }
         }
         StateHasChanged();
     }
