@@ -41,8 +41,8 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         // Date for display
         public DateTime Date { get; set; }
 
-        [StringLength(100, ErrorMessage = "Goal can be neither longer than 100 characters nor shorter than 1", MinimumLength = 1)]
-        public string Goal { get; set; }
+        [StringLength(100, ErrorMessage = "Goal cannot be longer than 100 characters.")]
+        public string? Goal { get; set; }
 
         public override bool Equals(object? obj)
         {

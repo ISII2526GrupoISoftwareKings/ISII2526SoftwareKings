@@ -34,8 +34,12 @@ namespace AppForSEII2526.Web
                 Plan.PlanItems.Add(new PlanItemDTO()
                 {
                     ClassId = classdto.Id,
+                    Name = classdto.Name,
+                    Date = classdto.Date,
                     Price = classdto.Price,
                     Capacity = classdto.Capacity,
+                    TypeItems = classdto.TypeItems,
+                    Goal = ""
                 }
             );
 
