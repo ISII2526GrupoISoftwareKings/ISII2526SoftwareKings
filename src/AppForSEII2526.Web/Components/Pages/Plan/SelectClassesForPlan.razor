@@ -47,6 +47,7 @@
                                     <th>Name</th>
                                     <th>Type Items</th>
                                     <th>Date</th>
+                                    <th>Time</th>
                                     <th>Price</th>
                                     <th>Capacity</th>
                                     <th>Add</th>
@@ -59,6 +60,7 @@
                                         <td>@classItem.Name</td>
                                         <td>@string.Join(", ", classItem.TypeItems.Select(ti => ti.Name))</td>
                                         <td>@classItem.Date.DateTime.ToShortDateString()</td>
+                                        <td>@classItem.Date.DateTime.ToShortTimeString()</td>
                                         <td>@classItem.Price €</td>
                                         <td>
                                             <button class="btn btn-outline-secondary" id="classToPlan_@classItem.Name" @onclick="@(() => AddClass(classItem))">Add</button>
@@ -93,7 +95,7 @@
                                         Remove
                                     </button>
                                 </div>
-                                <p class="mb-1"><small>Date: @(classInfo?.Date.DateTime.ToShortDateString() ?? "N/A")</small></p>
+                                <p class="mb-1"><small>Date: @(classInfo?.Date.DateTime.ToShortDateString() ?? "N/A") - Time: @(classInfo?.Date.DateTime.ToShortTimeString() ?? "N/A")</small></p>
                                 @if (classInfo != null)
                                 {
                                     <p class="mb-1"><small>Type: @string.Join(", ", classInfo.TypeItems.Select(ti => ti.Name))</small></p>
