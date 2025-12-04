@@ -24,13 +24,7 @@
         <div class="col-md">
             <div class="form-floating mb-3">
                 <InputText @bind-Value="plan.NameUser" class="form-control" id="Name" />
-                <label for="Name">Name </label>
-            </div>
-        </div>
-        <div class="col-md">
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="plan.SurnameUser" class="form-control" id="Surname" />
-                <label for="Surname">Surname </label>
+                <label for="Name">User Name</label>
             </div>
         </div>
         <div class="col-md">
@@ -204,7 +198,6 @@
                 }
             }
             plan.NameUser = plan.NameUser == null ? "" : plan.NameUser;
-            plan.SurnameUser = plan.SurnameUser == null ? "" : plan.SurnameUser;
             plan.Name = plan.Name == null ? "" : plan.Name;
 
         }
