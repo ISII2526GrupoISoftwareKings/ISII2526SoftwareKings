@@ -18,12 +18,12 @@ else
 {
     <table class="table table-borderless table-sm">
         <tr>
-            <th>User Name</th>
-            <td id="NameSurname">@plan.NameUser</td>
+            <th>Name and Surname</th>
+            <td id="NameSurname">@plan.NameUser @plan.SurnameUser</td>
         </tr>
         <tr>
-            <th>Plan Date</th>
-            <td id="PlanDate">@plan.PlanDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+            <th>Created Date</th>
+            <td id="PlanDate">@plan.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
         </tr>
         <tr>
             <th>Total Price</th>

@@ -121,7 +121,7 @@ namespace AppForSEII2526.API.Controllers
                     Name = dto.Name,
                     Description = dto.Description,
                     Weeks = dto.Weeks,
-                    CreatedDate = dto.CreatedDate,
+                    CreatedDate = DateTime.Now,
                     HealthIssues = dto.HealthIssues,
                     PaymentMethod = paymentMethod,
                     TotalPrice = totalPrice,
