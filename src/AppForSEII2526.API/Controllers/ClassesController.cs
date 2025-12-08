@@ -74,7 +74,7 @@ namespace AppForSEII2526.API.Controllers
                 .Include(c => c.TypeItems)
                 .Where(c => (c.Name.Contains(className) || (className == null)) && c.Date >= date && c.Date <= finalDate)
                 .OrderBy(c => c.Id)
-                .Select(c => new ClassForPlanDTO(c.Id, c.Name, c.TypeItems.Select(ti => new TypeItemForClassDTO(ti.Id, ti.Name)).ToList(), c.Date, c.Price, c.Capacity))
+                .Select(c => new ClassForPlanDTO(c.Id, c.Name, c.TypeItems.Select(ti => new TypeItemForClassDTO(ti.Id, ti.Name)).ToList(), c.Date, c.Price))
                 .ToListAsync();
 
             if (!classesDTO.Any())

@@ -42,7 +42,7 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Name, Price, Date, Capacity);
+            return HashCode.Combine(Id, Name, Price, Date);
         }
     }
 }

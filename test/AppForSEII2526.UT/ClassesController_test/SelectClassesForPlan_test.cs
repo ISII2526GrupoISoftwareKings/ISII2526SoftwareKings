@@ -34,27 +34,27 @@ namespace AppForSEII2526.UT.ClassesController_test
 
             var expected1 = new List<ClassForPlanDTO>()
             {
-                new ClassForPlanDTO(1, "Yoga Basics", typeItems, DateTime.Today.AddDays(1), 10m, 10),
-                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m, 20)
+                new ClassForPlanDTO(1, "Yoga Basics", typeItems, DateTime.Today.AddDays(1), 10m),
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m)
             };
 
 
             var expected2 = new List<ClassForPlanDTO>()
             {
-                new ClassForPlanDTO(1, "Yoga Basics", typeItems, DateTime.Today.AddDays(1), 10m, 10)
+                new ClassForPlanDTO(1, "Yoga Basics", typeItems, DateTime.Today.AddDays(1), 10m)
             };
 
 
             var expected3 = new List<ClassForPlanDTO>()
             {
-                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m, 20),
-                new ClassForPlanDTO(3, "CrossFit", typeItems, DateTime.Today.AddDays(8), 20m, 15)
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m),
+                new ClassForPlanDTO(3, "CrossFit", typeItems, DateTime.Today.AddDays(8), 20m)
             };
 
 
             var expected4 = new List<ClassForPlanDTO>()
             {
-                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m, 20)
+                new ClassForPlanDTO(2, "Pilates Advanced", typeItems, DateTime.Today.AddDays(3), 15m)
             };
 
             var allTests = new List<object[]> {
