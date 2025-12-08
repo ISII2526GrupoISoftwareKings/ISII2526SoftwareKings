@@ -139,71 +139,8 @@
     
     private PurchaseForCreateDTO purchase => purchaseState.Purchase;
 
-    private async Task OpenDialog()
+    private void OpenDialog()
     {
-        // Validate before opening dialog (Alternative flow 4 and 5)
-        messageError = "";
-        
-        // Check if there are items
-        if (purchase.PurchaseItems == null || purchase.PurchaseItems.Count == 0) {
-            messageError = "Error! You must include at least one item to purchase.";
-            StateHasChanged();
-            return;
-        }
-        
-        // Validate mandatory fields
-        if (string.IsNullOrWhiteSpace(purchase.Street) || 
-            string.IsNullOrWhiteSpace(purchase.City) || 
-            string.IsNullOrWhiteSpace(purchase.Country)) {
-            messageError = "Error! Street, City and Country are mandatory fields.";
-            StateHasChanged();
-            return;
-        }
-
-        // Validate payment method
-        if (selectedPaymentMethodId <= 0) {
-            messageError = "Error! You must select a payment method.";
-            StateHasChanged();
-            return;
-        }
-
-        // Validate quantities
-        try {
-            var allItems = await apiclient.GetItemsForPurchasingAsync(null, null);
-            itemAvailableQuantities.Clear();
-            foreach (var item in allItems) {
-                itemAvailableQuantities[item.Id] = item.QuantityAvailableForPurchase;
-            }
-
-            // Check each purchase item
-            foreach (var purchaseItem in purchase.PurchaseItems) {
-                if (purchaseItem.AmountBought <= 0) {
-                    messageError = $"Error! Quantity for item '{purchaseItem.Name}' must be greater than zero.";
-                    StateHasChanged();
-                    return;
-                }
-
-                if (itemAvailableQuantities.ContainsKey(purchaseItem.ItemId)) {
-                    int available = itemAvailableQuantities[purchaseItem.ItemId];
-                    if (purchaseItem.AmountBought > available) {
-                        messageError = $"Error! Requested quantity ({purchaseItem.AmountBought}) for item '{purchaseItem.Name}' exceeds available stock ({available}).";
-                        StateHasChanged();
-                        return;
-                    }
-                } else {
-                    messageError = $"Error! Item '{purchaseItem.Name}' is no longer available.";
-                    StateHasChanged();
-                    return;
-                }
-            }
-        } catch (ApiException ex) {
-            logger.LogError("Error fetching items for validation: {Ex}", ex);
-            messageError = "Error while validating items. Please try again.";
-            StateHasChanged();
-            return;
-        }
-
-        // If validation passes, open the dialog
         DialogIsOpen = true;
     }
 
@@ -212,11 +149,63 @@
         if (isOk) {
             // Process the data introduced by the user if they are valid
             if (purchase.PurchaseItems.Count > 0) {
+                
+                // Validate mandatory fields (Alternative flow 4)
+                if (string.IsNullOrWhiteSpace(purchase.Street) || 
+                    string.IsNullOrWhiteSpace(purchase.City) || 
+                    string.IsNullOrWhiteSpace(purchase.Country)) {
+                    messageError = "Error! Street, City and Country are mandatory fields.";
+                    StateHasChanged();
+                    return;
+                }
+
+                // Validate payment method
+                if (selectedPaymentMethodId <= 0) {
+                    messageError = "Error! You must select a payment method.";
+                    StateHasChanged();
+                    return;
+                }
+
+                // Validate quantities (Alternative flow 5)
+                try {
+                    var allItems = await apiclient.GetItemsForPurchasingAsync(null, null);
+                    itemAvailableQuantities.Clear();
+                    foreach (var item in allItems) {
+                        itemAvailableQuantities[item.Id] = item.QuantityAvailableForPurchase;
+                    }
+
+                    // Check each purchase item
+                    foreach (var purchaseItem in purchase.PurchaseItems) {
+                        if (purchaseItem.AmountBought <= 0) {
+                            messageError = $"Error! Quantity for item '{purchaseItem.Name}' must be greater than zero.";
+                            StateHasChanged();
+                            return;
+                        }
+
+                        if (itemAvailableQuantities.ContainsKey(purchaseItem.ItemId)) {
+                            int available = itemAvailableQuantities[purchaseItem.ItemId];
+                            if (purchaseItem.AmountBought > available) {
+                                messageError = $"Error! Requested quantity ({purchaseItem.AmountBought}) for item '{purchaseItem.Name}' exceeds available stock ({available}).";
+                                StateHasChanged();
+                                return;
+                            }
+                        } else {
+                            messageError = $"Error! Item '{purchaseItem.Name}' is no longer available.";
+                            StateHasChanged();
+                            return;
+                        }
+                    }
+                } catch (ApiException ex) {
+                    logger.LogError("Error fetching items for validation: {Ex}", ex);
+                    messageError = "Error while validating items. Please try again.";
+                    StateHasChanged();
+                    return;
+                }
 
                 // Assign the selected payment method
                 purchase.PaymentMethod = new PaymentMethodDTO(selectedPaymentMethodId);
                 
-                // Set date and total price (recalculate in case quantities changed)
+                // Set date and total price
                 purchase.Date = DateTime.Today;
                 purchase.TotalPrice = TotalCost;
                 
