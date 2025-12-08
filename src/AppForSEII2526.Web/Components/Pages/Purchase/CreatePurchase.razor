@@ -1,0 +1,292 @@
+@page "/purchase/createpurchase"
+@inject NavigationManager navigation
+@using AppForSEII2526.Web.Components.Shared
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<CreatePurchase> logger
+@inject PurchaseStateContainer purchaseState
+
+@*@attribute [Authorize]*@
+
+<h3>Create Purchase</h3>
+
+@* purchase is the object that will be edited thanks to the form *@
+<EditForm Model="purchase" OnValidSubmit="OpenDialog">
+    <div class="row">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="row alert alert-danger" />
+    </div>
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @messageError</p>
+    </div>
+    <div class="row g-3">
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="purchase.Street" class="form-control" id="Street" />
+                <label for="Street">Street</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="purchase.City" class="form-control" id="City" />
+                <label for="City">City</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="purchase.Country" class="form-control" id="Country" />
+                <label for="Country">Country</label>
+            </div>
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-md">
+            <div class="form-floating mb-3">
+                <InputTextArea @bind-Value="purchase.Description" class="form-control" id="Description" style="height: 100px" />
+                <label for="Description">Description (Optional)</label>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2">
+        <div class="col-md">
+            <div class="form-floating">
+                @*a dropdown for selecting the payment method*@
+                <InputSelect class="form-select" @bind-Value="@selectedPaymentMethodId" id="PaymentMethod">
+                    <option value="1" selected>CreditCard</option>
+                    <option value="2">Paypal</option>
+                    <option value="3">Bizum</option>
+                </InputSelect>
+                <label for="PaymentMethod">Payment Method</label>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="form-floating">
+                @*this button will be used to ask the user if they want to proceed to create the purchase*@
+                <button class="btn btn-primary" type="submit" id="Submit">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+    <h4>Purchase detail</h4>
+    <p>
+        <b>Total price:</b> @TotalCost €
+        <button class="btn btn-outline-primary" type="button" @onclick="ModifyPurchaseItems" id="ModifyItems">
+            Modify items
+        </button>
+    </p>
+
+    <div class="mh-100 table-responsive">
+        <table class="table table-condensed table-hover" id="TableOfPurchaseItems">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Price</th>
+                    <th>Quantity Available</th>
+                    <th>Quantity to Buy</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in purchase.PurchaseItems) {
+                    <tr id="ItemData_@item.ItemId">
+                        <td>@item.Name</td>
+                        <td>@item.Brand</td>
+                        <td>@item.Price €</td>
+                        <td>@GetAvailableQuantity(item.ItemId)</td>
+                        <td>
+                            <InputNumber @bind-Value="item.AmountBought" class="form-control" id="@($"quantity_{item.ItemId}")" min="1" />
+                        </td>
+                        <td>@GetItemDescription(item.ItemId)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</EditForm>
+
+@*a modal popup dialog for checking if user wants to proceed to create purchase*@
+@if (DialogIsOpen)
+{
+    <Dialog Caption="Create Purchase"
+    Message="Do you want to proceed to create this purchase?"
+    OnClose="@OnDialogClose"
+    Type=Dialog.Category.SaveNot>
+    </Dialog>
+}
+
+@code {
+    private string messageError = "";
+    private bool hideErrors { get { return messageError.Length == 0; } }
+    private bool DialogIsOpen;
+    private int selectedPaymentMethodId = 1;
+    private Dictionary<int, int> itemAvailableQuantities = new Dictionary<int, int>();
+    private Dictionary<int, string> itemDescriptions = new Dictionary<int, string>();
+
+    private decimal TotalCost { 
+        get {
+            double price = purchase.PurchaseItems.Sum(pi => pi.Price * pi.AmountBought);
+            return Convert.ToDecimal(price);
+        }
+    }
+
+    private void ModifyPurchaseItems() {
+        navigation.NavigateTo("/purchase/selectitemsforpurchase");
+    }
+
+    private PurchaseForCreateDTO purchase => purchaseState.Purchase;
+
+    private void OpenDialog()
+    {
+        DialogIsOpen = true;
+    }
+
+    private async Task OnDialogClose(bool isOk) {
+        DialogIsOpen = false;
+        if (isOk) {
+            // Process the data introduced by the user if they are valid
+            if (purchase.PurchaseItems.Count > 0) {
+
+                // Validate mandatory fields (Alternative flow 4)
+                if (string.IsNullOrWhiteSpace(purchase.Street) || 
+                    string.IsNullOrWhiteSpace(purchase.City) || 
+                    string.IsNullOrWhiteSpace(purchase.Country)) {
+                    messageError = "Error! Street, City and Country are mandatory fields.";
+                    StateHasChanged();
+                    return;
+                }
+
+                // Validate payment method
+                if (selectedPaymentMethodId <= 0) {
+                    messageError = "Error! You must select a payment method.";
+                    StateHasChanged();
+                    return;
+                }
+
+                // Validate quantities (Alternative flow 5)
+                try {
+                    var allItems = await apiclient.GetItemsForPurchasingAsync(null, null);
+                    itemAvailableQuantities.Clear();
+                    foreach (var item in allItems) {
+                        itemAvailableQuantities[item.Id] = item.QuantityAvailableForPurchase;
+                    }
+
+                    // Check each purchase item
+                    foreach (var purchaseItem in purchase.PurchaseItems) {
+                        if (purchaseItem.AmountBought <= 0) {
+                            messageError = $"Error! Quantity for item '{purchaseItem.Name}' must be greater than zero.";
+                            StateHasChanged();
+                            return;
+                        }
+
+                        if (itemAvailableQuantities.ContainsKey(purchaseItem.ItemId)) {
+                            int available = itemAvailableQuantities[purchaseItem.ItemId];
+                            if (purchaseItem.AmountBought > available) {
+                                messageError = $"Error! Requested quantity ({purchaseItem.AmountBought}) for item '{purchaseItem.Name}' exceeds available stock ({available}).";
+                                StateHasChanged();
+                                return;
+                            }
+                        } else {
+                            messageError = $"Error! Item '{purchaseItem.Name}' is no longer available.";
+                            StateHasChanged();
+                            return;
+                        }
+                    }
+                } catch (ApiException ex) {
+                    logger.LogError("Error fetching items for validation: {Ex}", ex);
+                    messageError = "Error while validating items. Please try again.";
+                    StateHasChanged();
+                    return;
+                }
+
+                // Assign the selected payment method
+                purchase.PaymentMethod = new PaymentMethodDTO{
+                    Id = selectedPaymentMethodId
+                };
+
+                try {
+                    var created = await apiclient.CreatePurchaseAsync(purchase);
+                    purchaseState.PurchaseProcessed();
+                    navigation.NavigateTo($"/purchase/detailpurchase/?PurchaseID={created.Id}");
+                }
+                catch (ApiException<ValidationProblemDetails> apiexceptionvalidation) {
+
+                    if (apiexceptionvalidation.Result.Errors.Values != null) {
+                        messageError = "";
+                        foreach (var errors in apiexceptionvalidation.Result.Errors.Values)
+                            //https://learn.microsoft.com/en-us/dotnet/api/system.string.join?view=net-7.0
+                            messageError = string.Join("(*) ", messageError, string.Join(" (*) ", errors));
+                    }
+                    StateHasChanged();
+                }
+                catch (ApiException apiexception) {
+                    //we need to inform user that there was some other error while processing the request
+                    messageError = "Error while processing your request, please try again later!";
+                    StateHasChanged();
+                }
+
+            } else {
+                messageError = "Error! You must include at least one item to purchase.";
+                StateHasChanged();
+            }
+        }
+    }
+
+    private int GetAvailableQuantity(int itemId) {
+        if (itemAvailableQuantities.ContainsKey(itemId)) {
+            return itemAvailableQuantities[itemId];
+        }
+        return 0;
+    }
+
+    private string GetItemDescription(int itemId) {
+        if (itemDescriptions.ContainsKey(itemId)) {
+            return itemDescriptions[itemId];
+        }
+        return "";
+    }
+
+    protected override async Task OnInitializedAsync() {
+        // Check if there are items in the purchase, if not redirect to select items
+        if (purchase.PurchaseItems == null || purchase.PurchaseItems.Count == 0) {
+            navigation.NavigateTo("/purchase/selectitemsforpurchase");
+            return;
+        }
+
+        // Initialize empty strings for address fields if null
+        purchase.Street = purchase.Street == null ? "" : purchase.Street;
+        purchase.City = purchase.City == null ? "" : purchase.City;
+        purchase.Country = purchase.Country == null ? "" : purchase.Country;
+        purchase.Description = purchase.Description == null ? "" : purchase.Description;
+
+        // Load item information for display
+        try {
+            var allItems = await apiclient.GetItemsForPurchasingAsync(null, null);
+            itemAvailableQuantities.Clear();
+            itemDescriptions.Clear();
+            foreach (var item in allItems) {
+                itemAvailableQuantities[item.Id] = item.QuantityAvailableForPurchase;
+                itemDescriptions[item.Id] = item.Description;
+            }
+        } catch (ApiException ex) {
+            logger.LogError("Error loading items: {Ex}", ex);
+        }
+
+        if (authenticationState is not null) {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            if (user is not null) {
+                if (user.Identity is not null && user.Identity.IsAuthenticated) {
+                    // Set default payment method
+                    selectedPaymentMethodId = 1;
+                }
+            }
+        }
+    }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+}
