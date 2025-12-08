@@ -8,7 +8,7 @@
 
 <h3>Plan Details</h3>
 
-@*@attribute [Authorize]*@
+@attribute [Authorize]
 
 @if (plan == null)
 {
@@ -81,12 +81,6 @@ else
                 </tr>
             }
         </tbody>
-        <tfoot>
-            @*colspan is used to state that FIVE columns are collapsed*@
-            <th scope="row" colspan="5" class="text-end">Total Price</th>
-            <td id="TotalPriceFooter">@plan.TotalPrice €</td>
-        </tfoot>
-
     </table>
 
 }

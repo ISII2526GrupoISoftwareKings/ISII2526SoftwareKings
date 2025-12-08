@@ -94,6 +94,7 @@
 
         public static void SeedUsers(UserManager<ApplicationUser> userManager, List<string> roles)
         {
+            // Seed Alberto - Administrator
             if (userManager.FindByNameAsync("alberto@uclm.es").Result == null)
             {
                 ApplicationUser user = new ApplicationUser
@@ -106,12 +107,56 @@
                     EmailConfirmed = true
                 };
 
-                var result = userManager.CreateAsync(user, "Password1234%");
+                var result = userManager.CreateAsync(user, "Pass123$");
                 result.Wait();
 
                 if (result.IsCompletedSuccessfully)
                 {
-                    userManager.AddToRoleAsync(user, roles[0]).Wait();
+                    userManager.AddToRoleAsync(user, roles[0]).Wait(); // Administrator
+                }
+            }
+
+            // Seed Samuel - Employee
+            if (userManager.FindByNameAsync("samuel@uclm.es").Result == null)
+            {
+                ApplicationUser user = new ApplicationUser
+                {
+                    UserName = "samuel@uclm.es",
+                    Email = "samuel@uclm.es",
+                    Name = "Samuel",
+                    Surname = "Garcia Picazo",
+                    Address = "Calle Principal 456, Toledo",
+                    EmailConfirmed = true
+                };
+
+                var result = userManager.CreateAsync(user, "Pass123$");
+                result.Wait();
+
+                if (result.IsCompletedSuccessfully)
+                {
+                    userManager.AddToRoleAsync(user, roles[1]).Wait(); // Employee
+                }
+            }
+
+            // Seed Customer
+            if (userManager.FindByNameAsync("customer@uclm.es").Result == null)
+            {
+                ApplicationUser user = new ApplicationUser
+                {
+                    UserName = "customer@uclm.es",
+                    Email = "customer@uclm.es",
+                    Name = "Customer",
+                    Surname = "Test",
+                    Address = "Calle Ejemplo 789, Albacete",
+                    EmailConfirmed = true
+                };
+
+                var result = userManager.CreateAsync(user, "Pass123$");
+                result.Wait();
+
+                if (result.IsCompletedSuccessfully)
+                {
+                    userManager.AddToRoleAsync(user, roles[2]).Wait(); // Customer
                 }
             }
 
@@ -210,14 +255,40 @@
 
         public static void SeedPaymentMethods(ApplicationDbContext dbcontext, ApplicationUser user)
         {
-            // Seed CreditCard payment method (Id will be 3 per SQL file)
+            // Seed CreditCard payment method (Id will be 1)
             if (dbcontext.PaymentMethods.OfType<CreditCard>().FirstOrDefault(pm => pm.User.UserName == user.UserName) == null)
             {
                 var creditCard = new CreditCard
                 {
-                    User = user
+                    User = user,
+                    CreditCardNumber = "1234567890123456",
+                    ExpirationDate = new DateTime(2030, 12, 31)
                 };
                 dbcontext.PaymentMethods.Add(creditCard);
+                dbcontext.SaveChanges();
+            }
+            
+            // Seed Paypal payment method (Id will be 2)
+            if (dbcontext.PaymentMethods.OfType<Paypal>().FirstOrDefault(pm => pm.User.UserName == user.UserName) == null)
+            {
+                var paypal = new Paypal
+                {
+                    User = user,
+                    Email = user.Email ?? "paypal@example.com"
+                };
+                dbcontext.PaymentMethods.Add(paypal);
+                dbcontext.SaveChanges();
+            }
+            
+            // Seed Bizum payment method (Id will be 3)
+            if (dbcontext.PaymentMethods.OfType<Bizum>().FirstOrDefault(pm => pm.User.UserName == user.UserName) == null)
+            {
+                var bizum = new Bizum
+                {
+                    User = user,
+                    telephoneNumber = "636187115"
+                };
+                dbcontext.PaymentMethods.Add(bizum);
                 dbcontext.SaveChanges();
             }
         }
