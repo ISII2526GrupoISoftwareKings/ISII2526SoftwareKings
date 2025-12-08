@@ -128,8 +128,8 @@
     
     private decimal TotalCost { 
         get {
-            double price = purchase.PurchaseItems.Sum(pi => pi.Price * pi.AmountBought);
-            return Convert.ToDecimal(price);
+            decimal price = purchase.PurchaseItems.Sum(pi => pi.Price * pi.AmountBought);
+            return price;
         }
     }
     
