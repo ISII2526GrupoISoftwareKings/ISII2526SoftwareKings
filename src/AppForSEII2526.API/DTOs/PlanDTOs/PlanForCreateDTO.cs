@@ -18,19 +18,22 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
             PlanItems = planItems;
         }
 
-        [StringLength(20, ErrorMessage = "Name of Plan can be neither longer than 20 characters nor shorter than 1", MinimumLength = 1)]
+        [Required(ErrorMessage = "Plan name is required")]
+        [StringLength(20, ErrorMessage = "Plan name must be between 1 and 20 characters", MinimumLength = 1)]
         public string Name { get; set; }
 
-        [StringLength(50, MinimumLength = 3, ErrorMessage = "Name must have at least 3 characters")]
+        [Required(ErrorMessage = "User name is required")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "User name must be between 3 and 50 characters")]
         public string NameUser { get; set; }
 
         [StringLength(50, ErrorMessage = "Surname cannot be longer than 50 characters")]
         public string? SurnameUser { get; set; }
 
-        [StringLength(100, ErrorMessage = "Description cannot be longer than 100 characters.")]
+        [StringLength(100, ErrorMessage = "Description cannot be longer than 100 characters")]
         public string? Description { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Minimum number of weeks is 1")]
+        [Required(ErrorMessage = "Number of weeks is required")]
+        [Range(1, 52, ErrorMessage = "Number of weeks must be between 1 and 52")]
         public int Weeks { get; set; }
 
         [DataType(DataType.DateTime), Display(Name = "Created Date")]
