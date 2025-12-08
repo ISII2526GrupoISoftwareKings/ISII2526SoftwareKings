@@ -167,9 +167,26 @@
 
                     if (apiexceptionvalidation.Result.Errors.Values != null) {
                         messageError = "";
+                        bool hasCapacityError = false;
+                        
                         foreach (var errors in apiexceptionvalidation.Result.Errors.Values)
-                            //https://learn.microsoft.com/en-us/dotnet/api/system.string.join?view=net-7.0
-                            messageError = string.Join("(*) ", messageError, string.Join(" (*) ", errors));
+                        {
+                            var errorMessages = string.Join(" (*) ", errors);
+                            messageError = string.Join("(*) ", messageError, errorMessages);
+                            
+                            // Alternative flow 7: Check if error is related to capacity
+                            if (errorMessages.Contains("does not have enough capacity"))
+                            {
+                                hasCapacityError = true;
+                            }
+                        }
+                        
+                        // Alternative flow 7: If capacity error, add suggestion to modify classes
+                        if (hasCapacityError)
+                        {
+                            messageError += " (*) Please modify your selected classes.";
+                            StateHasChanged();
+                        }
                     }
                 }
                 catch (ApiException apiexception) {

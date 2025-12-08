@@ -134,6 +134,12 @@ namespace AppForSEII2526.API.Controllers
 
                 _context.Plans.Add(plan);
 
+           
+            foreach (var selectedClass in selectedClasses)
+            {
+                selectedClass.Capacity--;
+            }
+
             try
             {
                 await _context.SaveChangesAsync();
