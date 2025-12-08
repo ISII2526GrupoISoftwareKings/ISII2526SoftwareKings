@@ -77,7 +77,7 @@
             Modify items
         </button>
     </p>
-    
+
     <div class="mh-100 table-responsive">
         <table class="table table-condensed table-hover" id="TableOfPurchaseItems">
             <thead>
@@ -125,18 +125,18 @@
     private int selectedPaymentMethodId = 1;
     private Dictionary<int, int> itemAvailableQuantities = new Dictionary<int, int>();
     private Dictionary<int, string> itemDescriptions = new Dictionary<int, string>();
-    
+
     private decimal TotalCost { 
         get {
-            decimal price = purchase.PurchaseItems.Sum(pi => pi.Price * pi.AmountBought);
-            return price;
+            double price = purchase.PurchaseItems.Sum(pi => pi.Price * pi.AmountBought);
+            return Convert.ToDecimal(price);
         }
     }
-    
+
     private void ModifyPurchaseItems() {
         navigation.NavigateTo("/purchase/selectitemsforpurchase");
     }
-    
+
     private PurchaseForCreateDTO purchase => purchaseState.Purchase;
 
     private void OpenDialog()
@@ -149,7 +149,7 @@
         if (isOk) {
             // Process the data introduced by the user if they are valid
             if (purchase.PurchaseItems.Count > 0) {
-                
+
                 // Validate mandatory fields (Alternative flow 4)
                 if (string.IsNullOrWhiteSpace(purchase.Street) || 
                     string.IsNullOrWhiteSpace(purchase.City) || 
@@ -203,12 +203,10 @@
                 }
 
                 // Assign the selected payment method
-                purchase.PaymentMethod = new PaymentMethodDTO(selectedPaymentMethodId);
-                
-                // Set date and total price
-                purchase.Date = DateTime.Today;
-                purchase.TotalPrice = TotalCost;
-                
+                purchase.PaymentMethod = new PaymentMethodDTO{
+                    Id = selectedPaymentMethodId
+                };
+
                 try {
                     var created = await apiclient.CreatePurchaseAsync(purchase);
                     purchaseState.PurchaseProcessed();
@@ -257,9 +255,6 @@
             navigation.NavigateTo("/purchase/selectitemsforpurchase");
             return;
         }
-
-        // Initialize date
-        purchase.Date = DateTime.Today;
 
         // Initialize empty strings for address fields if null
         purchase.Street = purchase.Street == null ? "" : purchase.Street;
