@@ -1,0 +1,133 @@
+@page "/purchase/detailpurchase"
+
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<DetailPurchase> logger
+
+<h3>Purchase Details</h3>
+
+@*@attribute [Authorize]*@
+
+@if (purchase == null)
+{
+    <p>@error</p>
+}
+else
+{
+    <table class="table table-borderless table-sm">
+        <tr>
+            <th>Delivery Address</th>
+            <td id="DeliveryAddress">@GetDeliveryAddress()</td>
+        </tr>
+        <tr>
+            <th>Total Price</th>
+            <td id="TotalPrice">@purchase.TotalPrice €</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td id="Description">@(purchase.Description ?? "N/A")</td>
+        </tr>
+        <tr>
+            <th>Payment Method</th>
+            <td id="PaymentMethod">@GetPaymentMethodName()</td>
+        </tr>
+        <tr>
+            <th>Purchase Date</th>
+            <td id="PurchaseDate">@purchase.Date.ToString("dd/MM/yyyy")</td>
+        </tr>
+    </table>
+
+    <h4>Purchased Items</h4>
+    <table class="table" id="PurchasedItems">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Brand</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (PurchaseItemDTO item in purchase.PurchaseItems)
+            {
+                <tr id="PurchaseItem_@item.ItemId">
+                    <td>@item.Name</td>
+                    <td>@item.Brand</td>
+                    <td>@item.AmountBought</td>
+                    <td>@item.Price €</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            @*colspan is used to state that THREE columns are collapsed*@
+            <th scope="row" colspan="3" class="text-end">Total Price</th>
+            <td id="TotalPriceFooter">@purchase.TotalPrice €</td>
+        </tfoot>
+    </table>
+}
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int PurchaseID { get; set; }
+
+    private PurchaseForDetailDTO purchase;
+    private string error = "";
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    private string GetDeliveryAddress()
+    {
+        return $"{purchase.Street}, {purchase.City}, {purchase.Country}";
+    }
+
+    private string GetPaymentMethodName()
+    {
+        // Convert payment method ID to name
+        // Based on seed data: 1 = CreditCard, 2 = Paypal, 3 = Bizum
+        return purchase.PaymentMethod?.Id switch
+        {
+            1 => "CreditCard",
+            2 => "Paypal",
+            3 => "Bizum",
+            _ => "Unknown"
+        };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //we check the user is logged in
+        string userName = "";
+        if (authenticationState is not null)
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            //we retrieve the id of the user logged in
+            if (user is not null)
+            {
+                if (user.Identity is not null && user.Identity.IsAuthenticated && user.IsInRole("User"))
+                {
+                    userName = user.Identity.Name;
+                }
+            }
+        }
+
+        try
+        {
+            purchase = await apiclient.GetPurchaseAsync(PurchaseID);
+        }
+        catch (ApiException exception)
+        {
+            logger.LogError($"Error fetching purchase: {exception}");
+            purchase = null;
+        }
+
+        if (purchase == null)
+        {
+            error = $"Error! There is not a purchase with id={PurchaseID}";
+        }
+    }
+}
