@@ -7,7 +7,7 @@
 @inject ILogger<CreatePurchase> logger
 @inject PurchaseStateContainer purchaseState
 
-@attribute [Authorize]
+@*@attribute [Authorize]*@
 
 <h3>Create Purchase</h3>
 
@@ -70,7 +70,6 @@
         </div>
     </div>
     <h4>Purchase detail</h4>
-    <p><b>Date:</b> @purchase.Date.ToString("dd/MM/yyyy")</p>
     <p>
         <b>Total price:</b> @TotalCost €
         <button class="btn btn-outline-primary" type="button" @onclick="ModifyPurchaseItems" id="ModifyItems">
