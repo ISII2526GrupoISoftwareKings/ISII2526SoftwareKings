@@ -18,13 +18,17 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
 
         public IList<TypeItemForClassDTO> TypeItems { get; set; }
 
-        public ClassForPlanDTO(int id, string name, IList<TypeItemForClassDTO> typeItems, DateTime date, decimal price)
+        [Range(1, int.MaxValue, ErrorMessage = "Minimum capacity is 1.")]
+        public int Capacity { get; set; }
+
+        public ClassForPlanDTO(int id, string name, IList<TypeItemForClassDTO> typeItems, DateTime date, decimal price, int capacity)
         {
             Id = id;
             Name = name;
             TypeItems = typeItems;
             Date = date;
             Price = price;
+            Capacity = capacity;
         }
 
         public override bool Equals(object? obj)
@@ -33,7 +37,8 @@ namespace AppForSEII2526.API.DTOs.ClassDTOs
                    Id == dTO.Id &&
                    Name == dTO.Name &&
                    Price == dTO.Price &&
-                   Date == dTO.Date;
+                   Date == dTO.Date &&
+                   Capacity == dTO.Capacity;
         }
         public override int GetHashCode()
         {

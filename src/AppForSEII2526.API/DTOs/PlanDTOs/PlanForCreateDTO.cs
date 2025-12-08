@@ -5,7 +5,7 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
 {
     public class PlanForCreateDTO
     {
-        public PlanForCreateDTO(string name, string nameUser, string surnameUser, string? description, int weeks, DateTime createdDate, string? healthIssues, PaymentmethodDTO paymentMethod, List<PlanItemDTO> planItems)
+        public PlanForCreateDTO(string name, string nameUser, string? surnameUser, string? description, int weeks, DateTime createdDate, string? healthIssues, PaymentmethodDTO paymentMethod, List<PlanItemDTO> planItems)
         {
             Name = name;
             NameUser = nameUser;
@@ -24,8 +24,8 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Name must have at least 3 characters")]
         public string NameUser { get; set; }
 
-        [StringLength(50, MinimumLength = 3, ErrorMessage = "Surname must have at least 3 characters")]
-        public string SurnameUser { get; set; }
+        [StringLength(50, ErrorMessage = "Surname cannot be longer than 50 characters")]
+        public string? SurnameUser { get; set; }
 
         [StringLength(100, ErrorMessage = "Description cannot be longer than 100 characters.")]
         public string? Description { get; set; }
@@ -33,8 +33,8 @@ namespace AppForSEII2526.API.DTOs.PlanDTOs
         [Range(1, int.MaxValue, ErrorMessage = "Minimum number of weeks is 1")]
         public int Weeks { get; set; }
 
-        [DataType(DataType.Date), Display(Name = "Created Date")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.DateTime), Display(Name = "Created Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime CreatedDate { get; set; }
 
         

@@ -1,4 +1,5 @@
 ﻿using AppForSEII2526.API.DTOs.PlanDTOs;
+using AppForSEII2526.API.DTOs.TypeItemDTOs;
 using AppForSEII2526.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace AppForSEII2526.API.Controllers
                     .ThenInclude(pm => pm.User)
 
                 .Select(p => new PlanForDetailDTO(p.Id, p.TotalPrice, p.CreatedDate, p.Name, p.PaymentMethod.User.Name, p.PaymentMethod.User.Surname, p.Description, p.Weeks, p.CreatedDate, p.HealthIssues, new PaymentmethodDTO(p.PaymentMethod.Id, p.PaymentMethod.User.Name), p.PlanItems
-                    .Select(pi => new PlanItemDTO(pi.PlanId, pi.Class.Id, pi.Class.Price, pi.Class.Capacity, pi.Class.Date, pi.Goal)).ToList())).FirstOrDefaultAsync();
+                    .Select(pi => new PlanItemDTO(pi.Class.Id, pi.Class.Name,pi.Class.TypeItems.Select(ti => new TypeItemForClassDTO(ti.Id, ti.Name)).ToList(), pi.Class.Price, pi.Class.Capacity, pi.Class.Date, pi.Goal)).ToList())).FirstOrDefaultAsync();
 
 
             if (plan == null)
@@ -120,7 +121,7 @@ namespace AppForSEII2526.API.Controllers
                     Name = dto.Name,
                     Description = dto.Description,
                     Weeks = dto.Weeks,
-                    CreatedDate = dto.CreatedDate,
+                    CreatedDate = DateTime.Now,
                     HealthIssues = dto.HealthIssues,
                     PaymentMethod = paymentMethod,
                     TotalPrice = totalPrice,
@@ -132,6 +133,12 @@ namespace AppForSEII2526.API.Controllers
                 };
 
                 _context.Plans.Add(plan);
+
+           
+            foreach (var selectedClass in selectedClasses)
+            {
+                selectedClass.Capacity--;
+            }
 
             try
             {
@@ -148,8 +155,8 @@ namespace AppForSEII2526.API.Controllers
                     plan.TotalPrice,
                     plan.CreatedDate,
                     plan.Name,
-                    dto.NameUser,
-                    dto.SurnameUser,
+                    user.UserName,
+                    user.Surname,
                     plan.Description,
                     plan.Weeks,
                     plan.CreatedDate,

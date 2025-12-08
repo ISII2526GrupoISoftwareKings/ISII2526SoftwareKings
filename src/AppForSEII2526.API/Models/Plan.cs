@@ -33,8 +33,8 @@
         [Range(1, int.MaxValue, ErrorMessage = "Minimum quantity for renting is 1")]
         public int Weeks { get; set; }
 
-        [DataType(DataType.Date), Display(Name = "Created Date")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.DateTime), Display(Name = "Created Date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime CreatedDate { get; set; }
 
         [DataType(DataType.Currency),]
