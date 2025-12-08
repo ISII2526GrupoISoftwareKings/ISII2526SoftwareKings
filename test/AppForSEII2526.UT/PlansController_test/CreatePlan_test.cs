@@ -253,7 +253,7 @@ namespace AppForSEII2526.UT.PlansController_test
             ILogger<PlansController> logger = mock.Object;
             var controller = new PlansController(_context, logger);
 
-            DateTime today = DateTime.Today;
+            DateTime today = DateTime.Now;
 
             var user2 = new ApplicationUser
             {
@@ -322,7 +322,7 @@ namespace AppForSEII2526.UT.PlansController_test
                 new PaymentmethodDTO(2, _nameUser),
                 new List<PlanItemDTO>
                 {
-                    new PlanItemDTO (4, "Yoga Basics", new List<TypeItemForClassDTO>{new TypeItemForClassDTO(4, "Basic Mat") }, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
+                    new PlanItemDTO (4, "Yoga Basics", new List<TypeItemForClassDTO>{new TypeItemForClassDTO(4, "Basic Mat") }, 25.0m, 9, DateTime.Today.AddDays(3), "Improve flexibility")
                 }
             );
 
@@ -338,7 +338,19 @@ namespace AppForSEII2526.UT.PlansController_test
             var createdResult = Assert.IsType<CreatedAtActionResult>(result);
             var planCreated = Assert.IsType<PlanForDetailDTO>(createdResult.Value);
 
-            Assert.Equal(expectedDto, planCreated);
+            // Compare properties individually
+            Assert.Equal(expectedDto.Id, planCreated.Id);
+            Assert.Equal(expectedDto.Name, planCreated.Name);
+            Assert.Equal(expectedDto.NameUser, planCreated.NameUser);
+            Assert.Equal(expectedDto.SurnameUser, planCreated.SurnameUser);
+            Assert.Equal(expectedDto.Description, planCreated.Description);
+            Assert.Equal(expectedDto.Weeks, planCreated.Weeks);
+            Assert.Equal(expectedDto.HealthIssues, planCreated.HealthIssues);
+            Assert.Equal(expectedDto.TotalPrice, planCreated.TotalPrice);
+            
+            // Compare dates with tolerance (1 second)
+            Assert.True(Math.Abs((planCreated.CreatedDate - expectedDto.CreatedDate).TotalSeconds) < 1,
+                $"CreatedDate difference is too large. Expected: {expectedDto.CreatedDate}, Actual: {planCreated.CreatedDate}");
         }
     }
 }

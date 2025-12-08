@@ -155,7 +155,7 @@ namespace AppForSEII2526.API.Controllers
                     plan.TotalPrice,
                     plan.CreatedDate,
                     plan.Name,
-                    user.Name,
+                    user.UserName,
                     user.Surname,
                     plan.Description,
                     plan.Weeks,
