@@ -330,7 +330,7 @@
                 {
                     Name = "CrossFit",
                     Price = 10.00m,
-                    Capacity = 20,
+                    Capacity = 0,
                     Date = new DateTime(2026, 1, 12, 16, 0, 0)
                 };
                 classes.Add(crossfit);

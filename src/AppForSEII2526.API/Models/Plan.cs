@@ -30,7 +30,7 @@
         [StringLength(100, ErrorMessage = "Description cannot be longer than 100 characters.")]
         public string? Description { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "Minimum quantity for renting is 1")]
+        [Range(1, 52, ErrorMessage = "Number of weeks must be between 1 and 52")]
         public int Weeks { get; set; }
 
         [DataType(DataType.DateTime), Display(Name = "Created Date")]
