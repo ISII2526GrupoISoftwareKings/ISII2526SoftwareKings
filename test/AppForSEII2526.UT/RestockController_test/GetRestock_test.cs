@@ -126,7 +126,7 @@ namespace AppForSEII2526.UT.RestocksController_test
             var okResult = Assert.IsType<OkObjectResult>(result);
             var restockDTOActual = Assert.IsType<RestockDetailDTO>(okResult.Value);
 
-            //Assert.Equal(expectedRestock, restockDTOActual);
+            Assert.Equal(expectedRestock, restockDTOActual);
         }
     }
 }
