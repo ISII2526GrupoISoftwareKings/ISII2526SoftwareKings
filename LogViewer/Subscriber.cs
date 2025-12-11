@@ -18,9 +18,12 @@ private readonly int _port = 5672; //reemplazar por el puerto AMQP de RabbitMQ
 private readonly IConnection _connection;
 private readonly IModel _channel;
 private readonly IBasicProperties _properties;
+private readonly string _bindingKey;
 
-    public Subscriber()
+    public Subscriber(string bindingKey = "logs.*")
     {
+        _bindingKey = bindingKey;
+        
         var factory = new ConnectionFactory
         {
             HostName = _hostname,
@@ -32,9 +35,10 @@ private readonly IBasicProperties _properties;
         _connection = factory.CreateConnection();
         _channel = _connection.CreateModel();
 
+        // Cambiar a exchange tipo topic
         _channel.ExchangeDeclare(
             exchange: _exchangeName,
-            type: ExchangeType.Fanout,
+            type: ExchangeType.Topic,
             durable: true,
             autoDelete: false,
             arguments: null
@@ -46,9 +50,11 @@ private readonly IBasicProperties _properties;
 
         var queueName = tempQueue.QueueName;
 
-        _channel.QueueBind(queue: queueName, exchange: _exchangeName, routingKey: "");
+        // Suscribirse con el binding key especificado
+        _channel.QueueBind(queue: queueName, exchange: _exchangeName, routingKey: _bindingKey);
 
         Console.WriteLine($"Esperando logs en la cola efímera: {queueName}");
+        Console.WriteLine($"Suscrito al topic: {_bindingKey}");
 
 
         var consumer = new EventingBasicConsumer(_channel);
@@ -57,8 +63,9 @@ private readonly IBasicProperties _properties;
         {
             var body = ea.Body.ToArray(); //contenido del mensaje (array de bytes)
             var message = Encoding.UTF8.GetString(body); //se convierte de vuelta a string
-            var log = JsonSerializer.Deserialize<dynamic>(message);
-            Console.WriteLine($"Log recibido: {message}");
+            var routingKey = ea.RoutingKey;
+            Console.WriteLine($"\n[{DateTime.Now:HH:mm:ss}] [{routingKey}] Log recibido:");
+            Console.WriteLine(message);
         }; 
 
         _channel.BasicConsume(queue: queueName,autoAck: true, consumer: consumer); 

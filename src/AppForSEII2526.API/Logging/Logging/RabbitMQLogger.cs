@@ -62,6 +62,20 @@ public class RabbitMQLogger : ILogger, IDisposable
 
     public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
 
+    private string GetRoutingKeyFromLogLevel(LogLevel logLevel)
+    {
+        return logLevel switch
+        {
+            LogLevel.Trace => "logs.trace",
+            LogLevel.Debug => "logs.debug",
+            LogLevel.Information => "logs.information",
+            LogLevel.Warning => "logs.warning",
+            LogLevel.Error => "logs.error",
+            LogLevel.Critical => "logs.critical",
+            _ => "logs.unknown"
+        };
+    }
+
     public void Log<TState>(
         LogLevel logLevel,
         EventId eventId,
@@ -90,9 +104,12 @@ public class RabbitMQLogger : ILogger, IDisposable
             var json = JsonConvert.SerializeObject(logEntry);
             var body = Encoding.UTF8.GetBytes(json);
 
+            // Generar routing key basado en el nivel de log
+            var routingKey = GetRoutingKeyFromLogLevel(logLevel);
+
             _channel.BasicPublish(
                 exchange: _config.Exchange,
-                routingKey: "",
+                routingKey: routingKey,
                 basicProperties: _properties,
                 body: body);
 
