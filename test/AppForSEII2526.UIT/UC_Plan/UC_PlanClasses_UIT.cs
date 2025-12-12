@@ -208,7 +208,7 @@ namespace AppForSEII2526.UIT.UC_Plan
             //Act
             createPlan_PO.FillPlanForm("juan", "TestPlan", "8", "CreditCard");
             createPlan_PO.ClickSubmit();
-            
+            createPlan_PO.ConfirmDialog(); // Confirm the dialog to send to server
 
             //Assert
             Assert.True(createPlan_PO.CheckMessageError("UserName is not registered"));
@@ -293,6 +293,7 @@ namespace AppForSEII2526.UIT.UC_Plan
             //Act
             createPlan_PO.FillPlanForm("alberto@uclm.es", "TestPlannification", "3", "Paypal");
             createPlan_PO.ClickSubmit();
+            createPlan_PO.ConfirmDialog(); // Confirm the dialog to send to server
 
             //Assert
             // Server returns error about capacity
