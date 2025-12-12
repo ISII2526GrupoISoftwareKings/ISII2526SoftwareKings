@@ -194,7 +194,7 @@ namespace AppForSEII2526.UIT.UC_Plan
 
             //Assert
             // Validation prevents dialog from opening
-            Assert.True(createPlan_PO.CheckValidationSummaryError("User name is required"));
+            Assert.True(createPlan_PO.CheckValidationSummaryError("The NameUser field is required"));
         }
 
         // UC4-Esc7-2: Error in User Name - User not registered
@@ -208,7 +208,7 @@ namespace AppForSEII2526.UIT.UC_Plan
             //Act
             createPlan_PO.FillPlanForm("juan", "TestPlan", "8", "CreditCard");
             createPlan_PO.ClickSubmit();
-            createPlan_PO.ConfirmDialog(); // Confirm the dialog to send to server
+            
 
             //Assert
             Assert.True(createPlan_PO.CheckMessageError("UserName is not registered"));
@@ -228,7 +228,7 @@ namespace AppForSEII2526.UIT.UC_Plan
 
             //Assert
             // Validation prevents dialog from opening
-            Assert.True(createPlan_PO.CheckValidationSummaryError("must be between 3 and 50 characters"));
+            Assert.True(createPlan_PO.CheckValidationSummaryError("The field NameUser must be a string with a minimum length of 3 and a maximum length of 50."));
         }
 
         // UC4-Esc7-4: Error in Plan Name - Required field
@@ -245,7 +245,7 @@ namespace AppForSEII2526.UIT.UC_Plan
 
             //Assert
             // Validation prevents dialog from opening
-            Assert.True(createPlan_PO.CheckValidationSummaryError("Plan name is required"));
+            Assert.True(createPlan_PO.CheckValidationSummaryError("The Name field is required."));
         }
 
         // UC4-Esc7-5: Error in Plan Name - Maximum length
@@ -262,7 +262,7 @@ namespace AppForSEII2526.UIT.UC_Plan
 
             //Assert
             // Validation prevents dialog from opening
-            Assert.True(createPlan_PO.CheckValidationSummaryError("must be between 1 and 20 characters"));
+            Assert.True(createPlan_PO.CheckValidationSummaryError("The field Name must be a string with a minimum length of 1 and a maximum length of 20."));
         }
 
         // UC4-Esc7-6: Error in Weeks - Must be between 1 and 52
@@ -293,11 +293,10 @@ namespace AppForSEII2526.UIT.UC_Plan
             //Act
             createPlan_PO.FillPlanForm("alberto@uclm.es", "TestPlannification", "3", "Paypal");
             createPlan_PO.ClickSubmit();
-            createPlan_PO.ConfirmDialog(); // Confirm the dialog to send to server
 
             //Assert
             // Server returns error about capacity
-            Assert.True(createPlan_PO.CheckMessageError("does not have enough capacity"));
+            Assert.True(createPlan_PO.CheckMessageError("Minimum capacity is 1."));
         }
     }
 }

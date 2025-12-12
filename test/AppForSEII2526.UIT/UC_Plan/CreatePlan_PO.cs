@@ -26,7 +26,8 @@ namespace AppForSEII2526.UIT.UC_Plan
 
         // Locators for error messages
         By errorShownBy = By.Id("ErrorsShown");
-        By validationSummary = By.CssSelector(".validation-summary-errors");
+        By validationSummary = By.CssSelector(".alert.alert-danger");
+        By validationSummaryList = By.CssSelector(".validation-summary-errors ul");
         By modalDialog = By.Id("DialogOKSaveDelete");
 
         public CreatePlan_PO(IWebDriver driver, ITestOutputHelper output) : base(driver, output)
