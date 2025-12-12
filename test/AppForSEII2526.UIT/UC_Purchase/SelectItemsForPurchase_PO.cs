@@ -7,7 +7,7 @@ using OpenQA.Selenium.Support.UI;
 
 namespace AppForSEII2526.UIT.UC_Purchase {
     public class SelectItemsForPurchase_PO : PageObject {
-
+        
         By inputItemName = By.Id("inputItemName");
         By inputBrandName = By.Id("inputBrandName");
         By buttonSearchItems = By.Id("searchItems");
