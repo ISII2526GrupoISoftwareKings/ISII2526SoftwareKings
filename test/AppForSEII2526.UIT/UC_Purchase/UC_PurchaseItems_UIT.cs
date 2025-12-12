@@ -10,6 +10,7 @@ namespace AppForSEII2526.UIT.UC_Purchase {
 
         private SelectItemsForPurchase_PO selectItemsForPurchase_PO;
         private DetailPurchase_PO detailPurchase_PO;
+        private CreatePurchase_PO createPurchase_PO;
 
         // Test data constants for Item 1: iPhone 15
         private const int itemId1 = 1;
@@ -39,6 +40,7 @@ namespace AppForSEII2526.UIT.UC_Purchase {
         public UC_PurchaseItems_UIT(ITestOutputHelper output) : base(output) {
             selectItemsForPurchase_PO = new SelectItemsForPurchase_PO(_driver, _output);
             detailPurchase_PO = new DetailPurchase_PO(_driver, _output);
+            createPurchase_PO = new CreatePurchase_PO(_driver, _output);
         }
 
         private void Precondition_perform_login() {
@@ -214,5 +216,72 @@ namespace AppForSEII2526.UIT.UC_Purchase {
             Assert.Equal(detailPurchase_PO.GetTotalPrice(), detailPurchase_PO.GetTotalPriceFooter());
         }
 
+        // Create Purchase Tests (Basic Flow Steps 4-6, Alternative Flows 4-5)
+
+        // Basic Flow Steps 4-6: User fills purchase form with valid data and completes purchase
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void UC3_BF_4_6_CreatePurchaseWithValidData() {
+            //Arrange
+            InitialStepsForPurchaseItems();
+            selectItemsForPurchase_PO.AddItemToPurchaseCart(itemName2); // Add XPS 13
+
+            //Act - Navigate to create purchase and fill form
+            _driver.FindElement(By.Id("purchaseItemsButton")).Click();
+            createPurchase_PO.FillPurchaseForm("Test Street 123", "Test City", "Test Country", "Test purchase description");
+            createPurchase_PO.SelectPaymentMethod("1"); // CreditCard
+            createPurchase_PO.SetItemQuantity(itemId2, 1);
+            createPurchase_PO.ClickContinue();
+            createPurchase_PO.ConfirmPurchaseDialog();
+
+            //Assert - Should navigate to detail page (purchase completed successfully)
+            // Wait for navigation to detail page
+            detailPurchase_PO.WaitForBeingVisible(By.Id("DeliveryAddress"));
+            string actualAddress = detailPurchase_PO.GetDeliveryAddress();
+            Assert.Contains("Test Street 123", actualAddress);
+            Assert.Contains("Test City", actualAddress);
+            Assert.Contains("Test Country", actualAddress);
+        }
+
+        // Alternative Flow 4: System detects mandatory fields are not filled and shows error
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void UC3_AF4_MandatoryFieldsMissing() {
+            //Arrange
+            InitialStepsForPurchaseItems();
+            selectItemsForPurchase_PO.AddItemToPurchaseCart(itemName1);
+
+            //Act - Navigate to create purchase but leave mandatory fields empty
+            _driver.FindElement(By.Id("purchaseItemsButton")).Click();
+            createPurchase_PO.FillPurchaseForm("", "", "", ""); // Empty mandatory fields
+            createPurchase_PO.SetItemQuantity(itemId1, 1);
+            createPurchase_PO.ClickContinue();
+            createPurchase_PO.ConfirmPurchaseDialog();
+
+            //Assert - Should show error about mandatory fields and stay on create page
+            Assert.True(createPurchase_PO.CheckMessageError("mandatory"));
+            Assert.True(createPurchase_PO.IsOnCreatePurchasePage());
+        }
+
+        // Alternative Flow 5: System detects quantity exceeds available and shows error
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void UC3_AF5_QuantityExceedsAvailable() {
+            //Arrange
+            InitialStepsForPurchaseItems();
+            selectItemsForPurchase_PO.AddItemToPurchaseCart(itemName1); // iPhone 15 has 5 available
+
+            //Act - Navigate to create purchase and set quantity greater than available
+            _driver.FindElement(By.Id("purchaseItemsButton")).Click();
+            createPurchase_PO.FillPurchaseForm("Test Street", "Test City", "Test Country", "");
+            createPurchase_PO.SelectPaymentMethod("1");
+            createPurchase_PO.SetItemQuantity(itemId1, 100); // Request 100 but only 5 available
+            createPurchase_PO.ClickContinue();
+            createPurchase_PO.ConfirmPurchaseDialog();
+
+            //Assert - Should show error about quantity exceeding available stock
+            Assert.True(createPurchase_PO.CheckMessageError("exceeds"));
+            Assert.True(createPurchase_PO.IsOnCreatePurchasePage());
+        }
     }
 }
