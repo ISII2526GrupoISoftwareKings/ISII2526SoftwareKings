@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,7 @@ namespace AppForSEII2526.UIT.UC_Purchase {
     public class UC_PurchaseItems_UIT : UC_UIT {
 
         private SelectItemsForPurchase_PO selectItemsForPurchase_PO;
+        private DetailPurchase_PO detailPurchase_PO;
 
         // Test data constants for Item 1: iPhone 15
         private const int itemId1 = 1;
@@ -26,8 +27,18 @@ namespace AppForSEII2526.UIT.UC_Purchase {
         private const string itemPrice2 = "1399.00";
         private const string itemQuantity2 = "10";
 
+        // Test data constants for seeded Purchase (Hugo's purchase from SeedData)
+        private const int purchaseId = 1;
+        private const string purchaseStreet = "Calle Mayor 25";
+        private const string purchaseCity = "Ciudad Real";
+        private const string purchaseCountry = "Spain";
+        private const string purchaseDescription = "Compra inicial de equipamiento";
+        private const string purchasePaymentMethod = "CreditCard";
+        private const string purchaseTotalPrice = "1998.00 €";
+
         public UC_PurchaseItems_UIT(ITestOutputHelper output) : base(output) {
             selectItemsForPurchase_PO = new SelectItemsForPurchase_PO(_driver, _output);
+            detailPurchase_PO = new DetailPurchase_PO(_driver, _output);
         }
 
         private void Precondition_perform_login() {
@@ -41,6 +52,8 @@ namespace AppForSEII2526.UIT.UC_Purchase {
             //we click on the menu
             _driver.FindElement(By.LinkText("Purchase")).Click();
         }
+
+        // Select Items Tests (Basic Flow and Alternative Flows 1-3)
 
         // Basic Flow: System shows a list of items available to purchase
         [Fact]
@@ -157,5 +170,49 @@ namespace AppForSEII2526.UIT.UC_Purchase {
             //Assert - cart should be empty, Buy button not available
             Assert.True(selectItemsForPurchase_PO.PurchaseNotAvailable());
         }
+
+
+        // Detail Purchase Tests (Basic Flow - Step 7)
+
+        // Basic Flow Step 7: System shows purchase details (delivery_address, total_price, description, payment_method)
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void UC3_BF_7_ShowsPurchaseDetails() {
+            //Arrange
+            Precondition_perform_login();
+
+            //Act - Navigate to seeded purchase detail
+            detailPurchase_PO.GoToDetailPurchase(_URI, purchaseId);
+
+            //Assert - Verify all purchase details are correctly displayed
+            string actualAddress = detailPurchase_PO.GetDeliveryAddress();
+            Assert.Contains(purchaseStreet, actualAddress);
+            Assert.Contains(purchaseCity, actualAddress);
+            Assert.Contains(purchaseCountry, actualAddress);
+
+            Assert.Equal(purchaseTotalPrice, detailPurchase_PO.GetTotalPrice());
+            Assert.Equal(purchaseDescription, detailPurchase_PO.GetDescription());
+            Assert.Equal(purchasePaymentMethod, detailPurchase_PO.GetPaymentMethod());
+        }
+
+        // Basic Flow Step 7: System shows purchased items with name, brand, quantity, price
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void UC3_BF_7_ShowsPurchasedItems() {
+            //Arrange
+            Precondition_perform_login();
+            // Expected items: iPhone 15, Apple, 2 units, 999.00 € (from SeedData)
+            var expectedItems = new List<string[]> {
+                new string[] { itemName1, itemBrand1, "2", itemPrice1 + " €" }
+            };
+
+            //Act
+            detailPurchase_PO.GoToDetailPurchase(_URI, purchaseId);
+
+            //Assert - Verify items table and total price consistency
+            Assert.True(detailPurchase_PO.CheckPurchasedItemsTable(expectedItems));
+            Assert.Equal(detailPurchase_PO.GetTotalPrice(), detailPurchase_PO.GetTotalPriceFooter());
+        }
+
     }
 }
