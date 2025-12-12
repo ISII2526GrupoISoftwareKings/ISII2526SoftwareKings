@@ -30,12 +30,12 @@ namespace AppForSEII2526.UIT.UC_Purchase {
 
         // Test data constants for seeded Purchase (Hugo's purchase from SeedData)
         private const int purchaseId = 1;
-        private const string purchaseStreet = "Calle Mayor 25";
-        private const string purchaseCity = "Ciudad Real";
-        private const string purchaseCountry = "Spain";
-        private const string purchaseDescription = "Compra inicial de equipamiento";
+        private const string purchaseStreet = "Test Street 123";
+        private const string purchaseCity = "Test City";
+        private const string purchaseCountry = "Test Country";
+        private const string purchaseDescription = "Test purchase description";
         private const string purchasePaymentMethod = "CreditCard";
-        private const string purchaseTotalPrice = "1998.00 €";
+        private const string purchaseTotalPrice = "1399.00 €";
 
         public UC_PurchaseItems_UIT(ITestOutputHelper output) : base(output) {
             selectItemsForPurchase_PO = new SelectItemsForPurchase_PO(_driver, _output);
@@ -207,9 +207,9 @@ namespace AppForSEII2526.UIT.UC_Purchase {
         public void UC3_BF_7_ShowsPurchasedItems() {
             //Arrange
             Precondition_perform_login();
-            // Expected items: iPhone 15, Apple, 2 units, 999.00 € (from SeedData)
+            // Expected items: XPS 13, Dell, 1 unit, 1399.00 € (actual data in DB)
             var expectedItems = new List<string[]> {
-                new string[] { itemName1, itemBrand1, "2", itemPrice1 + " €" }
+                new string[] { itemName2, itemBrand2, "1", itemPrice2 + " €" }
             };
 
             //Act
