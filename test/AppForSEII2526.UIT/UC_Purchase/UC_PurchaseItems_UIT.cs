@@ -51,8 +51,10 @@ namespace AppForSEII2526.UIT.UC_Purchase {
             Precondition_perform_login();
             //we wait for the option of the menu to be visible
             selectItemsForPurchase_PO.WaitForBeingVisible(By.LinkText("Purchase"));
-            //we click on the menu
+            //we click on the menu and wait for the page to reload
             _driver.FindElement(By.LinkText("Purchase")).Click();
+            // Wait for the input element to be ready to avoid StaleElementReferenceException
+            selectItemsForPurchase_PO.WaitForBeingClickable(By.Id("inputItemName"));
         }
 
         // Select Items Tests (Basic Flow and Alternative Flows 1-3)

@@ -22,7 +22,7 @@ else
         </tr>
         <tr>
             <th>Total Price</th>
-            <td id="TotalPrice">@purchase.TotalPrice €</td>
+            <td id="TotalPrice">@purchase.TotalPrice.ToString("F2") €</td>
         </tr>
         <tr>
             <th>Description</th>
@@ -55,14 +55,14 @@ else
                     <td>@item.Name</td>
                     <td>@item.Brand</td>
                     <td>@item.AmountBought</td>
-                    <td>@item.Price €</td>
+                    <td>@item.Price.ToString("F2") €</td>
                 </tr>
             }
         </tbody>
         <tfoot>
             @*colspan is used to state that THREE columns are collapsed*@
             <th scope="row" colspan="3" class="text-end">Total Price</th>
-            <td id="TotalPriceFooter">@purchase.TotalPrice €</td>
+            <td id="TotalPriceFooter">@purchase.TotalPrice.ToString("F2") €</td>
         </tfoot>
     </table>
 }

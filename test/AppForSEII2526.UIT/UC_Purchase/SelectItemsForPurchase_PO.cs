@@ -39,13 +39,15 @@ namespace AppForSEII2526.UIT.UC_Purchase {
         }
 
         public void AddItemToPurchaseCart(string itemName) {
-            WaitForBeingClickable(By.Id("itemToPurchase_" + itemName));
-            _driver.FindElement(By.Id("itemToPurchase_" + itemName)).Click();
+            string safeItemName = itemName.Replace(" ", "_");
+            WaitForBeingClickable(By.Id("itemToPurchase_" + safeItemName));
+            _driver.FindElement(By.Id("itemToPurchase_" + safeItemName)).Click();
         }
 
         public void RemoveItemFromPurchaseCart(string itemName) {
-            WaitForBeingClickable(By.Id("removeItem_" + itemName));
-            _driver.FindElement(By.Id("removeItem_" + itemName)).Click();
+            string safeItemName = itemName.Replace(" ", "_");
+            WaitForBeingClickable(By.Id("removeItem_" + safeItemName));
+            _driver.FindElement(By.Id("removeItem_" + safeItemName)).Click();
         }
 
         public bool PurchaseNotAvailable() {
