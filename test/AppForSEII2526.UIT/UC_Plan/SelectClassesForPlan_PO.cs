@@ -25,17 +25,10 @@ namespace AppForSEII2526.UIT.UC_Plan
         {
             //wait for the webelement to be clickable
             WaitForBeingClickable(inputClassName);
-            
-            if (className != "")
-                _driver.FindElement(inputClassName).SendKeys(className);
+            _driver.FindElement(inputClassName).SendKeys(className);
 
             if (classDate != "")
-            {
-                // Clear the date input first
-                var dateElement = _driver.FindElement(inputClassDate);
-                dateElement.Clear();
-                dateElement.SendKeys(classDate);
-            }
+                _driver.FindElement(inputClassDate).SendKeys(classDate);
 
             _driver.FindElement(buttonSearchClasses).Click();
         }
@@ -67,14 +60,7 @@ namespace AppForSEII2526.UIT.UC_Plan
         public bool CreatePlanNotAvailable()
         {
             //the button is not Displayed=hidden
-            try
-            {
-                return _driver.FindElement(buttonCreatePlan).Displayed == false;
-            }
-            catch (NoSuchElementException)
-            {
-                return true;
-            }
+            return _driver.FindElement(buttonCreatePlan).Displayed == false;
         }
 
     }

@@ -305,7 +305,7 @@
                     Name = "Yoga",
                     Price = 11.00m,
                     Capacity = 20,
-                    Date = new DateTime(2026, 1, 10, 18, 0, 0)
+                    Date = new DateTime(2025, 12, 15, 18, 0, 0)
                 };
                 classes.Add(yoga);
                 dbcontext.Classes.Add(yoga);
@@ -318,7 +318,7 @@
                     Name = "Spinning",
                     Price = 11.00m,
                     Capacity = 20,
-                    Date = new DateTime(2026, 1, 11, 17, 0, 0)
+                    Date = new DateTime(2025, 12, 16, 17, 0, 0)
                 };
                 classes.Add(spinning);
                 dbcontext.Classes.Add(spinning);
@@ -331,7 +331,7 @@
                     Name = "CrossFit",
                     Price = 10.00m,
                     Capacity = 0,
-                    Date = new DateTime(2026, 1, 12, 16, 0, 0)
+                    Date = new DateTime(2025, 12, 17, 16, 0, 0)
                 };
                 classes.Add(crossfit);
                 dbcontext.Classes.Add(crossfit);
@@ -344,7 +344,7 @@
                     Name = "Strech & Relax",
                     Price = 10.00m,
                     Capacity = 25,
-                    Date = new DateTime(2026, 1, 13, 20, 0, 0)
+                    Date = new DateTime(2025, 12, 18, 20, 0, 0)
                 };
                 classes.Add(stretchRelax);
                 dbcontext.Classes.Add(stretchRelax);
@@ -357,7 +357,7 @@
                     Name = "Zumba",
                     Price = 8.00m,
                     Capacity = 20,
-                    Date = new DateTime(2026, 1, 14, 17, 30, 0)
+                    Date = new DateTime(2025, 12, 19, 17, 30, 0)
                 };
                 classes.Add(zumba);
                 dbcontext.Classes.Add(zumba);
@@ -370,7 +370,7 @@
                     Name = "Pilates",
                     Price = 10.00m,
                     Capacity = 25,
-                    Date = new DateTime(2026, 1, 15, 15, 30, 0)
+                    Date = new DateTime(2025, 12, 20, 15, 30, 0)
                 };
                 classes.Add(pilates);
                 dbcontext.Classes.Add(pilates);
