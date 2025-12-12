@@ -26,6 +26,8 @@ namespace AppForSEII2526.UIT.UC_Purchase {
             if (itemBrand != "")
                 _driver.FindElement(inputBrandName).SendKeys(itemBrand);
             _driver.FindElement(buttonSearchItems).Click();
+            // Wait for async search operation and Blazor re-render
+            Thread.Sleep(1000);
         }
 
         public bool CheckListOfItems(List<string[]> expectedItems) {
@@ -39,13 +41,17 @@ namespace AppForSEII2526.UIT.UC_Purchase {
         }
 
         public void AddItemToPurchaseCart(string itemName) {
-            WaitForBeingClickable(By.Id("itemToPurchase_" + itemName));
-            _driver.FindElement(By.Id("itemToPurchase_" + itemName)).Click();
+            string safeItemName = itemName.Replace(" ", "_");
+            // Wait for items table to be visible (async loading)
+            WaitForBeingVisible(tableOfItemsBy);
+            WaitForBeingClickable(By.Id("itemToPurchase_" + safeItemName));
+            _driver.FindElement(By.Id("itemToPurchase_" + safeItemName)).Click();
         }
 
         public void RemoveItemFromPurchaseCart(string itemName) {
-            WaitForBeingClickable(By.Id("removeItem_" + itemName));
-            _driver.FindElement(By.Id("removeItem_" + itemName)).Click();
+            string safeItemName = itemName.Replace(" ", "_");
+            WaitForBeingClickable(By.Id("removeItem_" + safeItemName));
+            _driver.FindElement(By.Id("removeItem_" + safeItemName)).Click();
         }
 
         public bool PurchaseNotAvailable() {
@@ -59,6 +65,8 @@ namespace AppForSEII2526.UIT.UC_Purchase {
         }
 
         public bool CheckNoItemsMessage() {
+            // Wait for the page to re-render after search
+            Thread.Sleep(500);
             // Check if the warning message is displayed when no items match filters
             var elements = _driver.FindElements(noItemsMessageBy);
             return elements.Count > 0 && elements[0].Displayed;
