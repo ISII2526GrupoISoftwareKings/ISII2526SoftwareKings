@@ -79,6 +79,7 @@
                 <tr>
                     <th>Item Name</th>
                     <th>Brand</th>
+                    <th>Current Stock</th>
                     <th>Price</th>
                     <th>Quantity to Buy (*)</th>
                 </tr>
@@ -89,6 +90,7 @@
                     <tr id="ItemData_@item.ItemId">
                         <td>@item.Name</td>
                         <td>@item.Brand</td>
+                        <td>@item.QuantityForRestock</td>
                         <td>@(item.PriceOfRestock?.ToString("F2") ?? "0") €</td>
                         <td>
                             <InputNumber @bind-Value="item.QuantityForRestock" class="form-control" id="@($"quantity_{item.ItemId}")" />
