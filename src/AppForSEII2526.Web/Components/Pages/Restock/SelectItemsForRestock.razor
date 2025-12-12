@@ -1,0 +1,164 @@
+﻿@page "/restock/selectitemsforrestock"
+
+@using Microsoft.AspNetCore.Authorization
+@using AppForSEII2526.Web.API
+
+@inject AppForSEII2526APIClient apiclient
+@inject ILogger<SelectItemsForRestock> logger
+@inject RestockStateContainer restockState
+@inject NavigationManager navigation
+
+@attribute [Authorize]
+<h3>Select Items For Restock</h3>
+<div class="container-fluid">
+    <div class="row alert alert-danger" role="alert" hidden="@hideErrors">
+        <p id="ErrorsShown">Errors: @errors</p>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Item Name</span>
+                        <input type="text" id="inputItemName" @bind=itemName class="form-control" placeholder="Item Name" aria-label="Item Name">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Max Quantity Available</span>
+                        <input type="number" id="inputQuantity" @bind=quantityAvailable class="form-control" placeholder="Max Stock" />
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" @onclick=@SearchItems id="searchItems">Search Items</button>
+                </div>
+            </div>
+
+            <div class="row">
+                @if (items == null)
+                {
+                    <p>Loading items....</p>
+                }
+                else
+                {
+                    <div class="mh-100 table-responsive">
+                        <table class="table table-condensed table-hover" id="TableOfItems">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Brand</th>
+                                    <th>Price (Restock)</th>
+                                    <th>Current Stock</th>
+                                    <th>Add</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in items)
+                                {
+                                    <tr id="ItemData_@item.Id">
+                                        <td>@item.Name</td>
+                                        <td>@item.Brand</td>
+                                        <td>@(item.RestockPrice.HasValue? item.RestockPrice.Value.ToString("F2") : "N/A") €</td>
+                                        <td>@item.QuantityForRestock</td>
+                                        <td>
+                                            <button class="btn btn-outline-secondary" id="itemToRestock_@item.Id" @onclick="@(() => AddItem(item))">Add</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-4" hidden="@hideRestockCart">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Restock Cart</h5>
+                    <small>@restock.RestockItems.Count items selected</small>
+                </div>
+                <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+                    @foreach (RestockItemDTO item in restock.RestockItems)
+                    {
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h6>@item.Name</h6>
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm"
+                                            id="removeItem_@item.ItemId"
+                                            @onclick="@(() => RemoveRestockItem(item))">
+                                        Remove
+                                    </button>
+                                </div>
+                                <p class="mb-1"><small>Brand: @item.Brand</small></p>
+                                <p class="mb-0"><strong>Price: @(item.PriceOfRestock?.ToString("F2") ?? "0") €</strong></p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-success w-100" id="createRestockButton" @onclick=@CreateRestock>
+                        Create Restock
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool hideRestockCart => restock.RestockItems.Count == 0;
+    private ICollection<ItemForRestockDTO> items;
+    private bool hideErrors => errors.Length == 0;
+    private string errors = "";
+
+    private string itemName { get; set; }
+    private int? quantityAvailable { get; set; }
+
+    private RestockForCreateDTO restock => restockState.Restock;
+
+    private void AddItem(ItemForRestockDTO itemDto)
+    {
+        restockState.AddItemToRestock(itemDto);
+    }
+
+    private void RemoveRestockItem(RestockItemDTO item)
+    {
+        restockState.RemoveItemFromRestock(item);
+    }
+
+    public async void SearchItems()
+    {
+        try
+        {
+            items = await apiclient.GetItemsForRestockAsync(itemName, quantityAvailable);
+            errors = "";
+        }
+        catch (ApiException ex)
+        {
+            logger.LogError($"{DateTime.Now} Error: {ex}");
+            if (ex.StatusCode == 400)
+            {
+                errors = "There are no items available for restock with these filters.";
+                items = new List<ItemForRestockDTO>();
+            }
+            else
+            {
+                errors = "Error while connecting to the system";
+            }
+        }
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SearchItems();
+    }
+
+    private void CreateRestock()
+    {
+        navigation.NavigateTo("/restocks/createrestock");
+    }
+}
