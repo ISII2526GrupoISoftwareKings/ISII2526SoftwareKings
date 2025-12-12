@@ -2,6 +2,7 @@
 
 @using Microsoft.AspNetCore.Authorization
 @using AppForSEII2526.Web.API
+@using System.Globalization
 @inject AppForSEII2526APIClient apiclient
 @inject ILogger<SelectItemsForPurchase> logger
 @inject PurchaseStateContainer purchaseState
@@ -65,7 +66,7 @@
                                         <td>@item.Name</td>
                                         <td>@item.Brand</td>
                                         <td>@item.Description</td>
-                                        <td>@item.Price.ToString("F2")</td>
+                                        <td>@item.Price.ToString("F2", CultureInfo.InvariantCulture)</td>
                                         <td>@item.QuantityAvailableForPurchase</td>
                                         <td>
                                             <button class="btn btn-outline-secondary" id="itemToPurchase_@safeId" @onclick="@(() => AddItem(item))">Add</button>
@@ -141,7 +142,9 @@
         }
         catch (ApiException ex) {
             logger.LogError($"{DateTime.Now} Error: {ex}");
-            errors = "Error while connecting to the system";
+            // When API returns BadRequest for no items, set items to empty list to show the message
+            items = new List<ItemForPurchasingDTO>();
+            errors = "";
         }
         StateHasChanged();
     }

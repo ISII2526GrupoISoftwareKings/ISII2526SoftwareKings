@@ -2,6 +2,7 @@
 
 @using AppForSEII2526.Web.API
 @using Microsoft.AspNetCore.Authorization
+@using System.Globalization
 @inject AppForSEII2526APIClient apiclient
 @inject ILogger<DetailPurchase> logger
 
@@ -22,7 +23,7 @@ else
         </tr>
         <tr>
             <th>Total Price</th>
-            <td id="TotalPrice">@purchase.TotalPrice.ToString("F2") €</td>
+            <td id="TotalPrice">@purchase.TotalPrice.ToString("F2", CultureInfo.InvariantCulture) €</td>
         </tr>
         <tr>
             <th>Description</th>
@@ -55,14 +56,14 @@ else
                     <td>@item.Name</td>
                     <td>@item.Brand</td>
                     <td>@item.AmountBought</td>
-                    <td>@item.Price.ToString("F2") €</td>
+                    <td>@item.Price.ToString("F2", CultureInfo.InvariantCulture) €</td>
                 </tr>
             }
         </tbody>
         <tfoot>
             @*colspan is used to state that THREE columns are collapsed*@
             <th scope="row" colspan="3" class="text-end">Total Price</th>
-            <td id="TotalPriceFooter">@purchase.TotalPrice.ToString("F2") €</td>
+            <td id="TotalPriceFooter">@purchase.TotalPrice.ToString("F2", CultureInfo.InvariantCulture) €</td>
         </tfoot>
     </table>
 }
@@ -86,10 +87,10 @@ else
     private string GetPaymentMethodName()
     {
         // Convert payment method ID to name
-        // Based on seed data: 1 = CreditCard, 2 = Paypal, 3 = Bizum
+        // Based on seed data: 1 = CreditCard (Alberto), 2 = Paypal (Alberto), 3 = Bizum (Alberto), 4 = CreditCard (Hugo)
         return purchase.PaymentMethod?.Id switch
         {
-            1 => "CreditCard",
+            1 or 4 => "CreditCard",
             2 => "Paypal",
             3 => "Bizum",
             _ => "Unknown"

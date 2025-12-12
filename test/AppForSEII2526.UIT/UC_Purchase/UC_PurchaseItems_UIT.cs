@@ -53,6 +53,8 @@ namespace AppForSEII2526.UIT.UC_Purchase {
             selectItemsForPurchase_PO.WaitForBeingVisible(By.LinkText("Purchase"));
             //we click on the menu and wait for the page to reload
             _driver.FindElement(By.LinkText("Purchase")).Click();
+            // Small delay to allow navigation to complete before checking for new page elements
+            Thread.Sleep(500);
             // Wait for the input element to be ready to avoid StaleElementReferenceException
             selectItemsForPurchase_PO.WaitForBeingClickable(By.Id("inputItemName"));
         }
