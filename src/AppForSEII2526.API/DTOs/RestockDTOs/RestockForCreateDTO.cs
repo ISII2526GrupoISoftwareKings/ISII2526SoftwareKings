@@ -49,7 +49,7 @@ namespace AppForSEII2526.API.DTOs.RestockDTOs
                    Description == dTO.Description &&
                    ExpectedDate == dTO.ExpectedDate &&
                    RestockDate == dTO.RestockDate &&
-                   EqualityComparer<IList<RestockItemDTO>>.Default.Equals(RestockItems, dTO.RestockItems);
+                   RestockItems.SequenceEqual(dTO.RestockItems);
         }
 
         public override int GetHashCode()

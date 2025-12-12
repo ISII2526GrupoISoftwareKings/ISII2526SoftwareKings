@@ -74,6 +74,16 @@
             {
                 logger.LogError(ex, "An error occurred seeding Plans and PlanItems in the Database.");
             }
+
+            try
+            {
+                var user = dbContext.Users.OfType<ApplicationUser>().FirstOrDefault(u => u.UserName == "hugo@uclm.es");
+                SeedPurchases(dbContext, user);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred seeding Purchases in the Database.");
+            }
         }
 
         public static void SeedRoles(RoleManager<IdentityRole> roleManager, List<string> roles)
@@ -148,6 +158,28 @@
                     Name = "Customer",
                     Surname = "Test",
                     Address = "Calle Ejemplo 789, Albacete",
+                    EmailConfirmed = true
+                };
+
+                var result = userManager.CreateAsync(user, "Pass123$");
+                result.Wait();
+
+                if (result.IsCompletedSuccessfully)
+                {
+                    userManager.AddToRoleAsync(user, roles[2]).Wait(); // Customer
+                }
+            }
+
+            // Seed Hugo - Customer
+            if (userManager.FindByNameAsync("hugo@uclm.es").Result == null)
+            {
+                ApplicationUser user = new ApplicationUser
+                {
+                    UserName = "hugo@uclm.es",
+                    Email = "hugo@uclm.es",
+                    Name = "Hugo",
+                    Surname = "Rodriguez Villalobos",
+                    Address = "Calle Mayor 25, Ciudad Real",
                     EmailConfirmed = true
                 };
 
@@ -478,6 +510,60 @@
                         Price = 11.00m
                     };
                     dbcontext.PlanItems.Add(planItem);
+                    dbcontext.SaveChanges();
+                }
+            }
+        }
+
+        public static void SeedPurchases(ApplicationDbContext dbcontext, ApplicationUser user)
+        {
+            if (user == null)
+                return;
+
+            // Get or create a payment method for Hugo
+            var paymentMethod = dbcontext.PaymentMethods.FirstOrDefault(pm => pm.User.UserName == user.UserName);
+            
+            if (paymentMethod == null)
+            {
+                // Create a credit card for Hugo
+                var creditCard = new CreditCard
+                {
+                    User = user,
+                    CreditCardNumber = "4111111111111111",
+                    ExpirationDate = new DateTime(2028, 12, 31)
+                };
+                dbcontext.PaymentMethods.Add(creditCard);
+                dbcontext.SaveChanges();
+                paymentMethod = creditCard;
+            }
+
+            // Seed Purchase
+            if (dbcontext.Purchases.FirstOrDefault(p => p.Description == "Compra inicial de equipamiento") == null)
+            {
+                var item = dbcontext.Items.FirstOrDefault();
+                if (item != null)
+                {
+                    var purchase = new Purchase
+                    {
+                        City = "Ciudad Real",
+                        Country = "Spain",
+                        Street = "Calle Mayor 25",
+                        Description = "Compra inicial de equipamiento",
+                        Date = new DateTime(2025, 10, 15),
+                        TotalPrice = item.PurchasePrice * 2,
+                        PaymentMethod = paymentMethod,
+                        PurchaseItems = new List<PurchaseItem>()
+                    };
+
+                    purchase.PurchaseItems.Add(new PurchaseItem
+                    {
+                        Item = item,
+                        Purchase = purchase,
+                        AmountBought = 2,
+                        Price = item.PurchasePrice
+                    });
+
+                    dbcontext.Purchases.Add(purchase);
                     dbcontext.SaveChanges();
                 }
             }

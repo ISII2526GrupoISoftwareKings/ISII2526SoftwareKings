@@ -272,7 +272,7 @@ namespace AppForSEII2526.UT.RestocksController_test
             expectedRestock.AdminSurname = null;
             Assert.Equal(expectedRestock.RestockItems, restockCreated.RestockItems);
 
-            //Assert.Equal(expectedRestock, restockCreated);
+            Assert.Equal(expectedRestock, restockCreated);
         }
 
     }
