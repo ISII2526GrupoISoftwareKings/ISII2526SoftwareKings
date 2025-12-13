@@ -1,0 +1,109 @@
+﻿@page "/restocks/detailrestock"
+
+@using AppForSEII2526.Web.API
+@using Microsoft.AspNetCore.Authorization
+@inject AppForSEII2526APIClient apiclient
+@inject NavigationManager navigation
+@inject ILogger<DetailRestock> logger
+
+<h3>Restock Details</h3>
+
+
+@if (restock == null)
+{
+    <p>@error</p>
+}
+else
+{
+    <table class="table table-borderless table-sm">
+        <tr>
+            <th>Restock ID</th>
+            <td id="RestockId">@restock.Id</td>
+        </tr>
+        <tr>
+            <th>Administrator</th>
+            <td id="AdminName">@restock.AdminName @restock.AdminSurname</td>
+        </tr>
+        <tr>
+            <th>Title</th>
+            <td id="Title">@restock.Title</td>
+        </tr>
+        <tr>
+            <th>Restock Date</th>
+            <td id="RestockDate">@restock.RestockDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+        </tr>
+        <tr>
+            <th>Expected Date</th>
+            <td id="ExpectedDate">@(restock.ExpectedDate.HasValue? restock.ExpectedDate.Value.ToString("dd/MM/yyyy") : "Not specified")</td>
+        </tr>
+        <tr>
+            <th>Total Price</th>
+            <td id="TotalPrice">@restock.TotalPrice?.ToString("F2") €</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td id="Description">@(restock.Description ?? "N/A")</td>
+        </tr>
+        <tr>
+            <th>Delivery Address</th>
+            <td id="DeliveryAddress">@restock.DeliveryAddress</td>
+        </tr>
+    </table>
+
+    <h4>Restocked Items</h4>
+
+    <table class="table" id="RestockedItems">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Brand</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Quantity Bought</th>
+                <th scope="col">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (RestockItemDTO item in restock.RestockItems)
+            {
+                <tr id="RestockItem_@item.ItemId">
+                    <td>@item.Name</td>
+                    <td>@item.Brand</td>
+                    <td>@(item.PriceOfRestock?.ToString("F2") ?? "0") €</td>
+                    <td>@item.QuantityForRestock</td>
+                    <td>@(((item.PriceOfRestock ?? 0) * item.QuantityForRestock).ToString("F2")) €</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary" @onclick="GoToHome">Return to Home</button>
+}
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int RestockID { get; set; }
+
+    private RestockDetailDTO restock;
+    private string error = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Llamada al endpoint GetRestock(id)
+            restock = await apiclient.GetRestockAsync(RestockID);
+        }
+        catch (ApiException exception)
+        {
+            logger.LogError($"Error fetching restock detail: {exception}");
+            restock = null;
+            error = $"Error! Restock with id={RestockID} not found or you are not authorized.";
+        }
+    }
+
+    private void GoToHome()
+    {
+        navigation.NavigateTo("/");
+    }
+}
