@@ -16,7 +16,6 @@ namespace AppForSEII2526.UT.PlansController_test
         private const string _nameUser = "Samuel";
         private const string _surnameUser = "Garcia";
         private const string _userName = "samuel@uclm.es";
-        private const string _paymentMethodName = "Card";
         private const string _class1Name = "Yoga Advanced";
         private const string _class2Name = "Crossfit";
         private const string _class3Name = "Pilates";
@@ -70,7 +69,7 @@ namespace AppForSEII2526.UT.PlansController_test
                     _class3Name,
                     20,
                     12,
-                    new DateTime(2025, 2, 10),
+                    DateTime.Today.AddDays(-3),
                     new List<TypeItem>{new TypeItem ("Mat" )}
                 )
             };
@@ -111,7 +110,7 @@ namespace AppForSEII2526.UT.PlansController_test
             };
             var pastClassItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (3, _class3Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(3, "Mat") }, 15.0m, 10, new DateTime(2025, 2, 10), "Past class")
+                new PlanItemDTO (3, _class3Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(3, "Mat") }, 15.0m, 10, DateTime.Today.AddDays(-3), "Past class")
             };
 
             // DTO without classes
@@ -337,20 +336,7 @@ namespace AppForSEII2526.UT.PlansController_test
             // Assert
             var createdResult = Assert.IsType<CreatedAtActionResult>(result);
             var planCreated = Assert.IsType<PlanForDetailDTO>(createdResult.Value);
-
-            // Compare properties individually
-            Assert.Equal(expectedDto.Id, planCreated.Id);
-            Assert.Equal(expectedDto.Name, planCreated.Name);
-            Assert.Equal(expectedDto.NameUser, planCreated.NameUser);
-            Assert.Equal(expectedDto.SurnameUser, planCreated.SurnameUser);
-            Assert.Equal(expectedDto.Description, planCreated.Description);
-            Assert.Equal(expectedDto.Weeks, planCreated.Weeks);
-            Assert.Equal(expectedDto.HealthIssues, planCreated.HealthIssues);
-            Assert.Equal(expectedDto.TotalPrice, planCreated.TotalPrice);
-            
-            // Compare dates with tolerance (1 second)
-            Assert.True(Math.Abs((planCreated.CreatedDate - expectedDto.CreatedDate).TotalSeconds) < 1,
-                $"CreatedDate difference is too large. Expected: {expectedDto.CreatedDate}, Actual: {planCreated.CreatedDate}");
+            Assert.Equal(expectedDto, planCreated);
         }
     }
 }
