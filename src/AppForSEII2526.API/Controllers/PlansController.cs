@@ -64,7 +64,7 @@ namespace AppForSEII2526.API.Controllers
                 ModelState.AddModelError("PlanItems", "You must select at least one class to create a plan.");
             }
 
-            var fechaLimite = new DateTime(2025, 10, 10);
+            var fechaLimite = DateTime.Today;
 
             var invalidDates = await _context.Classes
                 .Where(c => dto.PlanItems.Select(pi => pi.ClassId).Contains(c.Id) && c.Date < fechaLimite)
@@ -121,7 +121,7 @@ namespace AppForSEII2526.API.Controllers
                     Name = dto.Name,
                     Description = dto.Description,
                     Weeks = dto.Weeks,
-                    CreatedDate = DateTime.Now,
+                    CreatedDate = dto.CreatedDate,
                     HealthIssues = dto.HealthIssues,
                     PaymentMethod = paymentMethod,
                     TotalPrice = totalPrice,
