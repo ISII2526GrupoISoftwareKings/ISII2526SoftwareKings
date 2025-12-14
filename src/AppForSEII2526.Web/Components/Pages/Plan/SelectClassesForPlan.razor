@@ -192,7 +192,7 @@
         //the type of ClassDate is DateTime, it is required to set a default value
         //https://learn.microsoft.com/es-es/dotnet/standard/datetime/converting-between-datetime-and-offset\\r
         _classDate = (_classDate == new DateTime(1, 1, 1)) ?
-            DateTime.SpecifyKind(DateTime.Today.AddDays(1), DateTimeKind.Utc)
+            DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc)
             : _classDate;
 
         SearchClasses();
