@@ -253,6 +253,22 @@
                 dbcontext.Items.Add(item);
             }
 
+            if (dbcontext.Items.FirstOrDefault(i => i.Name == "XPS 13") == null)
+            {
+                item = new Item
+                {
+                    Name = "Laptop Samsung",
+                    Description = "Gaming Laptop of Samsung",
+                    PurchasePrice = 1100.00m,
+                    QuantityAvailableForPurchase = 15,
+                    QuantityForRestock = 20,
+                    RestockPrice = 600.00m,
+                    Brand = brands[1],
+                    TypeItem = types[1]
+                };
+                dbcontext.Items.Add(item);
+            }
+
             dbcontext.SaveChanges();
         }
 
