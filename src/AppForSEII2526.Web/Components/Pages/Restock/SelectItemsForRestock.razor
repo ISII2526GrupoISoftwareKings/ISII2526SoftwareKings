@@ -47,8 +47,8 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Brand</th>
-                                    <th>Price (Restock)</th>
                                     <th>Current Stock</th>
+                                    <th>Price (Restock)</th>
                                     <th>Add</th>
                                 </tr>
                             </thead>
@@ -58,8 +58,8 @@
                                     <tr id="ItemData_@item.Id">
                                         <td>@item.Name</td>
                                         <td>@item.Brand</td>
-                                        <td>@(item.RestockPrice.HasValue? item.RestockPrice.Value.ToString("F2") : "N/A") €</td>
                                         <td>@item.QuantityForRestock</td>
+                                        <td>@(item.RestockPrice.HasValue? item.RestockPrice.Value.ToString("F2") : "N/A") €</td>
                                         <td>
                                             <button class="btn btn-outline-secondary" id="itemToRestock_@item.Id" @onclick="@(() => AddItem(item))">Add</button>
                                         </td>
