@@ -82,21 +82,9 @@ namespace AppForSEII2526.UT.PlansController_test
 
         public static IEnumerable<object[]> TestCasesFor_CreatePlan()
         {
-            var user = new ApplicationUser
-            {
-                UserName = _userName,
-                Name = _nameUser,
-                Surname = _surnameUser,
-                Address = "Calle Real 10"
-            };
-
             var today = DateTime.Today;
-            var validPaymentMethod = new PaymentmethodDTO
-            (
-                1,
-                user.UserName
-            );
-            var invalidPaymentMethod = new PaymentmethodDTO(0, user.UserName);
+            var validPaymentMethod = new PaymentmethodDTO(1, _userName);
+            var invalidPaymentMethod = new PaymentmethodDTO(0, _userName);
 
             var validPlanItems = new List<PlanItemDTO>
             {
@@ -110,7 +98,7 @@ namespace AppForSEII2526.UT.PlansController_test
             };
             var pastClassItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (3, _class3Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(3, "Mat") }, 15.0m, 10, DateTime.Today.AddDays(-3), "Past class")
+                new PlanItemDTO (3, _class3Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(3, "Mat") }, 20.0m, 12, DateTime.Today.AddDays(-3), "Past class")
             };
 
             // DTO without classes
@@ -254,55 +242,20 @@ namespace AppForSEII2526.UT.PlansController_test
 
             DateTime today = DateTime.Now;
 
-            var user2 = new ApplicationUser
-            {
-                UserName = _userName,
-                Name = _nameUser,
-                Surname = _surnameUser,
-                Address = "11 Real Street"
-            };
-
-            var paymentMethod2 = new PaymentmethodDTO
-            (
-                2,
-                user2.UserName
-            );
-            
-            var paymentMethodEntity = new CreditCard
-            (
-                "6543210987654321",
-                new DateTime(2028, 11, 30),
-                2,
-                user2
-            );
-
-            var yogaClass = new Class
-            {
-                Id = 4,
-                Name = "Yoga Basics",
-                Date = DateTime.Today.AddDays(3),
-                Capacity = 10,
-                Price = 25m,
-                TypeItems = new List<TypeItem>
-                {
-                    new TypeItem ( "Basic Mat" )
-                }
-            };
-
             var validPlanItems = new List<PlanItemDTO>
             {
-                new PlanItemDTO (4, "Yoga Basics", new List<TypeItemForClassDTO>{new TypeItemForClassDTO(4, "Basic Mat") }, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
+                new PlanItemDTO(1, _class1Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(1, "Yoga Mat") }, 25.0m, 10, DateTime.Today.AddDays(3), "Improve flexibility")
             };
 
             var planDto = new PlanForCreateDTO(
                 "Valid Plan",
-                "samuel@uclm.es",
-                "Garcia",
+                _userName,
+                _surnameUser,
                 "Plan with valid classes",
                 4,
                 today,
                 "",
-                paymentMethod2,
+                new PaymentmethodDTO(1, _userName),
                 validPlanItems
             );
 
@@ -318,17 +271,12 @@ namespace AppForSEII2526.UT.PlansController_test
                 4,
                 today,
                 "",
-                new PaymentmethodDTO(2, _nameUser),
+                new PaymentmethodDTO(1, _userName),
                 new List<PlanItemDTO>
                 {
-                    new PlanItemDTO (4, "Yoga Basics", new List<TypeItemForClassDTO>{new TypeItemForClassDTO(4, "Basic Mat") }, 25.0m, 9, DateTime.Today.AddDays(3), "Improve flexibility")
+                    new PlanItemDTO(1, _class1Name, new List<TypeItemForClassDTO>{new TypeItemForClassDTO(1, "Yoga Mat") }, 25.0m, 9, DateTime.Today.AddDays(3), "Improve flexibility")
                 }
             );
-
-            _context.Users.Add(user2);
-            _context.PaymentMethods.Add(paymentMethodEntity);
-            _context.Classes.Add(yogaClass);
-            _context.SaveChanges();
 
             // Act
             var result = await controller.CreatePlan(planDto);
