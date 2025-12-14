@@ -1,63 +1,85 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenQA.Selenium.Support.UI;
+using System.Threading;
+using OpenQA.Selenium;
+using AppForSEII2526.UIT.Shared;
 
-namespace AppForSEII2526.UIT.UC_Purchase {
-    public class DetailPurchase_PO : PageObject {
+namespace AppForSEII2526.UIT.UC_Purchase
+{
+    public class DetailPurchase_PO : PageObject
+    {
+        private By _deliveryAddress = By.Id("DeliveryAddress");
+        private By _totalPrice = By.Id("TotalPrice");
+        private By _description = By.Id("Description");
+        private By _paymentMethod = By.Id("PaymentMethod");
+        private By _purchaseDate = By.Id("PurchaseDate");
+        private By _purchasedItemsTable = By.Id("PurchasedItems");
 
-        By deliveryAddressBy = By.Id("DeliveryAddress");
-        By totalPriceBy = By.Id("TotalPrice");
-        By descriptionBy = By.Id("Description");
-        By paymentMethodBy = By.Id("PaymentMethod");
-        By purchaseDateBy = By.Id("PurchaseDate");
-        By purchasedItemsTableBy = By.Id("PurchasedItems");
-        By totalPriceFooterBy = By.Id("TotalPriceFooter");
-
-        public DetailPurchase_PO(IWebDriver driver, ITestOutputHelper output) : base(driver, output) {
+        public DetailPurchase_PO(IWebDriver driver, ITestOutputHelper output) : base(driver, output)
+        {
         }
 
-        public void GoToDetailPurchase(string baseUri, int purchaseId) {
-            // Navigate directly to the detail purchase page with the purchase ID
-            _driver.Navigate().GoToUrl($"{baseUri}purchase/detailpurchase?PurchaseID={purchaseId}");
-            // Wait for the page to load
-            WaitForBeingVisible(deliveryAddressBy);
+        public bool CheckPurchaseDetails(string expectedAddress, string expectedTotalPrice,
+            string expectedDescription, string expectedPaymentMethod, string todayDate)
+        {
+            try
+            {
+                Thread.Sleep(2000);
+                WaitForBeingVisible(_deliveryAddress);
+
+                var actualAddress = _driver.FindElement(_deliveryAddress).Text;
+                var actualTotalPrice = _driver.FindElement(_totalPrice).Text;
+                var actualDescription = _driver.FindElement(_description).Text;
+                var actualPaymentMethod = _driver.FindElement(_paymentMethod).Text;
+                var actualPurchaseDate = _driver.FindElement(_purchaseDate).Text;
+
+                _output.WriteLine($"Expected Address: {expectedAddress}, Actual: {actualAddress}");
+                _output.WriteLine($"Expected Price: {expectedTotalPrice}, Actual: {actualTotalPrice}");
+                _output.WriteLine($"Expected Payment: {expectedPaymentMethod}, Actual: {actualPaymentMethod}");
+
+                return actualAddress.Contains(expectedAddress) &&
+                       actualTotalPrice == expectedTotalPrice &&
+                       actualDescription == expectedDescription &&
+                       actualPaymentMethod == expectedPaymentMethod &&
+                       actualPurchaseDate.Contains(todayDate);
+            }
+            catch (Exception ex)
+            {
+                _output.WriteLine($"Error checking purchase details: {ex.Message}");
+                return false;
+            }
         }
 
-        public string GetDeliveryAddress() {
-            WaitForBeingVisible(deliveryAddressBy);
-            return _driver.FindElement(deliveryAddressBy).Text;
-        }
+        public bool CheckPurchasedItem(string itemName, string brand, string quantity, string unitPrice)
+        {
+            try
+            {
+                WaitForBeingVisible(_purchasedItemsTable);
+                var table = _driver.FindElement(_purchasedItemsTable);
+                var rows = table.FindElements(By.TagName("tr"));
 
-        public string GetTotalPrice() {
-            WaitForBeingVisible(totalPriceBy);
-            return _driver.FindElement(totalPriceBy).Text;
-        }
+                foreach (var row in rows)
+                {
+                    var cells = row.FindElements(By.TagName("td"));
+                    if (cells.Count >= 4)
+                    {
+                        var actualName = cells[0].Text;
+                        var actualBrand = cells[1].Text;
+                        var actualQty = cells[2].Text;
+                        var actualPrice = cells[3].Text;
 
-        public string GetDescription() {
-            WaitForBeingVisible(descriptionBy);
-            return _driver.FindElement(descriptionBy).Text;
-        }
-
-        public string GetPaymentMethod() {
-            WaitForBeingVisible(paymentMethodBy);
-            return _driver.FindElement(paymentMethodBy).Text;
-        }
-
-        public string GetPurchaseDate() {
-            WaitForBeingVisible(purchaseDateBy);
-            return _driver.FindElement(purchaseDateBy).Text;
-        }
-
-        public string GetTotalPriceFooter() {
-            WaitForBeingVisible(totalPriceFooterBy);
-            return _driver.FindElement(totalPriceFooterBy).Text;
-        }
-
-        public bool CheckPurchasedItemsTable(List<string[]> expectedItems) {
-            return CheckBodyTable(expectedItems, purchasedItemsTableBy);
+                        if (actualName == itemName &&
+                            actualBrand == brand &&
+                            actualQty == quantity &&
+                            actualPrice == unitPrice)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                _output.WriteLine($"Item {itemName} not found in detail table");
+                return false;
+            }
+            catch { return false; }
         }
     }
 }
