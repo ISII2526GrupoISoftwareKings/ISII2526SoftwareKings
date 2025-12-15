@@ -412,5 +412,20 @@ namespace AppForSEII2526.UIT.UC_Plan
                 classTimeYoga
             ));
         }
+
+        // Sprint 3 Exam: BF + AF1 + AF3
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void Sprint3Exam_CreatePlan()
+        {
+            InitialStepsForPlanClasses();
+
+            selectClassesForPlan_PO.SearchClasses("", "15/12/2025");
+            selectClassesForPlan_PO.AddClassToPlanCart(classNamePilates);
+            selectClassesForPlan_PO.SearchClasses("Yoga", "");
+
+
+
+        }
     }
 }
