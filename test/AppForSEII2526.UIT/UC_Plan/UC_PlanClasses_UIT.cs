@@ -412,5 +412,54 @@ namespace AppForSEII2526.UIT.UC_Plan
                 classTimeYoga
             ));
         }
+
+        // Sprint 3 Exam: BF + AF1 + AF3
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void Sprint3Exam_CreatePlan()
+        {
+            //Arrange
+            InitialStepsForPlanClasses();
+
+            //Act
+            selectClassesForPlan_PO.SearchClasses("", "15/12/2025");
+            selectClassesForPlan_PO.AddClassToPlanCart(classNamePilates);
+            selectClassesForPlan_PO.SearchClasses("Yoga", "");
+            selectClassesForPlan_PO.AddClassToPlanCart(classNameYoga);
+            selectClassesForPlan_PO.RemoveClassFromPlanCart(classIdPilates);
+
+            selectClassesForPlan_PO.WaitForBeingClickable(By.Id("createPlanButton"));
+            _driver.FindElement(By.Id("createPlanButton")).Click();
+
+
+            string todayDate = DateTime.Now.ToString("dd/MM/yyyy");
+
+            createPlan_PO.FillPlanForm("alberto@uclm.es", "TestPlan5", "8", "CreditCard");
+            createPlan_PO.ClickSubmit();
+            createPlan_PO.ConfirmDialog();
+            Thread.Sleep(3000);
+
+            //Assert
+            // Verify we are on DetailPlan page with correct data
+            Assert.True(detailPlan_PO.CheckPlanDetails(
+                "Alberto Bueno Baquero",
+                "TestPlan5",
+                "N/A",
+                "8",
+                "None",
+                "11 €",
+                todayDate
+            ));
+
+            // Verify enrolled class
+            Assert.True(detailPlan_PO.CheckEnrolledClass(
+                classNameYoga,
+                classTypeItemsYoga,
+                classPriceYoga + " €",
+                classDateYoga,
+                classTimeYoga
+            ));
+
+        }
     }
 }
