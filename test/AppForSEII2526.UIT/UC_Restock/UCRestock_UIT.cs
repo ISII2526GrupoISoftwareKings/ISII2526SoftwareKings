@@ -290,5 +290,54 @@ namespace AppForSEII2526.UIT.UC_Restock
                 expectedTotal
             ));
         }
+
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void UC4_Esc1_2_BF_AF2_AF3()
+        {
+            //Arrange
+            InitialStepsForRestock();
+
+            string title = "Full Restock";
+            string address = "Calle Falsa 123";
+            string desc = "Restock for Apple";
+            string quantity = "10";
+            string expectedTotal = "8700,00 €";
+            string todayDate = DateTime.Now.ToString("dd/MM/yyyy");
+
+            //Act
+            selectItemsForRestock_PO.AddItemToRestockCart(itemIdSamsung);
+            selectItemsForRestock_PO.SearchItems(itemNameIphone, "");
+            selectItemsForRestock_PO.AddItemToRestockCart(itemIdIphone);
+            selectItemsForRestock_PO.RemoveItemFromRestockCart(itemIdSamsung);
+
+            selectItemsForRestock_PO.ClickCreateRestock();
+
+            createRestock_PO.FillRestockForm(title, address, desc, DateTime.Today.AddDays(5));
+            createRestock_PO.SetItemQuantity(itemIdIphone, quantity);
+
+            createRestock_PO.ClickSubmit();
+            createRestock_PO.ConfirmDialog();
+
+            Thread.Sleep(3000);
+
+            //Assert
+            Assert.True(detailRestock_PO.CheckRestockDetails(
+                "Alberto Bueno Baquero",
+                title,
+                desc,
+                address,
+                expectedTotal,
+                todayDate
+            ));
+
+            Assert.True(detailRestock_PO.CheckRestockedItem(
+                itemNameIphone,
+                itemBrandIphone,
+                itemPriceIphone + " €",
+                quantity,
+                expectedTotal
+            ));
+        }
     }
 }
