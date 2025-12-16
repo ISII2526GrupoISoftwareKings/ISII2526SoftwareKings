@@ -202,6 +202,55 @@ namespace AppForSEII2526.UIT.UC_Purchase
             Assert.True(createPurchase_PO.CheckMessageError("exceeds"));
         }
 
+        // UC3-EscExam: Add item, filter by name, add new item, remove first item, create purchase
+        [Fact]
+        [Trait("LevelTesting", "Functional Testing")]
+        public void UC3_EscExam_AddItemFilterNameAddNewItemRemoveFirst()
+        {
+            //Arrange
+            InitialStepsForPurchase();
+
+            //Act
+            selectItemsForPurchase_PO.AddItemToPurchaseCart(itemNameIphone);
+            selectItemsForPurchase_PO.SearchItems(itemNameXps, "");
+            selectItemsForPurchase_PO.AddItemToPurchaseCart(itemNameXps);
+            selectItemsForPurchase_PO.RemoveItemFromPurchaseCart(itemNameIphone);
+            selectItemsForPurchase_PO.ClickPurchase();
+
+            string street = "Calle Falsa 123";
+            string city = "Madrid";
+            string country = "Spain";
+            string desc = "Test purchase for exam";
+            string quantity = "1";
+            string expectedTotal = "1399.00 €";
+            string todayDate = DateTime.Now.ToString("dd/MM/yyyy");
+
+            createPurchase_PO.FillPurchaseForm(street, city, country, desc);
+            createPurchase_PO.SelectPaymentMethod("1");
+            createPurchase_PO.SetItemQuantity(itemIdXps, quantity);
+
+            createPurchase_PO.ClickSubmit();
+            createPurchase_PO.ConfirmDialog();
+
+            Thread.Sleep(3000);
+
+            //Assert
+            Assert.True(detailPurchase_PO.CheckPurchaseDetails(
+                street,
+                expectedTotal,
+                desc,
+                "CreditCard",
+                todayDate
+            ));
+
+            Assert.True(detailPurchase_PO.CheckPurchasedItem(
+                itemNameXps,
+                itemBrandXps,
+                quantity,
+                itemPriceXps + " €"
+            ));
+        }
+
         // UC3-Esc1-1: Complete Successful Flow (Main Flow)
         [Fact]
         [Trait("LevelTesting", "Functional Testing")]
