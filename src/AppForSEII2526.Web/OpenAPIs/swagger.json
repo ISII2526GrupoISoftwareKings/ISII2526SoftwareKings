@@ -1982,23 +1982,26 @@
         "additionalProperties": false
       },
       "PlanForCreateDTO": {
+        "required": [
+          "name",
+          "nameUser",
+          "weeks"
+        ],
         "type": "object",
         "properties": {
           "name": {
             "maxLength": 20,
             "minLength": 1,
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "nameUser": {
             "maxLength": 50,
             "minLength": 3,
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "surnameUser": {
             "maxLength": 50,
-            "minLength": 3,
+            "minLength": 0,
             "type": "string",
             "nullable": true
           },
@@ -2009,14 +2012,14 @@
             "nullable": true
           },
           "weeks": {
-            "maximum": 2147483647,
+            "maximum": 52,
             "minimum": 1,
             "type": "integer",
             "format": "int32"
           },
           "createdDate": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
           },
           "healthIssues": {
             "maxLength": 100,
@@ -2038,23 +2041,26 @@
         "additionalProperties": false
       },
       "PlanForDetailDTO": {
+        "required": [
+          "name",
+          "nameUser",
+          "weeks"
+        ],
         "type": "object",
         "properties": {
           "name": {
             "maxLength": 20,
             "minLength": 1,
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "nameUser": {
             "maxLength": 50,
             "minLength": 3,
-            "type": "string",
-            "nullable": true
+            "type": "string"
           },
           "surnameUser": {
             "maxLength": 50,
-            "minLength": 3,
+            "minLength": 0,
             "type": "string",
             "nullable": true
           },
@@ -2065,14 +2071,14 @@
             "nullable": true
           },
           "weeks": {
-            "maximum": 2147483647,
+            "maximum": 52,
             "minimum": 1,
             "type": "integer",
             "format": "int32"
           },
           "createdDate": {
             "type": "string",
-            "format": "date"
+            "format": "date-time"
           },
           "healthIssues": {
             "maxLength": 100,
@@ -2145,7 +2151,7 @@
           },
           "goal": {
             "maxLength": 100,
-            "minLength": 1,
+            "minLength": 0,
             "type": "string",
             "nullable": true
           }
