@@ -58,10 +58,11 @@ namespace AppForSEII2526.UT.ClassesController_test
             };
 
             var allTests = new List<object[]> {
-                new object[] { null, null, expected1 },
-                new object[] { "Yoga", null, expected2 },
-                new object[] { null, DateTime.Today.AddDays(2), expected3 },
-                new object[] { "Pilates", DateTime.Today.AddDays(3), expected4 },
+                new object[] { null, null, 30, expected1 },
+                new object[] { "Yoga", null, 30, expected2 },
+                new object[] { null, DateTime.Today.AddDays(2), 30, expected3 },
+                new object[] { "Pilates", DateTime.Today.AddDays(3), 30, expected4 },
+                new object[] { null, null, 15, expected1 },
             };
 
             return allTests;
@@ -71,7 +72,7 @@ namespace AppForSEII2526.UT.ClassesController_test
         [Theory]
         [Trait("LevelTesting", "Unit Testing")]
         [MemberData(nameof(TestCasesFor_GetClassesForPlan_OK))]
-        public async Task GetClassesForPlan_filter_test(string? className, DateTime? date, List<ClassForPlanDTO> expectedClasses)
+        public async Task GetClassesForPlan_filter_test(string? className, DateTime? date, decimal maximumprice, List<ClassForPlanDTO> expectedClasses)
         {
             // Arrange
             var mock = new Mock<ILogger<ClassesController>>();
@@ -79,7 +80,7 @@ namespace AppForSEII2526.UT.ClassesController_test
             var controller = new ClassesController(_context, logger);
 
             // Act
-            var result = await controller.GetClassesForPlan(className, date);
+            var result = await controller.GetClassesForPlan(className, date, maximumprice);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
