@@ -43,7 +43,7 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(IList<ItemForPurchasingDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelError), (int)HttpStatusCode.BadRequest)]
 
-        public async Task<ActionResult> GetItemsForPurchasing(string? itemName, string? brandName)
+        public async Task<ActionResult> GetItemsForPurchasing(string? itemName, string? brandName, int minQuantity)
         {
             _logger?.LogInformation("Received request to get items for purchasing. itemName={ItemName}, brandName={BrandName}", itemName, brandName);
 
@@ -56,7 +56,8 @@ namespace AppForSEII2526.API.Controllers
                 .Include(item => item.Brand)
                 .Where(item =>
                     ((itemName == null || item.Name.Contains(itemName)) &&
-                     (brandName == null || item.Brand.Name.Contains(brandName))) &&
+                     (brandName == null || item.Brand.Name.Contains(brandName)) &&
+                     (item.QuantityAvailableForPurchase >= minQuantity )) &&
                      item.QuantityAvailableForPurchase > 0
                 )
 
