@@ -42,7 +42,7 @@ namespace AppForSEII2526.API.Controllers
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<ClassForPlanDTO>), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ModelError), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> GetClassesForPlan(string? className, DateTime? date)
+        public async Task<ActionResult> GetClassesForPlan(string? className, DateTime? date, decimal maximumprice)
         {
             DateTime finalDate;
             DateTime startDate = DateTime.Today;
@@ -72,7 +72,7 @@ namespace AppForSEII2526.API.Controllers
 
             IList<ClassForPlanDTO> classesDTO = await _context.Classes 
                 .Include(c => c.TypeItems)
-                .Where(c => (c.Name.Contains(className) || (className == null)) && c.Date >= date && c.Date <= finalDate)
+                .Where(c => (c.Name.Contains(className) || (className == null)) && c.Date >= date && c.Date <= finalDate && c.Price <= maximumprice)
                 .OrderBy(c => c.Id)
                 .Select(c => new ClassForPlanDTO(c.Id, c.Name, c.TypeItems.Select(ti => new TypeItemForClassDTO(ti.Id, ti.Name)).ToList(), c.Date, c.Price, c.Capacity))
                 .ToListAsync();
