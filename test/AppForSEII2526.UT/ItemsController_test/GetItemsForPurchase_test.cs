@@ -84,9 +84,9 @@ namespace AppForSEII2526.UT.ItemsController_test
             {
                             //filters to apply - expected items
 
-                new object[] { null, null, itemDTOsTC1 },
-                new object[] { "Protein", null, itemDTOsTC2 },
-                new object[] { null, "Elyte", itemDTOsTC3 },
+                new object[] { null, null, 5, itemDTOsTC1 },
+                new object[] { "Protein", null, 10, itemDTOsTC2 },
+                new object[] { null, "Elyte", 5, itemDTOsTC3 },
 
 
             };
@@ -98,14 +98,14 @@ namespace AppForSEII2526.UT.ItemsController_test
         [Theory]
         [Trait("LevelTesting", "Unit Testing")]
         [MemberData(nameof(TestCasesFor_GetItemsForPurchasing_OK))]
-        public async Task GetMoviesForPurchase_filter_test(string? name, string? brand, List<ItemForPurchasingDTO> expectedItems)
+        public async Task GetMoviesForPurchase_filter_test(string? name, string? brand, int minQuantity, List<ItemForPurchasingDTO> expectedItems)
         {
             // Arrange
 
             var controller = new ItemsController(_context, null);
 
             // Act
-            var result = await controller.GetItemsForPurchasing(name, brand);
+            var result = await controller.GetItemsForPurchasing(name, brand, minQuantity);
 
             //Assert
             //we check that the response type is OK 
